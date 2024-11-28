@@ -7,7 +7,7 @@ import OpenPostSection from "./OpenPostSection";
 
 const initialDiscussions: Post[] = [
   {
-    id: "123",
+    _id: "123",
     creatorId: 'חני רוזין',
     communityId: '',
     createdDate: new Date(),
@@ -16,7 +16,7 @@ const initialDiscussions: Post[] = [
     images: [],
     comments: [
       {
-        id: 'comment1',
+        _id: 'comment1',
         creatorId: 'טלי',
         content: 'צודקת',
         createdDate: new Date(),
@@ -27,7 +27,7 @@ const initialDiscussions: Post[] = [
   },
 
   {
-    id: "1234",
+    _id: "1234",
     creatorId: 'חני רוזין',
     communityId: '',
     createdDate: new Date(),
@@ -36,7 +36,7 @@ const initialDiscussions: Post[] = [
     images: [],
     comments: [
       {
-        id: 'comment15',
+        _id: 'comment15',
         creatorId: 'טלי',
         content: 'צודקת',
         createdDate: new Date(),
@@ -64,7 +64,7 @@ const ForumPage: React.FC = () => {
     <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
       {selectedPostId ? (
         <OpenPostSection
-          id={posts[0].id}
+          _id={posts[0]._id}
           creatorId={posts[0].creatorId}
           createdDate={posts[0].createdDate}
           title={posts[0].title}
@@ -77,14 +77,14 @@ const ForumPage: React.FC = () => {
       ) : (
         // Otherwise, display the list of posts
         posts.map((post) => (
-          <div key={post.id} className="mb-4">
+          <div key={post._id} className="mb-4">
             <PostComp
               creatorId={post.creatorId}
               createdDate={post.createdDate}
               content={post.content}
               commentCount={post.comments.length}
               likedBy={post.likedBy}
-              onClick={() => setSelectedPostId(post.id)} // Set the selected post ID
+              onClick={() => setSelectedPostId(post._id)} // Set the selected post ID
             />
           </div>
         ))

@@ -1,5 +1,5 @@
 export interface Loan{
-    id: string;
+    _id: string;
     lenderID: string;
     borrowerID: string;
     item: string;
