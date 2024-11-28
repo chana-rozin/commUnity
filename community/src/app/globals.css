@@ -5,6 +5,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-noto-sans-hebrew: 'Noto Sans Hebrew', sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -14,10 +15,10 @@
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  body {
+    @apply font-sans;
+  }
 }
 
 @layer utilities {
