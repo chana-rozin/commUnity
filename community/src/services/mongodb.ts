@@ -35,6 +35,19 @@ export async function getDocumentById(collection: string, id: string) {
     return document;
 }
 
+export async function patchDocumentById(collection: string, id: string, updateData: object) {
+    const db = client.db('community');
+
+    // Update the document with the provided data
+    const result = await db.collection(collection).findOneAndUpdate(
+        { _id: new ObjectId(id) }, // Find the document by ID
+        { $set: updateData }, // Update only the provided fields
+        { returnDocument: 'after' } // Return the updated document
+    );
+
+    return result;
+}
+
 export async function updateDocumentById(collection: string, id: string, document: object) {
     const db = client.db('community');
     const result = await db.collection(collection).updateOne({ _id: new ObjectId(id) }, { $set: document });
