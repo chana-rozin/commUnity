@@ -1,60 +1,90 @@
 "use client"
 import { useEffect, useState, useRef } from 'react';
 import { pusherClient } from '@/services/pusher';
-import ForumMessage from './ForumMessage';
+import { PostComp } from './Post';
+import { CommentComp } from './Comment';
 import ForumInput from './ForumInput';
-import { ForumMessageType } from '@/types/forum';
+import { Post } from '@/types/post.type';
+
+const initialDiscussions: Post[] = [
+    {
+        id: "123",
+        creatorId: 'חני רוזין',
+        communityId: '',
+        createdDate: new Date(),
+        title: 'שלום לכולם!',
+        content: 'דיון מאוד חשוב\nעל דברים ברומו של עולם\nמה דעתכם?',
+        images: [],
+        comments: [
+            {
+                id: 'comment1',
+                creatorId: 'טלי',
+                content: 'צודקת',
+                createdDate: new Date(),
+                likedBy: [],
+            }
+        ],
+        likedBy: [],  
+    }
+]; 
 
 const ForumPage = () => {
-  // State to store messages
-  const [messages, setMessages] = useState<ForumMessageType[]>([]);
+  const [posts, setPosts] = useState<Post[]>(initialDiscussions);
   
-  // Ref to automatically scroll to the latest message
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
-  // Scroll to the bottom whenever messages change
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Subscribe to Pusher channel when component mounts
   useEffect(() => {
-    // Create a channel subscription
     const channel = pusherClient.subscribe('forum');
 
-    channel.bind('new-message', (data: any) => {
-        console.log('Received message:', data); // Debug log
-        setMessages((prev) => [...prev, data.message]);
-      });
+    channel.bind('new-message', (data: { message: Post }) => {
+        setPosts((prev) => [...prev, data.message]);
+    });
 
-    // Cleanup subscription when component unmounts
     return () => {
       channel.unbind_all();
       pusherClient.unsubscribe('forum');
     };
   }, []);
 
-  // Scroll to bottom when messages change
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [posts]);
 
   return (
-    <div className="flex flex-col h-screen max-w-md mx-auto bg-white shadow-lg">
-      {/* Messages container with scrolling */}
-      <div className="flex-grow overflow-y-auto p-4 space-y-2">
-        {messages.map((message, index) => (
-          <ForumMessage 
-            key={`${index}-${message.text}`} 
-            message={message} 
-          />
-        ))}
-        {/* Invisible div to enable scrolling to bottom */}
-        <div ref={messagesEndRef} />
-      </div>
+    <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
+      {/* Header content remains the same */}
 
-      {/* Input area at the bottom */}
+      {posts.map((post) => (
+        <div key={post.id} className="mb-4">
+          <PostComp 
+            creatorId={post.creatorId}
+            createdDate={post.createdDate}
+            content={post.content}
+            commentCount={post.comments.length}
+            likedBy={post.likedBy}
+          />
+
+          <div className="flex flex-col justify-center items-center px-3 mt-4 w-full bg-white rounded-2xl min-h-[434px]">
+            <div className="flex flex-col px-0.5 w-full max-w-[737px]">
+              {post.comments.map((comment) => (
+                <CommentComp
+                  key={comment.id}
+                  creatorId={comment.creatorId}
+                  createdDate={comment.createdDate}
+                  content={comment.content} 
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+
       <ForumInput />
+      <div ref={messagesEndRef} />
     </div>
   );
 };
