@@ -26,7 +26,11 @@
 // }
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],  // Keep this as is
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ], // Keep this as is
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -43,12 +47,24 @@
         "name": "next"
       }
     ],
-    "types": ["node"],  // This line tells TypeScript to use Node.js type definitions
+    "types": [
+      "node"
+    ], // This line tells TypeScript to use Node.js type definitions
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "target": "ES2017"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/services/mongoInit.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/services/mongoInit.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
-
