@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { 
-  getAllDocuments, 
-  insertDocument, 
-  updateDocumentById, 
-  deleteDocumentById 
+import {
+    getAllDocuments,
+    insertDocument,
+    updateDocumentById,
+    deleteDocumentById
 } from "@/services/mongodb";
 
 // Fetch all babysitter requests
