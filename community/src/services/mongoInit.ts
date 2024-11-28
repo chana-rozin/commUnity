@@ -20,7 +20,7 @@ interface ModelDefinition {
 const models: ModelDefinition[] = [
     { name: 'users', model: User },
     { name: 'ads', model: Ad },
-    { name: 'babysittings', model: Babysitting },
+    { name: 'babysitting', model: Babysitting },
     { name: 'communities', model: Community },
     { name: 'events', model: Event },
     { name: 'loans', model: Loan },
