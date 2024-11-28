@@ -1,58 +1,50 @@
 import { useState } from 'react';
-//import { v4 as uuidv4 } from 'uuid';
 import { Post } from '@/types/post.type';
+import { Comment } from '@/types/general.type';
 
-const ForumInput = () => {
+const ForumInput: React.FC = () => {
   const [text, setText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!text.trim()) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
-      const newPost: Post = {
-        id: "123",
-        creatorId: 'Anonymous', // TODO: Replace with actual user authentication
-        communityId: '',
-        createdDate: new Date(),
-        title: '',
-        content: text.trim(),
-        images: [],
-        comments: [],
-        likedBy: [],
-      };
+        const newComment: Comment = {
+          id: 'new-comment-id',
+          creatorId: 'Anonymous', // TODO: Replace with actual user id
+          content: text.trim(),
+          createdDate: new Date(),
+          likedBy: [],
+        };
 
-      const response = await fetch('/api/pusher/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          channel: 'forum', 
-          event: 'new-message',
-          message: newPost,
-        }),
-      });
+        const response = await fetch('/api/pusher/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              channel: 'forum', // TODO: Replace with actual post-id
+              event: 'new-message',
+              message: newComment,
+            }),
+          });
 
-      if (!response.ok) {
-        throw new Error('Failed to send message');
+        setText('');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+        console.error(err);
+      } finally {
+        setIsLoading(false);
       }
-
-      setText('');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unknown error occurred');
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return (
-    <form 
+    <form
       onSubmit={handleSubmit}
       className="flex flex-wrap gap-10 items-center p-3 mt-8 max-w-full text-base font-medium text-right bg-violet-50 rounded-xl min-h-[48px] text-neutral-500 w-[737px]"
       role="form"
