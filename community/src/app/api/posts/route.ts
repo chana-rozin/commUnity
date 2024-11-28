@@ -14,12 +14,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     const body = await request.json(); // Parse request body
     console.log(body);
-        // return NextResponse.json(
-        //     { message: "Invalid input: All fields are required and must be valid." },
-        //     { status: 400 } // Bad Request
-        // );
     
-
     // Insert into the database
     const result = await insertDocument("posts", body);
 

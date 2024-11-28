@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import {
     updateDocumentById,
     deleteDocumentById,
-    getDocumentById
+    getDocumentById,
+    patchDocumentById
 } from "@/services/mongodb";
 
 //Get a post by ID
@@ -31,6 +32,33 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
     return NextResponse.json(post);
 }
 
+//Patch a post by ID
+
+export async function PATCH(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+    let { id } = await params;
+    const body = await request.json(); // Parse request body
+
+    if (!id) {
+        return NextResponse.json(
+            { message: "Post ID is required" },
+            { status: 400 } // Bad Request
+        );
+    }
+
+    // Update the post in the database
+    const result = await patchDocumentById("posts", id, body);
+
+    if (!result) {
+        return NextResponse.json(
+            { message: "Failed to update post" },
+            { status: 500 } // Internal Server Error
+        );
+    }
+
+    return NextResponse.json(
+        { message: "Post updated successfully" }
+    );
+}
 // Update a post by ID
 export async function PUT(request: Request,{ params }: { params: Promise<{ id: string }>}) {
     let { id } = await params;
@@ -59,9 +87,9 @@ export async function PUT(request: Request,{ params }: { params: Promise<{ id: s
 }
 
 // Delete a post by ID
-export async function DELETE(request: Request) {
-    const url = new URL(request.url);
-    const id = url.searchParams.get("id"); // Extract post ID from query string
+export async function DELETE(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+    let { id } = await params;
+
 
     if (!id) {
         return NextResponse.json(
