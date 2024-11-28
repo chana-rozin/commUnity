@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"; // Import Next.js response object
 import { 
-  getAllDocuments, 
-  getDocumentById, 
+  getAllDocuments,  
   insertDocument, 
   updateDocumentById, 
   deleteDocumentById 
