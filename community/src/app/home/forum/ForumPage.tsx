@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { PostComp } from './Post';
 import { Post } from '@/types/post.type';
 import OpenPostSection from "./OpenPostSection";
-
+import {getPosts} from '@/services/posts'
 const initialDiscussions: Post[] = [
   {
     _id: "123",
@@ -51,6 +51,20 @@ const ForumPage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>(initialDiscussions);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
+  const fetchPosts= async()=>{
+    try {
+        const response = await getPosts();
+        setPosts(response.data);
+    }
+    catch (error) {
+        console.error('Error fetching posts:', error);
+    }
+  }
+  
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
