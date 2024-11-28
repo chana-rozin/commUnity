@@ -4,7 +4,7 @@ import {
   insertDocument, 
   updateDocumentById, 
   deleteDocumentById 
-} from "@/services/mongodb.ts";
+} from "@/services/mongodb";
 
 // Fetch all ads
 export async function GET(request: Request) {

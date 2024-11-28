@@ -4,7 +4,7 @@ import {
   insertDocument, 
   updateDocumentById, 
   deleteDocumentById 
-} from "@/services/mongodb.ts"; // Database functions from your services folder
+} from "@/services/mongodb"; // Database functions from your services folder
 
 // Fetch all neighborhoods
 export async function GET(request: Request) {

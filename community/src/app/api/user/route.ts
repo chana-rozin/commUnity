@@ -5,7 +5,7 @@ import {
   insertDocument, 
   updateDocumentById, 
   deleteDocumentById 
-} from "@/services/mongodb.ts"; // Database functions from a shared service
+} from "@/services/mongodb"; // Database functions from a shared service
 
 // Fetch all users
 export async function GET(request: Request) {

@@ -28,13 +28,13 @@ export async function getAllDocuments(collection: string) {
     return documents;
 }
 
-export async function updateDocument(collection: string, id: string, document: object) {
+export async function updateDocumentById(collection: string, id: string, document: object) {
     const db = client.db('commUnity');
     const result = await db.collection(collection).updateOne({ _id: new ObjectId(id) }, { $set: document });
     return result;
 }
 
-export async function deleteDocument(collection: string, id: string) {
+export async function deleteDocumentById(collection: string, id: string) {
     const db = client.db('commUnity');
     const result = await db.collection(collection).deleteOne({ _id: new ObjectId(id) });
     return result;
