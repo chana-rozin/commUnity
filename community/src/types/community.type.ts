@@ -1,5 +1,5 @@
 export interface Community{
-    id: string;
+    _id: string;
     name: string;
     adminId: string[];
     membersId: string[];

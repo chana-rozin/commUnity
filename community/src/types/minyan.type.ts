@@ -1,6 +1,6 @@
 import { PrayerTime } from './general.type'
 export interface Minyan{
-    id: string;
+    _id: string;
     category: PrayerTime;
     location: string;
     time: string;

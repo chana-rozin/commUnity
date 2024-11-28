@@ -1,6 +1,6 @@
 import { ImageFile, Comment } from './general.type'
 export interface Post{
-    id: string;
+    _id: string;
     creatorId: string;
     communityId: string;
     createdDate: Date;

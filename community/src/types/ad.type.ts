@@ -1,5 +1,5 @@
 export interface Ad{
-    id: string;
+    _id: string;
     name: string;
     description: string;
     createdDate: Date;
