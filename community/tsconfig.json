@@ -30,7 +30,7 @@
       "dom",
       "dom.iterable",
       "esnext"
-    ], // Keep this as is
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
