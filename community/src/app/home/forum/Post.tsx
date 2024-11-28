@@ -21,71 +21,69 @@ export const PostComp: React.FC<PostProps> = ({
   const date = createdDate instanceof Date ? createdDate : new Date(createdDate);
 
   return (
-    <div 
-      className="flex flex-col p-5 w-full bg-white rounded-2xl cursor-pointer" 
-      onClick={onClick} // Attach onClick handler
+    <div
+      className="flex flex-col p-4 w-full bg-white rounded-2xl cursor-pointer"
+      onClick={onClick}
     >
-      {/* Post content */}
-      <div className="flex relative flex-wrap gap-4 items-start w-full text-xs">
-        <div className="flex z-0 flex-col justify-center items-end my-auto w-36">
-          <div className="text-base font-semibold text-neutral-950">{creatorId}</div>
-          <div className="font-medium leading-none text-neutral-500">{"ff"}</div>
-          <div className="flex gap-2 items-center w-full leading-none max-w-[144px]">
-            <div className="flex overflow-hidden gap-1.5 items-center self-stretch my-auto font-medium text-black whitespace-nowrap">
-              <img
-                loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/692f163df525a91b97030c50d0f0e38b3d11bbb7a79424fe9cfaea48a1d9297f?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-                alt=""
-                className="object-contain shrink-0 self-stretch my-auto aspect-square w-[15px]"
-              />
-              <div className="self-stretch my-auto">{likedBy.length}</div>
-            </div>
-            <div className="flex gap-1 justify-center items-center self-stretch my-auto text-neutral-950">
-              <img
-                loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/1bd7943f9cd8cf6430654cdea38cf0282c2f1e92e5dc28dacc089e37e7dae0ff?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-                alt=""
-                className="object-contain shrink-0 self-stretch my-auto w-3 aspect-square"
-              />
-              <div className="self-stretch my-auto">{date.getDate()}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="mt-4 text-base leading-6 text-right text-neutral-950">
-        {content}
-      </div>
-      <div className="flex flex-wrap gap-10 justify-between items-center mt-4 w-full text-neutral-950">
-        <div className="flex gap-3 justify-center items-center self-stretch my-auto text-xs font-bold tracking-normal leading-6">
-          <img
-            loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/aec2e1f1f6a76eb3cb491967953d79f2e60ff2c9b128bbd6ac6a72922a01fa3a?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-            alt=""
-            className="object-contain shrink-0 self-stretch my-auto aspect-[2.69] w-[86px]"
-          />
-          <div className="self-stretch my-auto">{comments?.length} תגובות </div>
-        </div>
-        <div className="flex gap-5 items-start self-stretch my-auto text-base font-medium leading-none whitespace-nowrap">
-          <button className="flex gap-3 items-center p-2 bg-neutral-100 rounded-[50px]">
-            <div className="self-stretch my-auto">אהבתי</div>
+      {/* Header Section */}
+      <div className="flex gap-4 items-start mb-4">
+        {/* Left: Actions */}
+        <div className="flex items-center gap-3">
+          <button>
             <img
-              loading="lazy"
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/e2eb907e4d5a46a12062719c794ef0c8e7ce1001b27bac3c8aaa9fdb84287318?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-              alt=""
-              className="object-contain shrink-0 self-stretch my-auto w-5 aspect-square"
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/68b95c1707a8445652f77e217614fe7ec26ad8b08cd2f80fdc0fcd5190bb58e2?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
+              alt="Bookmark"
+              className="w-10 h-10"
             />
           </button>
-          <button className="flex gap-3 items-center p-2 bg-neutral-100 rounded-[50px]">
-            <div className="self-stretch my-auto">שמור</div>
+        </div>
+        {/* Right: User Info */}
+        <div className="flex flex-col items-start">
+          <div className="text-sm font-semibold text-neutral-950">{creatorId}</div>
+          <div className="text-xs text-neutral-500">{`${new Date().getDate()-date.getDate()} דקות • ${comments?.length} תגובות`}</div>
+        </div>
+      </div>
+  
+      {/* Content Section */}
+      <div className="text-base leading-6 text-right text-neutral-950 mb-4">
+        {content}
+      </div>
+  
+      {/* Bottom Section */}
+      <div className="flex justify-between items-center w-full mt-4">
+        {/* Left: Likes */}
+        <div className="flex items-center gap-2">
+          <div className="flex -space-x-1">
             <img
-              loading="lazy"
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/692f163df525a91b97030c50d0f0e38b3d11bbb7a79424fe9cfaea48a1d9297f?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
+              alt="User Avatar"
+              className="w-5 h-5 rounded-full border-2 border-white"
+            />
+          </div>
+          <span className="text-xs text-neutral-500">{`23 אנשים אהבו`}</span>
+        </div>
+  
+        {/* Right: Actions */}
+        <div className="flex gap-5">
+          <button className="flex items-center gap-2 px-3 py-1 bg-neutral-100 rounded-full">
+            <span className="text-sm">אהבתי</span>
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/e2eb907e4d5a46a12062719c794ef0c8e7ce1001b27bac3c8aaa9fdb84287318?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
+              alt="Like Icon"
+              className="w-4 h-4"
+            />
+          </button>
+          <button className="flex items-center gap-2 px-3 py-1 bg-neutral-100 rounded-full">
+            <span className="text-sm">שמור</span>
+            <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/580659e4ec9fec1933077fa175896b6428ff410cb160f48dc402e83b9cf7c848?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-              alt=""
-              className="object-contain shrink-0 self-stretch my-auto w-5 aspect-square"
+              alt="Save Icon"
+              className="w-4 h-4"
             />
           </button>
         </div>
       </div>
     </div>
   );
+  
 };

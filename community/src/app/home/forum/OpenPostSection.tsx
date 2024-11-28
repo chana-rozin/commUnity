@@ -8,7 +8,7 @@ import ForumInput from './ForumInput';
 import { Post } from '@/types/post.type';
 import { Comment } from '@/types/general.type';
 
-const OpenPostSection: React.FC<Post> = ({id,creatorId,createdDate,title,content,comments,likedBy}) => {
+const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,content,comments,likedBy}) => {
   const [allComments, setAllComments] = useState<Comment[]>(comments);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
@@ -48,7 +48,7 @@ const OpenPostSection: React.FC<Post> = ({id,creatorId,createdDate,title,content
             <div className="flex flex-col px-0.5 w-full max-w-[737px]">
               {allComments.map((comment) => (
                   <CommentComp
-                    key={comment.id}
+                    key={comment._id}
                     creatorId={comment.creatorId}
                     createdDate={comment.createdDate}
                     content={comment.content}
