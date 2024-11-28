@@ -29,6 +29,12 @@ export async function getAllDocuments(collection: string) {
     return documents;
 }
 
+export async function getDocumentById(collection: string, id: string) {
+    const db = client.db('community');
+    const document = await db.collection(collection).findOne({ _id: new ObjectId(id) });
+    return document;
+}
+
 export async function updateDocumentById(collection: string, id: string, document: object) {
     const db = client.db('community');
     const result = await db.collection(collection).updateOne({ _id: new ObjectId(id) }, { $set: document });
