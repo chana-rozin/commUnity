@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { 
-  getAllDocuments, 
-  insertDocument, 
-  updateDocumentById, 
-  deleteDocumentById 
+import {
+    getAllDocuments,
+    insertDocument,
+    updateDocumentById,
+    deleteDocumentById
 } from "@/services/mongodb";
 
 // Fetch all events
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-        { ...body, _id: result.insertedId }, 
+        { ...body, _id: result.insertedId },
         { status: 201 } // Created
     );
 }
@@ -91,4 +91,14 @@ export async function DELETE(request: Request) {
     // Delete the event from the database
     const result = await deleteDocumentById("events", id);
 
-    if (!result)
+    if (!result) {
+        return NextResponse.json(
+            { message: "Failed to delete event" },
+            { status: 500 } // Internal Server Error
+        );
+    }
+
+    return NextResponse.json(
+        { message: "Event deleted successfully" }
+    );
+}
