@@ -48,7 +48,7 @@ const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,conten
             <div className="flex flex-col px-0.5 w-full max-w-[737px]">
               {allComments.map((comment) => (
                   <CommentComp
-                    key={comment._id}
+                    key={comment.id}
                     creatorId={comment.creatorId}
                     createdDate={comment.createdDate}
                     content={comment.content}
