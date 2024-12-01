@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { Post } from '@/types/post.type';
 import { Comment } from '@/types/general.type';
+import http from '@/services/http';
 
-const ForumInput: React.FC = () => {
+interface ForumInputProps {
+    postId: string; 
+  }
+const ForumInput: React.FC<ForumInputProps> = ({postId}) => {
   const [text, setText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,22 +20,18 @@ const ForumInput: React.FC = () => {
 
     try {
         const newComment: Comment = {
-          _id: `${text}123`,
+          _id: `${text}123${Date.now()}`,
           creatorId: 'Anonymous', // TODO: Replace with actual user id
           content: text.trim(),
           createdDate: new Date(),
           likedBy: [],
         };
 
-        const response = await fetch('/api/pusher/send', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              channel: 'forum', // TODO: Replace with actual post-id
-              event: 'new-message',
-              message: newComment,
-            }),
-          });
+        await http.post('/pusher/send', {
+            channel: `forum-${postId}`,
+            event: 'new-message',
+            message: newComment,
+        });
 
         setText('');
       } catch (err) {

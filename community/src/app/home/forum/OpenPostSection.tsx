@@ -55,7 +55,7 @@ const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,conten
                   />
                 ))}
             </div>
-            <ForumInput/>
+            <ForumInput postId={_id}/>
           </div>
         </div>
   );
