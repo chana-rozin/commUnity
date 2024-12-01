@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     await pusher.trigger(channel, event, { message });
 
     const postId = channel.replace("forum-", "");
-    const response = await axios.patch(`http://localhost:3000/api/posts/${postId}/comments`,  message ); // Fix empty arguments
+    const response = await axios.post(`http://localhost:3000/api/posts/${postId}/comments`,  message ); // Fix empty arguments
 
     return NextResponse.json({ success: true });
   } catch (error) {
