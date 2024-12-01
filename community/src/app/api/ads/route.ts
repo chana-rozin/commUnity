@@ -3,6 +3,7 @@ import {
     getAllDocuments,
     insertDocument,
 } from "@/services/mongodb";
+import Ad from '@/models/ad' // Import the Mongoose model
 
 // Fetch all ads
 export async function GET(request: Request) {
@@ -12,35 +13,39 @@ export async function GET(request: Request) {
 
 // Create a new ad
 export async function POST(request: Request) {
-    const body = await request.json(); // Parse request body
 
-    // Validate required fields
-    if (
-        !body.name ||
-        !body.description ||
-        !body.publishDate ||
-        !body.expiryDate ||
-        !Array.isArray(body.viewingPermissions)
-    ) {
+    const body = await request.json();
+
+    try {
+        // Use Mongoose to validate the data
+        const newAd = new Ad(body);
+
+        // Validate the document (this throws if validation fails)
+        await newAd.validate();
+
+        // If validation passes, use the service to insert the document
+        const result = await insertDocument("ads", newAd.toObject());
+
         return NextResponse.json(
-            { message: "Invalid input: All fields are required and must be valid." },
-            { status: 400 } // Bad Request
+            { ...body, _id: result.insertedId },
+            { status: 201 } // Created
         );
+    } catch (error) {
+        // Narrow the type of `error` to handle it
+        if (error instanceof Error) {
+            // Access `error.message`
+            return NextResponse.json(
+                { message: error.message || "Failed to create ad" },
+                { status: 400 } // Bad Request
+            );
+        } else {
+            // Handle unexpected error types
+            return NextResponse.json(
+                { message: "An unknown error occurred" },
+                { status: 500 } // Internal Server Error
+            );
+        }
     }
-
-    // Insert into the database
-    const result = await insertDocument("ads", body);
-
-    if (!result) {
-        return NextResponse.json(
-            { message: "Failed to create ad" },
-            { status: 500 } // Internal Server Error
-        );
-    }
-
-    return NextResponse.json(
-        { ...body, _id: result.insertedId },
-        { status: 201 } // Created
-    );
 }
+
 
