@@ -49,7 +49,7 @@ const ForumInput: React.FC<ForumInputProps> = ({postId}) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-nowrap gap-4 items-center p-2 mt-8 max-w-full text-base font-medium text-right bg-violet-50 rounded-xl h-[48px] text-neutral-500 w-[737px]"
+      className="flex flex-nowrap gap-4 items-center p-2 mt-8 mb-4 max-w-full text-base font-medium text-right bg-violet-50 rounded-xl h-[48px] text-neutral-500 w-[737px]"
       role="form"
       aria-label="Add comment form"
     >

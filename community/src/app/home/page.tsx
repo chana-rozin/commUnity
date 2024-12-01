@@ -19,9 +19,9 @@ const HomePage = () => {
         {/* Middle Column */}
         <div className="flex flex-col min-w-[240px] w-[775px]">
           {/* Welcome Banner */}
-          <div className="flex overflow-hidden flex-wrap p-4 w-full bg-indigo-100 rounded-2xl min-h-[164px]">
+          <div className="flex overflow-hidden mb-4 flex-wrap p-4 w-full bg-indigo-100 rounded-2xl min-h-[164px]">
             {/* Add banner content here */}
-            <p className="text-neutral-950">Welcome to the community forum!</p>
+            <p className="text-neutral-950">הי טלי! <br/> בואי נראה מה חדש פה..</p>
           </div>
 
           {/* Posts Section */}

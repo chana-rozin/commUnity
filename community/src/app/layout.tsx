@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="he" dir="rtl" className={notoSansHebrew.className}>
-      <body className="flex overflow-hidden flex-col px-12 pt-6 pb-60 bg-violet-50 max-md:px-5 max-md:pb-24">
+      <body className="flex flex-col px-12 pt-6 pb-60 bg-violet-50 max-md:px-5 max-md:pb-24">
         <Navbar/>
         {children}
       </body>
