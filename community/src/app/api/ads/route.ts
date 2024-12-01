@@ -13,33 +13,35 @@ export async function GET(request: Request) {
 
 // Create a new ad
 export async function POST(request: Request) {
-
     const body = await request.json();
+    console.log("Received body:", body);
 
     try {
-        // Use Mongoose to validate the data
         const newAd = new Ad(body);
 
-        // Validate the document (this throws if validation fails)
-        await newAd.validate();
+        // Explicitly call validateSync() to trigger synchronous validation
+        const validationError = newAd.validateSync();
+        if (validationError) {
+            throw new Error(validationError.message);
+        }
 
-        // If validation passes, use the service to insert the document
-        const result = await insertDocument("ads", newAd.toObject());
-
+        // If validation passes, insert the document using your custom insert function
+        const result = await insertDocument('ads', newAd);
+        console.log("Insert result: ", result);
         return NextResponse.json(
-            { ...body, _id: result.insertedId },
+            { ...body, _id: result.insertedId }, // Return the created document with the inserted _id
             { status: 201 } // Created
         );
     } catch (error) {
-        // Narrow the type of `error` to handle it
+        console.log("Validation or save failed:", error);  // Log any error that occurred
+
+        // Handle validation or save errors
         if (error instanceof Error) {
-            // Access `error.message`
             return NextResponse.json(
                 { message: error.message || "Failed to create ad" },
                 { status: 400 } // Bad Request
             );
         } else {
-            // Handle unexpected error types
             return NextResponse.json(
                 { message: "An unknown error occurred" },
                 { status: 500 } // Internal Server Error
@@ -47,5 +49,3 @@ export async function POST(request: Request) {
         }
     }
 }
-
-

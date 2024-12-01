@@ -11,74 +11,78 @@ export async function PUT(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
-    let { id } = await params;
-    const body = await request.json(); // Parse request body
-    delete body._id; // Delete id from body to avoid conflicts
+    const { id } = await params;
+    const body = await request.json();
+    delete body._id;
 
     if (!id) {
         return NextResponse.json(
             { message: "Ad ID is required" },
-            { status: 400 } // Bad Request
+            { status: 400 }
         );
     }
 
     try {
-        // Create a temporary document for validation
-        const updatedAd = new Ad(body);
+        // Use Mongoose findByIdAndUpdate to ensure middleware runs
+        const updatedAd = await Ad.findByIdAndUpdate(id, body, {
+            new: true, // Return the updated document
+            runValidators: true, // Run schema validation on update
+        });
 
-        // Validate the document (throws an error if validation fails)
-        await updatedAd.validate();
-
-        // Update the ad in the database
-        const result = await updateDocumentById("ads", id, body);
-
-        if (!result) {
+        if (!updatedAd) {
             return NextResponse.json(
-                { message: "Failed to update ad" },
-                { status: 500 } // Internal Server Error
+                { message: "Ad not found or update failed" },
+                { status: 404 }
             );
         }
 
-        return NextResponse.json({ message: "Ad updated successfully" });
-    } catch (error) {
+        return NextResponse.json({ message: "Ad updated successfully", data: updatedAd });
+    } catch (error: unknown) { // Explicitly typing 'error' as 'unknown'
         if (error instanceof mongoose.Error.ValidationError) {
-            // Return validation error messages
             return NextResponse.json(
                 { message: error.message },
-                { status: 400 } // Bad Request
+                { status: 400 }
             );
         }
 
+        // Type assertion to `Error` to access properties
         return NextResponse.json(
-            { message: "An unknown error occurred" },
-            { status: 500 } // Internal Server Error
+            { message: "An unknown error occurred", error: (error as Error).message },
+            { status: 500 }
         );
     }
 }
 
-// Delete an ad by ID
+
 export async function DELETE(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
-    let { id } = await params;
+    const { id } = await params;
 
     if (!id) {
         return NextResponse.json(
             { message: "Ad ID is required" },
-            { status: 400 } // Bad Request
+            { status: 400 }
         );
     }
 
-    // Delete the ad from the database
-    const result = await deleteDocumentById("ads", id);
+    try {
+        const deletedAd = await Ad.findByIdAndDelete(id);
 
-    if (!result) {
+        if (!deletedAd) {
+            return NextResponse.json(
+                { message: "Ad not found or already deleted" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json({ message: "Ad deleted successfully", data: deletedAd });
+    }catch (error: unknown) {
         return NextResponse.json(
-            { message: "Failed to delete ad" },
-            { status: 500 } // Internal Server Error
+            { message: "An unknown error occurred", error: (error as Error).message },
+            { status: 500 }
         );
     }
-
-    return NextResponse.json({ message: "Ad deleted successfully" });
 }
+
