@@ -5,6 +5,7 @@ import {
     updateDocumentById,
     deleteDocumentById
 } from "@/services/mongodb";
+import Event from "@/services/schemas/event";
 
 // Fetch all events
 export async function GET(request: Request) {
@@ -15,8 +16,32 @@ export async function GET(request: Request) {
 // Create a new event
 export async function POST(request: Request) {
     const body = await request.json(); // Parse request body
+    // try {
+    //     const newEvent = new Event(body);
+    //     await newEvent.validate();
+    //     const result = await insertDocument("events", newEvent); // Insert the new event into the database
+    //     return NextResponse.json(
+    //         { ...body, _id: result.insertedId }, // Return the created document with the inserted _id
+    //         { status: 201 } // Created
+    //     );
+    // } catch (error) {
+    //     console.log("Validation or save failed:", error);  // Log any error that occurred
 
-    // Validate required fields
+    //     // Handle validation or save errors
+    //     if (error instanceof Error) {
+    //         return NextResponse.json(
+    //             { message: error.message || "Failed to create ad" },
+    //             { status: 400 } // Bad Request
+    //         );
+    //     } else {
+    //         return NextResponse.json(
+    //             { message: "An unknown error occurred" },
+    //             { status: 500 } // Internal Server Error
+    //         );
+    //     }
+    // }
+
+  //  Validate required fields
     if (
         !body.name ||
         !body.description ||
@@ -32,7 +57,7 @@ export async function POST(request: Request) {
         );
     }
 
-    // Insert into the database
+   // Insert into the database
     const result = await insertDocument("events", body);
 
     if (!result) {

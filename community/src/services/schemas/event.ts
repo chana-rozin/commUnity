@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 const eventSchema = new Schema({
+    creatorId: { type: mongoose.Types.ObjectId, required: true },
     name: { type: String },
     description: { type: String },
     date: { type: Date },
@@ -19,4 +20,5 @@ const eventSchema = new Schema({
     },
 })
 
-export default eventSchema;
+const Event = mongoose.models.Event || mongoose.model("Event", eventSchema);
+export default Event;

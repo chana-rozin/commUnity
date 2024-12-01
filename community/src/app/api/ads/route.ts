@@ -20,10 +20,7 @@ export async function POST(request: Request) {
         const newAd = new Ad(body);
 
         // Explicitly call validateSync() to trigger synchronous validation
-        const validationError = newAd.validateSync();
-        if (validationError) {
-            throw new Error(validationError.message);
-        }
+        await newAd.validate();
 
         // If validation passes, insert the document using your custom insert function
         const result = await insertDocument('ads', newAd);
