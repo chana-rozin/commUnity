@@ -28,10 +28,14 @@ const ForumInput: React.FC<ForumInputProps> = ({postId}) => {
         };
 
         await http.post('/pusher/send', {
-            channel: `forum-${postId}`,
+            channel: `forum_${postId}`,
+            //channel: `forum`,
+
             event: 'new-message',
             message: newComment,
         });
+
+        await http.post(`/posts/${postId}/comments`,  newComment );
 
         setText('');
       } catch (err) {
