@@ -8,7 +8,7 @@ import {
 
 // Fetch all babysitter requests
 export async function GET(request: Request) {
-    const requests = await getAllDocuments("babysitterRequests"); // Retrieve all babysitter requests
+    const requests = await getAllDocuments("babysittings"); // Retrieve all babysitter requests
     return NextResponse.json(requests); // Return data as JSON
 }
 
@@ -16,24 +16,8 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     const body = await request.json(); // Parse request body
 
-    // Validate required fields
-    if (
-        !body.requesterId ||
-        !body.babysitterId ||
-        !body.date ||
-        !body.location ||
-        !body.numOfChildren ||
-        !Array.isArray(body.ages) ||
-        !Array.isArray(body.viewingPermissions)
-    ) {
-        return NextResponse.json(
-            { message: "Invalid input: All fields are required and must be valid." },
-            { status: 400 } // Bad Request
-        );
-    }
-
     // Insert into the database
-    const result = await insertDocument("babysitterRequests", body);
+    const result = await insertDocument("babysittings", body);
 
     if (!result) {
         return NextResponse.json(
