@@ -20,7 +20,7 @@ const ForumInput: React.FC<ForumInputProps> = ({postId}) => {
 
     try {
         const newComment: Comment = {
-          id: `${text}123${Date.now()}`,
+          _id: `${text}123${Date.now()}`,
           creatorId: 'Anonymous', // TODO: Replace with actual user id
           content: text.trim(),
           createdDate: new Date(),
