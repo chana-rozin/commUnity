@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Pusher from 'pusher';
 import http from "@/services/http";
+import axios from "axios";
 
 const pusher = new Pusher({
   appId: process.env.PUSHER_APP_ID!,
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
     await pusher.trigger(channel, event, { message });
 
     const postId = channel.replace("forum-", "");
-    const response = await http.patch(`/posts/${postId}`, { message }); // Fix empty arguments
+    const response = await axios.patch(`http://localhost:3000/api/posts/${postId}`,  message ); // Fix empty arguments
 
     return NextResponse.json({ success: true });
   } catch (error) {

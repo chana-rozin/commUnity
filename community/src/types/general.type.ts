@@ -15,7 +15,7 @@ export interface Image {
 }
 
 export interface Comment {
-    _id: string;
+    id: string;
     creatorId: string;
     content: string;
     createdDate: Date;
