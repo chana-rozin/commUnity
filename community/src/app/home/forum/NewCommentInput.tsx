@@ -5,7 +5,7 @@ import http from '@/services/http';
 interface ForumInputProps {
     postId: string; 
   }
-const ForumInput: React.FC<ForumInputProps> = ({postId}) => {
+const NewCommentInput: React.FC<ForumInputProps> = ({postId}) => {
   const [text, setText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -79,4 +79,4 @@ const ForumInput: React.FC<ForumInputProps> = ({postId}) => {
   
 };
 
-export default ForumInput;
+export default NewCommentInput;

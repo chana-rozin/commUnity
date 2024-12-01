@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { pusherClient } from '@/services/pusher';
 import { PostComp } from './Post';
 import { CommentComp } from './Comment';
-import ForumInput from './ForumInput';
+import NewCommentInput from './NewCommentInput';
 import { Post } from '@/types/post.type';
 import { Comment } from '@/types/general.type';
 
@@ -40,22 +40,23 @@ const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,conten
             createdDate={createdDate}
             content={content}
             commentCount={comments.length}
-            likedBy={likedBy}
+            likesCount={likedBy?.length || 0}
             onClick={()=>{}}
           />
         </div>
           <div className="flex flex-col justify-center items-center px-3 mt-4 w-full bg-white rounded-2xl min-h-[434px]">
             <div className="flex flex-col px-0.5 w-full max-w-[737px]">
-              {allComments.map((comment) => (
+              {allComments.map((comment, index) => (
                   <CommentComp
                     key={comment._id}
                     creatorId={comment.creatorId}
                     createdDate={comment.createdDate}
                     content={comment.content}
+                    previousDate={index > 0 ? allComments[index - 1].createdDate : undefined}
                   />
                 ))}
             </div>
-            <ForumInput postId={_id}/>
+            <NewCommentInput postId={_id}/>
           </div>
         </div>
   );

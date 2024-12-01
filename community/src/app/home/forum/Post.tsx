@@ -5,20 +5,35 @@ export interface PostProps {
   createdDate: Date | string;
   content: string;
   commentCount: number;
-  likedBy: string[];
-  comments?: Comment[];
-  onClick: () => void; 
+  likesCount: number;
+   onClick: () => void; 
 }
 
 export const PostComp: React.FC<PostProps> = ({
   creatorId,
-  likedBy,
+  likesCount,
   createdDate,
   content,
-  comments,
+  commentCount,
   onClick,  
 }) => {
   const date = createdDate instanceof Date ? createdDate : new Date(createdDate);
+
+  const getTimeDifference = (pastDate: Date): string => {
+    const now = new Date();
+    const diffMs = now.getTime() - pastDate.getTime();
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMinutes < 60) {
+      return `${diffMinutes} דקות`;
+    } else if (diffHours < 24) {
+      return `${diffHours} שעות`;
+    } else {
+      return `${diffDays} ימים`;
+    }
+  };
 
   return (
     <div
@@ -40,7 +55,9 @@ export const PostComp: React.FC<PostProps> = ({
         {/* Right: User Info */}
         <div className="flex flex-col items-start">
           <div className="text-sm font-semibold text-neutral-950">{creatorId}</div>
-          <div className="text-xs text-neutral-500">{`${new Date().getDate()-date.getDate()} דקות • ${comments?.length} תגובות`}</div>
+          <div className="text-xs text-neutral-500">
+          {`${getTimeDifference(date)} • ${commentCount} תגובות`}
+          </div>
         </div>
       </div>
   
@@ -60,7 +77,7 @@ export const PostComp: React.FC<PostProps> = ({
               className="w-5 h-5 rounded-full border-2 border-white"
             />
           </div>
-          <span className="text-xs text-neutral-500">{`23 אנשים אהבו`}</span>
+          <span className="text-xs text-neutral-500">{`${likesCount} אנשים אהבו`}</span>
         </div>
   
         {/* Right: Actions */}

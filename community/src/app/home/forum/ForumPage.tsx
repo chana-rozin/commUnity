@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import { PostComp } from './Post';
 import { Post } from '@/types/post.type';
 import OpenPostSection from "./OpenPostSection";
-import {getPosts} from '@/services/posts'
+import {getPosts} from '@/services/posts';
+import {NewPostInput} from './NewPostInput';
 
 const ForumPage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -36,6 +37,7 @@ const ForumPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
+    <NewPostInput/>
       {loading ? (
         <p>Loading posts...</p> // Show a loading message
       ) : posts.length === 0 ? (
@@ -60,7 +62,7 @@ const ForumPage: React.FC = () => {
               createdDate={post.createdDate}
               content={post.content}
               commentCount={post.comments.length}
-              likedBy={post.likedBy}
+              likesCount={post.likedBy.length || 0}
               onClick={() => setSelectedPostId(post._id)}
             />
           </div>
