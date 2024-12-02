@@ -11,7 +11,8 @@ interface PostPageProps {
 }
 
 const PostPage: React.FC<PostPageProps> = ({ params }) => {
-  const { postId } = params;
+  // const { postId } = params;
+  const postId = "2";
 
   const [post, setPost] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +44,7 @@ const PostPage: React.FC<PostPageProps> = ({ params }) => {
 
   return (
     <div>
-      <OpenPostSection 
+      <OpenPostSection
         _id={post._id}
         creatorId={post.creatorId}
         createdDate={post.createdDate}
