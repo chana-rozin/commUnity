@@ -5,7 +5,7 @@ const ComingSoon = () => {
   return (
     <img
       className={styles.comingSoonImg}
-      src='/images/Coming-soon.jpg'
+      src='/assets/Coming-soon.jpg'
       alt='Coming soon...' />
   );
 };
