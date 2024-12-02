@@ -1,7 +1,16 @@
 import ForumPage from './forum/ForumPage';
 import { Navbar } from '@/components/Navbar/Navbar';
+import { ProfileAside } from '@/components/ProfileSideBar/ProfileAside'
 
 const HomePage = () => {
+
+const navItems = [
+        { isActive: true, icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/24acf9bf6b6d6b7b96d2a34130f075c7cb5b6d35335de6e5f985ebc2d6a2c515?placeholderIfAbsent=true&apiKey=526d563cdba2451a913eb25ca7c41611", text: "הבניין שלי" },
+        { isActive: false, icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/24acf9bf6b6d6b7b96d2a34130f075c7cb5b6d35335de6e5f985ebc2d6a2c515?placeholderIfAbsent=true&apiKey=526d563cdba2451a913eb25ca7c41611", text: "בית הכנסת שלי" },
+        { isActive: false, icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/24acf9bf6b6d6b7b96d2a34130f075c7cb5b6d35335de6e5f985ebc2d6a2c515?placeholderIfAbsent=true&apiKey=526d563cdba2451a913eb25ca7c41611", text: "הקהילה שלי" },
+        { isActive: false, icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/24acf9bf6b6d6b7b96d2a34130f075c7cb5b6d35335de6e5f985ebc2d6a2c515?placeholderIfAbsent=true&apiKey=526d563cdba2451a913eb25ca7c41611", text: "חברות שלי" }
+    ];
+
   return (
     <main>
       <div className="flex flex-wrap gap-4 items-start mt-5 w-full">
@@ -11,9 +20,10 @@ const HomePage = () => {
           role="complementary"
         >
           {/* Add profile content here */}
-          <div className="flex flex-col items-center p-5 bg-white rounded-2xl">
+          <ProfileAside navItems={navItems} saved={false}/>
+          {/* <div className="flex flex-col items-center p-5 bg-white rounded-2xl">
             <p className="text-neutral-950">Profile Section</p>
-          </div>
+          </div> */}
         </aside>
 
         {/* Middle Column */}
