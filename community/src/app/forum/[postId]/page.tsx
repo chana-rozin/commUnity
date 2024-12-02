@@ -1,58 +1,61 @@
-import React from 'react';
-import { Metadata } from 'next';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import OpenPostSection from '@/components/forum/OpenPostSection';
 import { getPostById } from '@/services/posts';
 
-// Explicitly define the type for params
-export interface Params {
-  postId: string;
+interface PostPageProps {
+  params: {
+    postId: string;
+  };
 }
 
-// Explicitly define the Page Props type
-export interface PostPageProps {
-  params: Params;
-}
+const PostPage: React.FC<PostPageProps> = ({ params }) => {
+  const { postId } = params;
 
-// Optional: Metadata generation
-export async function generateMetadata({ 
-  params 
-}: PostPageProps): Promise<Metadata> {
-  try {
-    const post = await getPostById(params.postId);
-    return {
-      title: post.title,
-      description: post.content?.slice(0, 160)
+  const [post, setPost] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const fetchedPost = await getPostById(postId);
+        if (!fetchedPost) {
+          throw new Error('Post not found');
+        }
+        setPost(fetchedPost);
+      } catch (err: any) {
+        console.error('Error fetching post:', err);
+        setError(err.message || 'An error occurred');
+      }
     };
-  } catch (error) {
-    return {
-      title: 'Post Not Found',
-      description: 'Unable to load post'
-    };
-  }
-}
 
-// Use async function with explicit typing
-export default async function PostPage({ params }: PostPageProps) {
-  try {
-    const post = await getPostById(params.postId);
+    fetchPost();
+  }, [postId]);
 
-    return (
-      <div>
-        <OpenPostSection 
-          _id={post.id} 
-          creatorId={post.creatorId} 
-          createdDate={post.createdDate} 
-          title={post.title} 
-          content={post.content} 
-          comments={post.comments} 
-          likedBy={post.likedBy} 
-          communityId="0" 
-          images={post.images} 
-        />
-      </div>
-    );
-  } catch (error) {
-    console.error(error);
-    return <div>Post not found</div>;
+  if (error) {
+    return <div>{error}</div>;
   }
-}
+
+  if (!post) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <OpenPostSection 
+        _id={post._id}
+        creatorId={post.creatorId}
+        createdDate={post.createdDate}
+        title={post.title}
+        content={post.content}
+        comments={post.comments}
+        likedBy={post.likedBy}
+        communityId="0"
+        images={post.images}
+      />
+    </div>
+  );
+};
+
+export default PostPage;
