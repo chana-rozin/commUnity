@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const adSchema = new mongoose.Schema({
+const adSchema = new Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
     createdDate: { type: Date, default: Date.now },
@@ -20,4 +20,8 @@ const adSchema = new mongoose.Schema({
     },
 });
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 92ae6ac90e57734ccd6ebb79e482f21ac19243fb
 export default adSchema;
