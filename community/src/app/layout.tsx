@@ -1,11 +1,15 @@
 import { Noto_Sans_Hebrew } from "next/font/google";
 import "./globals.css";
 
-const notoSansHebrew = Noto_Sans_Hebrew({ 
+const notoSansHebrew = Noto_Sans_Hebrew({
   subsets: ['hebrew'],
   weight: ['300', '400', '500', '600', '700'],
-  display: 'swap' // Helps with font loading
-})
+  display: 'swap', // Helps with font loading
+});
+
+export const metadata = {
+  title: 'commUnity',
+};
 
 export default function RootLayout({
   children,
