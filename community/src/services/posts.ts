@@ -30,6 +30,16 @@ export const likePost = async (postId: string, creatorId: string) => {
     }
 };
 
+export const unLikePost = async (postId: string, creatorId: string) => {
+    try {
+      const response = await http.delete(`/posts/${postId}/likes`, {data: creatorId,} );
+      return response;
+    } catch (error) {
+      console.error("Error liking post:", error);
+      throw error;
+    }
+};
+
 export const savePost = async (postId: string) => {
     try {
         //TODO: add proper logic here

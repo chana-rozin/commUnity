@@ -52,6 +52,7 @@ export const PostComp: React.FC<PostProps> = ({
   };
 
   const handleLike = async (e: React.MouseEvent) => {
+    e.preventDefault(); 
     e.stopPropagation();
     // Prevent multiple simultaneous like attempts
     if (isLiking) return;
@@ -76,6 +77,7 @@ export const PostComp: React.FC<PostProps> = ({
   };
 
   const handleSave = async (e: React.MouseEvent) => {
+    e.preventDefault(); 
     e.stopPropagation();
     // Prevent multiple simultaneous save attempts
     if (isSaving) return;

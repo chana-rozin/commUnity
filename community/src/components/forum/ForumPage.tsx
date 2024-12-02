@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { PostComp } from './Post';
 import { Post } from '@/types/post.type';
-import OpenPostSection from "./OpenPostSection";
 import {getPosts, likePost, savePost} from '@/services/posts';
 import {NewPostInput} from './NewPostInput';
 import Link from 'next/link';
@@ -89,39 +88,6 @@ const ForumPage: React.FC = () => {
           </Link>
         ))
       )}
-      {/*loading ? (
-        <p>Loading posts...</p> // Show a loading message
-      ) : posts.length === 0 ? (
-        <p>No posts to display.</p> // Handle empty posts
-      ) : selectedPostId && selectedPost ? (
-        <OpenPostSection
-          _id={selectedPost._id}
-          creatorId={selectedPost.creatorId}
-          createdDate={selectedPost.createdDate}
-          title={selectedPost.title}
-          content={selectedPost.content}
-          comments={selectedPost.comments}
-          likedBy={selectedPost.likedBy}
-          communityId="0"
-          images={selectedPost.images}
-        />
-      ) : (
-        posts.map((post) => (
-          <div key={post._id} className="mb-4">
-            <PostComp
-              creatorId={post.creatorId}
-              createdDate={post.createdDate}
-              content={post.content}
-              commentCount={post.comments.length}
-              likesCount={post.likedBy.length || 0}
-              //liked={post.likedBy.find(userId)}
-              onClick={() => setSelectedPostId(post._id)}
-              onLike={(creatorId) => handleLike(post._id, creatorId)} 
-              onSave={() => handleSave(post._id)}          
-            />
-          </div>
-        ))
-      )*/}
     </div>
   );
   
