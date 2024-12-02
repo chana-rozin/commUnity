@@ -17,14 +17,14 @@ const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,conten
   };
 
   useEffect(() => {
-    const channel = pusherClient.subscribe('forum');
+    const channel = pusherClient.subscribe(`forum_${_id}`);
     channel.bind('new-message', (data: { message: Comment }) =>{
       console.log(data.message);
       setAllComments((prevComments) => [...prevComments, data.message]);
     });
     return () => {
       channel.unbind_all();
-      pusherClient.unsubscribe('forum');
+      pusherClient.unsubscribe(`forum_${_id}`);
     };
   }, []);
 
@@ -55,7 +55,7 @@ const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,conten
                   />
                 ))}
             </div>
-            <ForumInput/>
+            <ForumInput postId={_id}/>
           </div>
         </div>
   );

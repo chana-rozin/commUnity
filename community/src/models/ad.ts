@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const adSchema = new Schema({
+const adSchema = new mongoose.Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
     createdDate: { type: Date, default: Date.now },
@@ -20,5 +20,5 @@ const adSchema = new Schema({
     },
 });
 
-
-export default adSchema;
+const Ad = mongoose.models.Ad || mongoose.model("Ad", adSchema);
+export default Ad;
