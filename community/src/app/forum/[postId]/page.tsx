@@ -5,14 +5,11 @@ import OpenPostSection from '@/components/forum/OpenPostSection';
 import { getPostById } from '@/services/posts';
 
 interface PostPageProps {
-  params: {
-    postId: string;
-  };
+  postId: string;
 }
 
-const PostPage: React.FC<PostPageProps> = ({ params }) => {
-  // const { postId } = params;
-  const postId = "2";
+const PostPage = (params: PostPageProps) => {
+  const { postId } = params;
 
   const [post, setPost] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
