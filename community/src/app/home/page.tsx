@@ -1,4 +1,4 @@
-import ForumPage from './forum/ForumPage';
+import ForumPage from '../../components/forum/ForumPage';
 import { Navbar } from '@/components/Navbar/Navbar';
 
 const HomePage = () => {

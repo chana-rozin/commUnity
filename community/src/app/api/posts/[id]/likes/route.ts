@@ -4,10 +4,7 @@ import {
 } from "@/services/mongodb";
 import axios from "axios";
 import { debug } from "util";
-export async function POST(request: Request,{ params }: { params: Promise<{ id: string }>}) {
-    debugger
-    
-    console.log('post comment');
+export async function POST(request: Request,{ params }: { params: Promise<{ id: string }>}) {   
     let { id } = await params;
     const body = await request.json() // Parse request body
     let postToUpdate = await axios.get(`http://localhost:3000/api/posts/${id}`);

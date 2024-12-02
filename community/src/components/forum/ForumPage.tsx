@@ -5,6 +5,7 @@ import { Post } from '@/types/post.type';
 import OpenPostSection from "./OpenPostSection";
 import {getPosts, likePost, savePost} from '@/services/posts';
 import {NewPostInput} from './NewPostInput';
+import Link from 'next/link';
 
 
 const ForumPage: React.FC = () => {
@@ -65,7 +66,30 @@ const ForumPage: React.FC = () => {
   return (
     <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
     <NewPostInput/>
-      {loading ? (
+    {loading ? (
+        <div>Loading posts...</div>
+      ) : posts.length === 0 ? (
+        <div>No posts to display.</div>
+      ) : (
+        posts.map((post) => (
+          <Link key={post._id} href={`/forum/${post._id}`}>
+            <div>
+              <PostComp
+                 creatorId={post.creatorId}
+                 createdDate={post.createdDate}
+                 content={post.content}
+                 commentCount={post.comments.length}
+                 likesCount={post.likedBy.length || 0}
+                 //liked={post.likedBy.find(userId)}
+                 onClick={() => setSelectedPostId(post._id)}
+                 onLike={(creatorId) => handleLike(post._id, creatorId)} 
+                 onSave={() => handleSave(post._id)}
+              />
+            </div>
+          </Link>
+        ))
+      )}
+      {/*loading ? (
         <p>Loading posts...</p> // Show a loading message
       ) : posts.length === 0 ? (
         <p>No posts to display.</p> // Handle empty posts
@@ -90,13 +114,14 @@ const ForumPage: React.FC = () => {
               content={post.content}
               commentCount={post.comments.length}
               likesCount={post.likedBy.length || 0}
+              //liked={post.likedBy.find(userId)}
               onClick={() => setSelectedPostId(post._id)}
               onLike={(creatorId) => handleLike(post._id, creatorId)} 
               onSave={() => handleSave(post._id)}          
             />
           </div>
         ))
-      )}
+      )*/}
     </div>
   );
   
