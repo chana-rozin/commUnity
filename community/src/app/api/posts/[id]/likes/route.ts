@@ -5,6 +5,8 @@ import {
 import axios from "axios";
 import { debug } from "util";
 export async function POST(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+    debugger
+    
     console.log('post comment');
     let { id } = await params;
     const body = await request.json() // Parse request body

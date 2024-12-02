@@ -1,25 +1,96 @@
 import * as React from 'react';
+import { useState } from 'react';
+import { BiLike, BiSolidLike } from "react-icons/bi";
+import { TiStarOutline, TiStarFullOutline } from "react-icons/ti";
+
 
 export interface PostProps {
   creatorId: string;
   createdDate: Date | string;
   content: string;
   commentCount: number;
-  likedBy: string[];
-  comments?: Comment[];
-  onClick: () => void; 
+  likesCount: number;
+  onClick: () => void;
+  onLike?: (creatorId: string) => Promise<void>; 
+  onSave?: () => Promise<void>; 
 }
 
 export const PostComp: React.FC<PostProps> = ({
   creatorId,
-  likedBy,
+  likesCount: initialLikesCount,
   createdDate,
   content,
-  comments,
+  commentCount,
   onClick,  
+  onLike,
+  onSave,
 }) => {
+    //TODO: check if the post has already been saved
+    const [isSaved, setIsSaved] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [likesCount, setLikesCount] = useState(initialLikesCount);
+    const [isLiked, setIsLiked] = useState(false);
+    const [isLiking, setIsLiking] = useState(false);
   const date = createdDate instanceof Date ? createdDate : new Date(createdDate);
 
+  const getTimeDifference = (pastDate: Date): string => {
+    const now = new Date();
+    const diffMs = now.getTime() - pastDate.getTime();
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMinutes < 60) {
+      return `${diffMinutes} דקות`;
+    } else if (diffHours < 24) {
+      return `${diffHours} שעות`;
+    } else {
+      return `${diffDays} ימים`;
+    }
+  };
+
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Prevent multiple simultaneous like attempts
+    if (isLiking) return;
+
+    setIsLiking(true);
+
+    try {
+      setIsLiked(!isLiked);
+      setLikesCount(current => isLiked ? current - 1 : current + 1);
+
+      // If an onLike handler is provided, call it
+      if (onLike) {
+        await onLike(creatorId); 
+      }
+    } catch (error) {
+      setIsLiked(isLiked);
+      setLikesCount(current => isLiked ? current + 1 : current - 1);
+      console.error('Like action failed:', error);
+    } finally {
+      setIsLiking(false);
+    }
+  };
+
+  const handleSave = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Prevent multiple simultaneous save attempts
+    if (isSaving) return;
+    setIsSaving(true);
+    try {
+        setIsSaved(!isSaved);
+        if (onSave) {
+            await onSave();
+        }    
+    } catch (error){
+        setIsSaved(isSaved);
+        console.error('Save action failed:', error);
+    }finally {
+        setIsSaving(false);
+    }
+  };
+    
   return (
     <div
       className="flex flex-col p-4 w-full bg-white rounded-2xl cursor-pointer"
@@ -40,7 +111,9 @@ export const PostComp: React.FC<PostProps> = ({
         {/* Right: User Info */}
         <div className="flex flex-col items-start">
           <div className="text-sm font-semibold text-neutral-950">{creatorId}</div>
-          <div className="text-xs text-neutral-500">{`${new Date().getDate()-date.getDate()} דקות • ${comments?.length} תגובות`}</div>
+          <div className="text-xs text-neutral-500">
+          {`${getTimeDifference(date)} • ${commentCount} תגובות`}
+          </div>
         </div>
       </div>
   
@@ -54,32 +127,44 @@ export const PostComp: React.FC<PostProps> = ({
         {/* Left: Likes */}
         <div className="flex items-center gap-2">
           <div className="flex -space-x-1">
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/692f163df525a91b97030c50d0f0e38b3d11bbb7a79424fe9cfaea48a1d9297f?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-              alt="User Avatar"
-              className="w-5 h-5 rounded-full border-2 border-white"
-            />
+            <BiLike className="w-4 h-4 text-gray-500" />
           </div>
-          <span className="text-xs text-neutral-500">{`23 אנשים אהבו`}</span>
+          <span className="text-xs text-neutral-500">{`${likesCount} אנשים אהבו`}</span>
         </div>
   
         {/* Right: Actions */}
         <div className="flex gap-5">
-          <button className="flex items-center gap-2 px-3 py-1 bg-neutral-100 rounded-full">
+        <button 
+            onClick={handleLike} 
+            disabled={isLiking}
+            className={`flex items-center gap-2 px-3 py-1 rounded-full transition-colors ${
+              isLiked 
+                ? 'bg-indigo-100 text-indigo-600' 
+                : 'bg-neutral-100'
+            }`}
+          >
             <span className="text-sm">אהבתי</span>
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/e2eb907e4d5a46a12062719c794ef0c8e7ce1001b27bac3c8aaa9fdb84287318?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-              alt="Like Icon"
-              className="w-4 h-4"
-            />
+            {isLiked ? (
+              <BiSolidLike className="w-4 h-4" />
+            ) : (
+              <BiLike className="w-4 h-4" />
+            )}
           </button>
-          <button className="flex items-center gap-2 px-3 py-1 bg-neutral-100 rounded-full">
+          <button 
+            onClick={handleSave} 
+            disabled={isSaving}
+            className={`flex items-center gap-2 px-3 py-1 rounded-full transition-colors ${
+                isSaved 
+                ? 'bg-indigo-100 text-indigo-600' 
+                : 'bg-neutral-100'
+            }`}
+            >
             <span className="text-sm">שמור</span>
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/580659e4ec9fec1933077fa175896b6428ff410cb160f48dc402e83b9cf7c848?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-              alt="Save Icon"
-              className="w-4 h-4"
-            />
+            {isSaved ? (
+              <TiStarFullOutline className="w-4 h-4" />
+            ) : (
+              <TiStarOutline className="w-4 h-4" />
+            )}
           </button>
         </div>
       </div>
