@@ -20,3 +20,9 @@ export interface TabProps {
     label: string;
     isActive: boolean;
 }
+
+export interface verificationCodePopUpProps{
+    sendVerificationCode: ()=> void;
+    code: string;
+    setCode: React.Dispatch<React.SetStateAction<string>>
+}

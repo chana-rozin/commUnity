@@ -1,11 +1,15 @@
 "use client"
 import * as React from 'react';
+import { useState } from 'react'
 import { InputField } from '../../components/auth/InputField';
 import { AuthButton } from '../../components/auth/AuthButton';
 import { AuthTab } from '../../components/auth/AuthTab';
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { auth } from '../../services/firebaseConfig'
 import { z } from 'zod'
+import http from '../../services/http'
+
+import VerificationCodePopUp from '../../components/auth/verificationCodePopUp'
 const googleProvider = new GoogleAuthProvider();
 export const SignupFormSchema = z.object({
     email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
@@ -22,8 +26,9 @@ export const SignupFormSchema = z.object({
 
 
 const AuthPage: React.FC = () => {
-
-    const [inputs, setInputs] = React.useState({
+    const [code, setCode] = useState('');
+    const [verificationPopUp, setVerificationPopUp] = useState(false);
+    const [inputs, setInputs] = useState({
         email: '',
         password: ''
     });
@@ -38,7 +43,12 @@ const AuthPage: React.FC = () => {
     }
 
     async function loginWithEmailAndPassword() {
+        setVerificationPopUp(true);
+        sendVerificationCode();
+    }
 
+    async function sendVerificationCode() {
+        const result = http.post('/verify-email', { email: inputs.email })
     }
 
     async function onSubmit(e: any) {
@@ -164,6 +174,7 @@ const AuthPage: React.FC = () => {
                         </AuthButton>
                     </div>
                 </div>
+                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} code={code} setCode={setCode} />}
             </div>
         </div>
     );

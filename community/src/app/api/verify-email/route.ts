@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import {  insertTemporaryDocument} from "@/services/mongodb";
+import {  insertTemporaryDocument, getDocumentByQuery} from "@/services/mongodb";
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 import {hashVerificationCode} from '@/services/crypto'
 
 export async function POST(request: Request) {
+    debugger
     const body = await request.json(); // Parse request body
     console.log(body);
     if (!body.email) {
@@ -21,13 +22,8 @@ export async function POST(request: Request) {
         verificationHash
     }
     //Send Email Message
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.GMAIL_USER,
-            pass: process.env.GMAIL_PASSWORD
-        }
-    });
+    console.log(verificationCode);
+    
     // Insert into the database
     const result = await insertTemporaryDocument("verify-email", newVerification, 300);
     if (!result) {
@@ -41,4 +37,30 @@ export async function POST(request: Request) {
         { message: "Verification code sent and saved successfully" },
         { status: 201 } // Created
     );
+}
+
+export async function GET(request: Request){
+    debugger
+    const body = await request.json(); // Parse request body
+    console.log(body);
+    if (!body.code||!body.email) {
+        return NextResponse.json(
+            { message: "Invalid Request" },
+            { status: 400 }
+        );
+    }
+
+    const verificationHash = hashVerificationCode(body.code);
+    const verification = await getDocumentByQuery("verify-email", { email: body.email, verificationHash });
+    if(verification.length === 0) {
+        return NextResponse.json(
+            { message: "Invalid Verification Code" },
+            { status: 401 } // Unauthorized
+        );
+    }
+    return NextResponse.json(
+        { message: "Verification successful" },
+        { status: 200 } // OK
+    )
+
 }

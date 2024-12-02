@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId } from "mongodb";
+import { MongoClient, ObjectId, Filter  } from "mongodb";
 import mongoose from "mongoose";
 
 let client: MongoClient;
@@ -92,4 +92,9 @@ export async function insertTemporaryDocument(collection: string, document: obje
     }
 }
 
+export async function getDocumentByQuery(collection: string, query: object){
+    const db = client.db('community');
+    const documents = await db.collection(collection).find(query).toArray();
+    return documents;
+}
 connectDatabase();
