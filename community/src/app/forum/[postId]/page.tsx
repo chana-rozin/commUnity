@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import OpenPostSection from '@/components/forum/OpenPostSection';
 import { getPostById } from '@/services/posts';
