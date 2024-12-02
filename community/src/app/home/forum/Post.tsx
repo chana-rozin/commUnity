@@ -1,5 +1,8 @@
 import * as React from 'react';
 import { useState } from 'react';
+import { BiLike, BiSolidLike } from "react-icons/bi";
+import { TiStarOutline, TiStarFullOutline } from "react-icons/ti";
+
 
 export interface PostProps {
   creatorId: string;
@@ -8,7 +11,8 @@ export interface PostProps {
   commentCount: number;
   likesCount: number;
   onClick: () => void;
-  onLike?: (postId: string) => Promise<void>; 
+  onLike?: (creatorId: string) => Promise<void>; 
+  onSave?: () => Promise<void>; 
 }
 
 export const PostComp: React.FC<PostProps> = ({
@@ -19,7 +23,11 @@ export const PostComp: React.FC<PostProps> = ({
   commentCount,
   onClick,  
   onLike,
+  onSave,
 }) => {
+    //TODO: check if the post has already been saved
+    const [isSaved, setIsSaved] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [likesCount, setLikesCount] = useState(initialLikesCount);
     const [isLiked, setIsLiked] = useState(false);
     const [isLiking, setIsLiking] = useState(false);
@@ -65,6 +73,24 @@ export const PostComp: React.FC<PostProps> = ({
     }
   };
 
+  const handleSave = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Prevent multiple simultaneous save attempts
+    if (isSaving) return;
+    setIsSaving(true);
+    try {
+        setIsSaved(!isSaved);
+        if (onSave) {
+            await onSave();
+        }    
+    } catch (error){
+        setIsSaved(isSaved);
+        console.error('Save action failed:', error);
+    }finally {
+        setIsSaving(false);
+    }
+  };
+    
   return (
     <div
       className="flex flex-col p-4 w-full bg-white rounded-2xl cursor-pointer"
@@ -101,11 +127,7 @@ export const PostComp: React.FC<PostProps> = ({
         {/* Left: Likes */}
         <div className="flex items-center gap-2">
           <div className="flex -space-x-1">
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/692f163df525a91b97030c50d0f0e38b3d11bbb7a79424fe9cfaea48a1d9297f?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-              alt="User Avatar"
-              className="w-5 h-5 rounded-full border-2 border-white"
-            />
+            <BiLike className="w-4 h-4 text-gray-500" />
           </div>
           <span className="text-xs text-neutral-500">{`${likesCount} אנשים אהבו`}</span>
         </div>
@@ -122,19 +144,27 @@ export const PostComp: React.FC<PostProps> = ({
             }`}
           >
             <span className="text-sm">אהבתי</span>
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/e2eb907e4d5a46a12062719c794ef0c8e7ce1001b27bac3c8aaa9fdb84287318?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-              alt="Like Icon"
-              className="w-4 h-4"
-            />
+            {isLiked ? (
+              <BiSolidLike className="w-4 h-4" />
+            ) : (
+              <BiLike className="w-4 h-4" />
+            )}
           </button>
-          <button className="flex items-center gap-2 px-3 py-1 bg-neutral-100 rounded-full">
+          <button 
+            onClick={handleSave} 
+            disabled={isSaving}
+            className={`flex items-center gap-2 px-3 py-1 rounded-full transition-colors ${
+                isSaved 
+                ? 'bg-indigo-100 text-indigo-600' 
+                : 'bg-neutral-100'
+            }`}
+            >
             <span className="text-sm">שמור</span>
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/580659e4ec9fec1933077fa175896b6428ff410cb160f48dc402e83b9cf7c848?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-              alt="Save Icon"
-              className="w-4 h-4"
-            />
+            {isSaved ? (
+              <TiStarFullOutline className="w-4 h-4" />
+            ) : (
+              <TiStarOutline className="w-4 h-4" />
+            )}
           </button>
         </div>
       </div>

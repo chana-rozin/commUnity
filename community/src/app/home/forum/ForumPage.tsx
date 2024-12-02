@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { PostComp } from './Post';
 import { Post } from '@/types/post.type';
 import OpenPostSection from "./OpenPostSection";
-import {getPosts, likePost} from '@/services/posts';
+import {getPosts, likePost, savePost} from '@/services/posts';
 import {NewPostInput} from './NewPostInput';
+
 
 const ForumPage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -51,6 +52,14 @@ const ForumPage: React.FC = () => {
     }
   };
 
+  const handleSave = async (postId: string) => {
+    try {
+      await savePost(postId);
+    } catch (error) {
+      console.error("Error saving post:", error);
+    }
+  };
+
   const selectedPost = posts.find((post) => post._id === selectedPostId);
 
   return (
@@ -82,7 +91,8 @@ const ForumPage: React.FC = () => {
               commentCount={post.comments.length}
               likesCount={post.likedBy.length || 0}
               onClick={() => setSelectedPostId(post._id)}
-              onLike={(creatorId) => handleLike(post._id, creatorId)}           
+              onLike={(creatorId) => handleLike(post._id, creatorId)} 
+              onSave={() => handleSave(post._id)}          
             />
           </div>
         ))
