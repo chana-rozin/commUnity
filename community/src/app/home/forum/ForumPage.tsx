@@ -1,10 +1,9 @@
 "use client";
-import React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PostComp } from './Post';
 import { Post } from '@/types/post.type';
 import OpenPostSection from "./OpenPostSection";
-import {getPosts} from '@/services/posts';
+import {getPosts, likePost} from '@/services/posts';
 import {NewPostInput} from './NewPostInput';
 
 const ForumPage: React.FC = () => {
@@ -33,6 +32,25 @@ const ForumPage: React.FC = () => {
   
     fetchData();
   }, []);
+
+  const handleLike = async (postId:string, creatorId: string) => {
+    try {
+      const response = await likePost( postId, creatorId);
+      setPosts(prevPosts => 
+        prevPosts.map(post => 
+          post.creatorId === creatorId 
+            ? { 
+                ...post, 
+                likesCount: response.data.likesCount 
+              } 
+            : post
+        )
+      );
+    } catch (error) {
+      console.error("Error liking post:", error);
+    }
+  };
+
   const selectedPost = posts.find((post) => post._id === selectedPostId);
 
   return (
@@ -64,6 +82,7 @@ const ForumPage: React.FC = () => {
               commentCount={post.comments.length}
               likesCount={post.likedBy.length || 0}
               onClick={() => setSelectedPostId(post._id)}
+              onLike={(creatorId) => handleLike(post._id, creatorId)}           
             />
           </div>
         ))

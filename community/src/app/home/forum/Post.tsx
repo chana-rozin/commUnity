@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 
 export interface PostProps {
   creatorId: string;
@@ -6,17 +7,22 @@ export interface PostProps {
   content: string;
   commentCount: number;
   likesCount: number;
-   onClick: () => void; 
+  onClick: () => void;
+  onLike?: (postId: string) => Promise<void>; 
 }
 
 export const PostComp: React.FC<PostProps> = ({
   creatorId,
-  likesCount,
+  likesCount: initialLikesCount,
   createdDate,
   content,
   commentCount,
   onClick,  
+  onLike,
 }) => {
+    const [likesCount, setLikesCount] = useState(initialLikesCount);
+    const [isLiked, setIsLiked] = useState(false);
+    const [isLiking, setIsLiking] = useState(false);
   const date = createdDate instanceof Date ? createdDate : new Date(createdDate);
 
   const getTimeDifference = (pastDate: Date): string => {
@@ -32,6 +38,30 @@ export const PostComp: React.FC<PostProps> = ({
       return `${diffHours} שעות`;
     } else {
       return `${diffDays} ימים`;
+    }
+  };
+
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Prevent multiple simultaneous like attempts
+    if (isLiking) return;
+
+    setIsLiking(true);
+
+    try {
+      setIsLiked(!isLiked);
+      setLikesCount(current => isLiked ? current - 1 : current + 1);
+
+      // If an onLike handler is provided, call it
+      if (onLike) {
+        await onLike(creatorId); 
+      }
+    } catch (error) {
+      setIsLiked(isLiked);
+      setLikesCount(current => isLiked ? current + 1 : current - 1);
+      console.error('Like action failed:', error);
+    } finally {
+      setIsLiking(false);
     }
   };
 
@@ -82,7 +112,15 @@ export const PostComp: React.FC<PostProps> = ({
   
         {/* Right: Actions */}
         <div className="flex gap-5">
-          <button className="flex items-center gap-2 px-3 py-1 bg-neutral-100 rounded-full">
+        <button 
+            onClick={handleLike} 
+            disabled={isLiking}
+            className={`flex items-center gap-2 px-3 py-1 rounded-full transition-colors ${
+              isLiked 
+                ? 'bg-indigo-100 text-indigo-600' 
+                : 'bg-neutral-100'
+            }`}
+          >
             <span className="text-sm">אהבתי</span>
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/e2eb907e4d5a46a12062719c794ef0c8e7ce1001b27bac3c8aaa9fdb84287318?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"

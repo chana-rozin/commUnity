@@ -17,3 +17,13 @@ export const createPost = async (post: any): Promise<any>=>{
     const response = await http.post(url, post);
     return response;
 }
+
+export const likePost = async (postId: string, creatorId: string) => {
+    try {
+      const response = await http.post(`/posts/${postId}/like`, { creatorId });
+      return response;
+    } catch (error) {
+      console.error("Error liking post:", error);
+      throw error;
+    }
+  };
