@@ -39,8 +39,9 @@ const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,conten
             creatorId={creatorId}
             createdDate={createdDate}
             content={content}
-            commentCount={comments.length}
+            commentCount={comments?.length || 0 }
             likesCount={likedBy?.length || 0}
+            
             onClick={()=>{}}
           />
         </div>

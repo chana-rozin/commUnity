@@ -4,9 +4,9 @@ import {
 } from "@/services/mongodb";
 import axios from "axios";
 import { debug } from "util";
+
 export async function POST(request: Request,{ params }: { params: Promise<{ id: string }>}) {
-    
-    console.log('post comment');
+
     let { id } = await params;
     if (!id) {
         return NextResponse.json(
