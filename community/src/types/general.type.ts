@@ -21,12 +21,6 @@ export interface Comment {
     createdDate: Date;
     likedBy: string[];
 }
-
-export interface NavItemProps {
-    icon: string;
-    text: string;
-    isActive: boolean;
-}
 /*
 תגובה:
 ID מפרסם
