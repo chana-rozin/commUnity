@@ -3,13 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import OpenPostSection from '@/components/forum/OpenPostSection';
 import { getPostById } from '@/services/posts';
+import { useParams } from 'next/navigation'
 
-interface PostPageProps {
-  postId: string;
-}
 
-const PostPage = (params: PostPageProps) => {
-  const { postId } = params;
+const PostPage: React.FC = () => {
+
+  const { postId } = useParams();
 
   const [post, setPost] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +16,7 @@ const PostPage = (params: PostPageProps) => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const fetchedPost = await getPostById(postId);
+        const fetchedPost = await getPostById(postId as string);
         if (!fetchedPost) {
           throw new Error('Post not found');
         }
