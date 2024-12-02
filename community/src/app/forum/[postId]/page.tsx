@@ -8,7 +8,8 @@ interface PostPageProps {
   }
 }
 
-const PostPage: React.FC<PostPageProps> = async ({ params }) => {
+const PostPage = async ({ params }: PostPageProps) => {
+  
   try {
     const { postId } = params;
     // Fetch the specific post using the postId from the route
