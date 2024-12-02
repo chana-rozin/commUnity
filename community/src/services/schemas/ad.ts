@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const adSchema = new mongoose.Schema({
+const adSchema = new Schema({
     name: { type: String },
     description: { type: String },
     createdDate: { type: Date },
