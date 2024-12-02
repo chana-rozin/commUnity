@@ -3,12 +3,15 @@ import { Metadata } from 'next';
 import OpenPostSection from '@/components/forum/OpenPostSection';
 import { getPostById } from '@/services/posts';
 
-// Define the type for page props specifically for App Router
-type PostPageProps = {
-  params: {
-    postId: string;
-  };
-};
+// Explicitly define the type for params
+export interface Params {
+  postId: string;
+}
+
+// Explicitly define the Page Props type
+export interface PostPageProps {
+  params: Params;
+}
 
 // Optional: Metadata generation
 export async function generateMetadata({ 
@@ -28,7 +31,7 @@ export async function generateMetadata({
   }
 }
 
-// Use async function component pattern for Next.js App Router
+// Use async function with explicit typing
 export default async function PostPage({ params }: PostPageProps) {
   try {
     const post = await getPostById(params.postId);
