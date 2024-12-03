@@ -60,11 +60,11 @@ export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) =>
                 <img
                     loading="lazy"
                     src={
-                        profile_picture_url?.url ||
+                        profile_picture_url ||
                         "https://cdn.builder.io/api/v1/image/assets/TEMP/38450d9390fdb4ad03074d5f3395be324567170775fc0c6290182e6d99bbe05d?placeholderIfAbsent=true&apiKey=526d563cdba2451a913eb25ca7c41611"
                     }
                     alt={`Profile picture of ${first_name} ${last_name}`}
-                    className="object-contain aspect-square w-[67px]"
+                    className="object-contain aspect-square w-[67px] rounded-full"
                 />
                 <div className="flex flex-col justify-center items-center mt-3.5">
                     <div className="text-base text-neutral-950">{`${first_name} ${last_name}`}</div>

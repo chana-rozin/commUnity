@@ -1,8 +1,24 @@
+"use client"
 import ForumPage from './forum/ForumPage';
 import { Navbar } from '@/components/Navbar/Navbar';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside'
+import useUserStore from '@/stores/userStore';
+import sampleUser from '@/utils/sampleUser'
+import {useEffect} from 'react';
 
 const HomePage = () => {
+
+  const setUser = useUserStore((state) => state.setUser);
+  const user = useUserStore((state) => state.user);
+
+  useEffect(() => {
+    if (!user) {
+      setUser(sampleUser);
+      console.log("Sample user set:", sampleUser);
+    }
+  }, [setUser]);
+
+  console.log("User store:", user);
 
   return (
     <main>
@@ -12,7 +28,7 @@ const HomePage = () => {
           className="flex flex-col min-h-[909px] w-[211px] max-w-full"
           role="complementary"
         >
-          <ProfileAside saved={false}/>
+          <ProfileAside saved={false} />
         </aside>
 
         {/* Middle Column */}
@@ -20,14 +36,14 @@ const HomePage = () => {
           {/* Welcome Banner */}
           <div className="flex overflow-hidden mb-4 flex-wrap p-4 w-full bg-indigo-100 rounded-2xl min-h-[164px]">
             {/* Add banner content here */}
-            <p className="text-neutral-950">הי טלי! <br/> בואי נראה מה חדש פה..</p>
+            <p className="text-neutral-950">הי טלי! <br /> בואי נראה מה חדש פה..</p>
           </div>
 
           {/* Posts Section */}
           <ForumPage />
         </div>
 
-        
+
 
         {/* Left Column */}
         <div className="flex flex-col flex-1 shrink basis-0 min-w-[240px]">
