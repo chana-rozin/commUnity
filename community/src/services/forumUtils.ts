@@ -94,14 +94,14 @@ export const toggleSavePost = async (
   ) => {
     try {
       if (isCurrentlySaved) {
-        await unSavePost(postId, userId);
+        await unSavePost(userId,postId);
         updatePostState((prevPosts) => 
           prevPosts.map((post) =>
             post._id === postId ? { ...post, saved: false } : post
           )
         );
       } else {
-        await savePost(postId, userId);
+        await savePost(userId,postId);
         updatePostState((prevPosts) => 
           prevPosts.map((post) =>
             post._id === postId ? { ...post, saved: true } : post
@@ -121,14 +121,14 @@ export const toggleSavePost = async (
   ) => {
     try {
       if (isCurrentlySaved) {
-        await unSavePost(postId, userId);
+        await unSavePost(userId,postId);
         updatePostState((prevPost) => 
           prevPost && prevPost._id === postId
             ? { ...prevPost, saved: false }
             : prevPost
         );
       } else {
-        await savePost(postId, userId);
+        await savePost(userId,postId);
         updatePostState((prevPost) => 
           prevPost && prevPost._id === postId
             ? { ...prevPost, saved: true }
