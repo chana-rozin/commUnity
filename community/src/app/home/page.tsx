@@ -1,36 +1,49 @@
-import ForumPage from './forum/ForumPage';
+"use client"
+import ForumPage from '../../components/forum/ForumPage';
 import { Navbar } from '@/components/Navbar/Navbar';
+import { ProfileAside } from '@/components/ProfileAside/ProfileAside'
+import useUserStore from '@/stores/userStore';
+import sampleUser from '@/utils/sampleUser'
+import {useEffect} from 'react';
 
 const HomePage = () => {
-  return (
-    <main className="flex overflow-hidden flex-col px-12 pt-6 pb-60 bg-violet-50 max-md:px-5 max-md:pb-24">
-      <Navbar />
 
+  const setUser = useUserStore((state) => state.setUser);
+  const user = useUserStore((state) => state.user);
+
+  useEffect(() => {
+    if (!user) {
+      setUser(sampleUser);
+      console.log("Sample user set:", sampleUser);
+    }
+  }, [setUser]);
+
+  console.log("User store:", user);
+
+  return (
+    <main>
       <div className="flex flex-wrap gap-4 items-start mt-5 w-full">
         {/* Right Column - Profile Section */}
         <aside
-          className="flex flex-col h-[909px] w-[211px] max-w-full"
+          className="flex flex-col min-h-[909px] w-[211px] max-w-full"
           role="complementary"
         >
-          {/* Add profile content here */}
-          <div className="flex flex-col items-center p-5 bg-white rounded-2xl">
-            <p className="text-neutral-950">Profile Section</p>
-          </div>
+          <ProfileAside saved={false} />
         </aside>
 
         {/* Middle Column */}
         <div className="flex flex-col min-w-[240px] w-[775px]">
           {/* Welcome Banner */}
-          <div className="flex overflow-hidden flex-wrap p-4 w-full bg-indigo-100 rounded-2xl min-h-[164px]">
+          <div className="flex overflow-hidden mb-4 flex-wrap p-4 w-full bg-indigo-100 rounded-2xl min-h-[164px]">
             {/* Add banner content here */}
-            <p className="text-neutral-950">Welcome to the community forum!</p>
+            <p className="text-neutral-950">הי טלי! <br /> בואי נראה מה חדש פה..</p>
           </div>
 
           {/* Posts Section */}
           <ForumPage />
         </div>
 
-        
+
 
         {/* Left Column */}
         <div className="flex flex-col flex-1 shrink basis-0 min-w-[240px]">

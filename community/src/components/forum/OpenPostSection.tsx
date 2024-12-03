@@ -4,9 +4,11 @@ import { useState, useEffect, useRef } from 'react';
 import { pusherClient } from '@/services/pusher';
 import { PostComp } from './Post';
 import { CommentComp } from './Comment';
-import ForumInput from './ForumInput';
+import NewCommentInput from './NewCommentInput';
 import { Post } from '@/types/post.type';
 import { Comment } from '@/types/general.type';
+import { likePost, savePost} from '@/services/posts';
+
 
 const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,content,comments,likedBy}) => {
   const [allComments, setAllComments] = useState<Comment[]>(comments);
@@ -32,6 +34,23 @@ const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,conten
     scrollToBottom();
   }, []);
 
+  const handleLike = async (postId:string, creatorId: string) => {
+    try {
+      await likePost( postId, creatorId);
+      
+    } catch (error) {
+      console.error("Error liking post:", error);
+    }
+  };
+
+  const handleSave = async (postId: string) => {
+    try {
+      await savePost(postId);
+    } catch (error) {
+      console.error("Error saving post:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
         <div className="mb-4">
@@ -39,23 +58,26 @@ const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,conten
             creatorId={creatorId}
             createdDate={createdDate}
             content={content}
-            commentCount={comments.length}
-            likedBy={likedBy}
+            commentCount={comments?.length || 0 }
+            likesCount={likedBy?.length || 0}
             onClick={()=>{}}
+            onLike={(creatorId) => handleLike(_id, creatorId)} 
+            onSave={() => handleSave(_id)}
           />
         </div>
           <div className="flex flex-col justify-center items-center px-3 mt-4 w-full bg-white rounded-2xl min-h-[434px]">
             <div className="flex flex-col px-0.5 w-full max-w-[737px]">
-              {allComments.map((comment) => (
+              {allComments.map((comment, index) => (
                   <CommentComp
                     key={comment._id}
                     creatorId={comment.creatorId}
                     createdDate={comment.createdDate}
                     content={comment.content}
+                    previousDate={index > 0 ? allComments[index - 1].createdDate : undefined}
                   />
                 ))}
             </div>
-            <ForumInput postId={_id}/>
+            <NewCommentInput postId={_id}/>
           </div>
         </div>
   );
