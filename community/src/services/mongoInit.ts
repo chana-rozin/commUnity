@@ -10,7 +10,7 @@ import { Loan } from './models';
 import { Minyan } from './models';
 import { Neighborhood } from './models';
 import { Post } from './models';
-import { log } from 'console';
+import { VerifyEmail } from './models';
 
 interface ModelDefinition {
     name: string;
@@ -27,6 +27,7 @@ const models: ModelDefinition[] = [
     { name: 'minyans', model: Minyan },
     { name: 'neighborhoods', model: Neighborhood },
     { name: 'posts', model: Post },
+    { name:"verify-email", model: VerifyEmail },
 ];
 
 
