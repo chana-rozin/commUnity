@@ -13,23 +13,23 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
 
     if (!id) {
         return NextResponse.json(
-            { message: "Post ID is required" },
+            { message: "User ID is required" },
             { status: 400 } // Bad Request
         );
     }
 
     // Retrieve the post from the database
-    const post = await getDocumentById('posts',id);
-    console.log('post:', post);
+    const user = await getDocumentById('users',id);
+    console.log('post:', user);
     
-    if (!post) {
+    if (!user) {
         return NextResponse.json(
-            { message: "Post not found" },
+            { message: "User not found" },
             { status: 404 } // Not Found
         );
     }
 
-    return NextResponse.json(post);
+    return NextResponse.json(user, { status: 200});
 }
 
 //Patch a post by ID
@@ -40,52 +40,25 @@ export async function PATCH(request: Request,{ params }: { params: Promise<{ id:
 
     if (!id) {
         return NextResponse.json(
-            { message: "Post ID is required" },
+            { message: "User ID is required" },
             { status: 400 } // Bad Request
         );
     }
 
     // Update the post in the database
-    const result = await patchDocumentById("posts", id, body);
+    const result = await patchDocumentById("users", id, body);
 
     if (!result) {
         return NextResponse.json(
-            { message: "Failed to update post" },
+            { message: "Failed to update user" },
             { status: 500 } // Internal Server Error
         );
     }
 
     return NextResponse.json(
-        { message: "Post updated successfully" }
+        { message: "User updated successfully" }
     );
 }
-// Update a post by ID
-export async function PUT(request: Request,{ params }: { params: Promise<{ id: string }>}) {
-    let { id } = await params;
-    const body = await request.json(); // Parse request body
-
-    if (!id) {
-        return NextResponse.json(
-            { message: "Post ID is required" },
-            { status: 400 } // Bad Request
-        );
-    }
-
-    // Update the post in the database
-    const result = await updateDocumentById("posts", id, body);
-
-    if (!result) {
-        return NextResponse.json(
-            { message: "Failed to update post" },
-            { status: 500 } // Internal Server Error
-        );
-    }
-
-    return NextResponse.json(
-        { message: "Post updated successfully" }
-    );
-}
-
 // Delete a post by ID
 export async function DELETE(request: Request,{ params }: { params: Promise<{ id: string }>}) {
     let { id } = await params;
@@ -93,22 +66,22 @@ export async function DELETE(request: Request,{ params }: { params: Promise<{ id
 
     if (!id) {
         return NextResponse.json(
-            { message: "Post ID is required" },
+            { message: "User ID is required" },
             { status: 400 } // Bad Request
         );
     }
 
     // Delete the post from the database
-    const result = await deleteDocumentById("posts", id);
+    const result = await deleteDocumentById("users", id);
 
     if (!result) {
         return NextResponse.json(
-            { message: "Failed to delete post" },
+            { message: "Failed to delete user" },
             { status: 500 } // Internal Server Error
         );
     }
 
     return NextResponse.json(
-        { message: "Post deleted successfully" }
+        { message: "User deleted successfully" }
     );
 }

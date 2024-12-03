@@ -6,21 +6,28 @@ import {
 
 // Fetch all posts
 export async function GET(request: Request) {
-    const posts = await getAllDocuments("posts"); // Retrieve all posts
-    return NextResponse.json(posts); // Return data as JSON
+    const users = await getAllDocuments("users"); // Retrieve all posts
+    if (!users) {
+        return NextResponse.json(
+            { message: "Failed to found users" },
+            { status: 500 } // Internal Server Error
+        );
+    }
+    return NextResponse.json(users, { status: 200 }); // Return data as JSON
 }
 
 // Create a new post
 export async function POST(request: Request) {
     const body = await request.json(); // Parse request body
     console.log(body);
+    delete body._id;
     
     // Insert into the database
-    const result = await insertDocument("posts", body);
+    const result = await insertDocument("users", body);
 
     if (!result) {
         return NextResponse.json(
-            { message: "Failed to create post" },
+            { message: "Failed to create user" },
             { status: 500 } // Internal Server Error
         );
     }
