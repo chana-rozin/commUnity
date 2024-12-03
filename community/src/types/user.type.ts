@@ -1,4 +1,4 @@
-import { Address, Preference, Image } from './general.type'
+import { Address, Preference } from './general.type'
 export interface User {
     _id: string;
     first_name: string;
@@ -7,10 +7,11 @@ export interface User {
     address: Address;
     phone_number: string;
     age: number;
-    profile_picture_url: Image;
+    profile_picture_url: string;
     neighborhoodId: string;
     communitiesIds: string[];
-    preferences: Preference
+    preferences: Preference;
+    savedPostsIds: string[];
 }
 /*
 משתמש:
