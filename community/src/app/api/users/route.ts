@@ -4,22 +4,30 @@ import {
     insertDocument,
 } from "@/services/mongodb";
 
-// Fetch all babysitter requests
+// Fetch all posts
 export async function GET(request: Request) {
-    const requests = await getAllDocuments("babysittings"); // Retrieve all babysitter requests
-    return NextResponse.json(requests); // Return data as JSON
+    const users = await getAllDocuments("users"); // Retrieve all posts
+    if (!users) {
+        return NextResponse.json(
+            { message: "Failed to found users" },
+            { status: 500 } // Internal Server Error
+        );
+    }
+    return NextResponse.json(users, { status: 200 }); // Return data as JSON
 }
 
-// Create a new babysitter request
+// Create a new post
 export async function POST(request: Request) {
     const body = await request.json(); // Parse request body
-
+    console.log(body);
+    delete body._id;
+    
     // Insert into the database
-    const result = await insertDocument("babysittings", body);
+    const result = await insertDocument("users", body);
 
     if (!result) {
         return NextResponse.json(
-            { message: "Failed to create babysitter request" },
+            { message: "Failed to create user" },
             { status: 500 } // Internal Server Error
         );
     }
@@ -29,3 +37,4 @@ export async function POST(request: Request) {
         { status: 201 } // Created
     );
 }
+
