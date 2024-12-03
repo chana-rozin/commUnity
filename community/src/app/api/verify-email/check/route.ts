@@ -4,7 +4,6 @@ import nodemailer from 'nodemailer';
 import {hashVerificationCode} from '@/services/crypto'
 
 export async function POST(request: Request){
-    debugger
     const body = await request.json(); // Parse request body
     console.log(body);
     if (!body.code||!body.email) {

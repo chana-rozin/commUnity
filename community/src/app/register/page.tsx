@@ -22,6 +22,7 @@ const AuthPage: React.FC = () => {
     const [verificationPopUp, setVerificationPopUp] = useState(false);
     const [step, setStep] = useState(1);
     const [user, setUser] = useState<any>(null);
+    const [userGiveWrongCode, setUserGiveWrongCode] = useState(false)
 
     async function loginWithGoogle() {
         try {
@@ -29,6 +30,7 @@ const AuthPage: React.FC = () => {
             const user = result.user;
             setUser(user);
             console.log("User signed in:", user);
+            setStep(2);
         } catch (error) {
             console.error("Error signing in:", error);
         }
@@ -42,6 +44,7 @@ const AuthPage: React.FC = () => {
     }
 
     async function sendVerificationCode(email: string) {
+        debugger
         try {
             const result = http.post('/verify-email/send', { email: email })
         }
@@ -51,13 +54,32 @@ const AuthPage: React.FC = () => {
     }
 
     async function checkVerificationCode(email: string, code: string) {
+        debugger
         try {
-            const result = http.post('/verify-email/check', { email: email, code: code })
-
+            const result = await http.post('/verify-email/check', { email: email, code: code })
+            if(result.status === 200) {
+                setStep(2);
+                setVerificationPopUp(false);
+            }else{
+                setUserGiveWrongCode(true);
+            }
+            console.log(result);
+            
         }
         catch (error) {
             console.error('Error sending verification code:', error);
+            setUserGiveWrongCode(true);
         }
+    }
+
+    async function handleStep(data: object) {
+        setStep((prev:number)=>{
+            return prev+1
+        });
+        setUser((prev:object)=>{
+            return {...prev,...data}
+        })
+        return;
     }
 
     return (
@@ -94,8 +116,8 @@ const AuthPage: React.FC = () => {
                 </div>
                 {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} /> : step === 2 ?
 
-                    <Step2 /> : step === 3 ? <Step3 /> : <></>}
-                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} />}
+                    <Step2 handleStep={handleStep}/> : step === 3 ? <Step3 /> : <></>}
+                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode}/>}
             </div>
         </div>
     );
