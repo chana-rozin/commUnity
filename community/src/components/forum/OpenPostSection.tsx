@@ -7,6 +7,8 @@ import { CommentComp } from './Comment';
 import NewCommentInput from './NewCommentInput';
 import { Post } from '@/types/post.type';
 import { Comment } from '@/types/general.type';
+import { likePost, savePost} from '@/services/posts';
+
 
 const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,content,comments,likedBy}) => {
   const [allComments, setAllComments] = useState<Comment[]>(comments);
@@ -32,6 +34,23 @@ const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,conten
     scrollToBottom();
   }, []);
 
+  const handleLike = async (postId:string, creatorId: string) => {
+    try {
+      await likePost( postId, creatorId);
+      
+    } catch (error) {
+      console.error("Error liking post:", error);
+    }
+  };
+
+  const handleSave = async (postId: string) => {
+    try {
+      await savePost(postId);
+    } catch (error) {
+      console.error("Error saving post:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
         <div className="mb-4">
@@ -39,9 +58,11 @@ const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,conten
             creatorId={creatorId}
             createdDate={createdDate}
             content={content}
-            commentCount={comments.length}
+            commentCount={comments?.length || 0 }
             likesCount={likedBy?.length || 0}
             onClick={()=>{}}
+            onLike={(creatorId) => handleLike(_id, creatorId)} 
+            onSave={() => handleSave(_id)}
           />
         </div>
           <div className="flex flex-col justify-center items-center px-3 mt-4 w-full bg-white rounded-2xl min-h-[434px]">

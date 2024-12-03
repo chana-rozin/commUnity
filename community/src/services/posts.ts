@@ -6,10 +6,12 @@ export const getPosts = async (): Promise<any>=>{
     return response;
 }
 
-export const getPost = async (postId: string): Promise<any>=>{
-    const url = `/posts/${postId}`;    
+export const getPostById = async (postId: string): Promise<any>=>{
+    const url = `/posts/${postId}`; 
+    console.log("Fetching URL:", url);   
     const response = await http.get(url);
-    return response;
+    console.log("Response:",response);
+    return response.data;
 }
 
 export const createPost = async (post: any): Promise<any>=>{
@@ -21,6 +23,16 @@ export const createPost = async (post: any): Promise<any>=>{
 export const likePost = async (postId: string, creatorId: string) => {
     try {
       const response = await http.post(`/posts/${postId}/likes`, creatorId );
+      return response;
+    } catch (error) {
+      console.error("Error liking post:", error);
+      throw error;
+    }
+};
+
+export const unLikePost = async (postId: string, creatorId: string) => {
+    try {
+      const response = await http.delete(`/posts/${postId}/likes`, {data: creatorId,} );
       return response;
     } catch (error) {
       console.error("Error liking post:", error);

@@ -10,6 +10,7 @@ export interface PostProps {
   content: string;
   commentCount: number;
   likesCount: number;
+  liked?: boolean;
   onClick: () => void;
   onLike?: (creatorId: string) => Promise<void>; 
   onSave?: () => Promise<void>; 
@@ -21,6 +22,7 @@ export const PostComp: React.FC<PostProps> = ({
   createdDate,
   content,
   commentCount,
+  liked,
   onClick,  
   onLike,
   onSave,
@@ -29,7 +31,7 @@ export const PostComp: React.FC<PostProps> = ({
     const [isSaved, setIsSaved] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [likesCount, setLikesCount] = useState(initialLikesCount);
-    const [isLiked, setIsLiked] = useState(false);
+    const [isLiked, setIsLiked] = useState(liked || false);
     const [isLiking, setIsLiking] = useState(false);
   const date = createdDate instanceof Date ? createdDate : new Date(createdDate);
 
@@ -50,6 +52,7 @@ export const PostComp: React.FC<PostProps> = ({
   };
 
   const handleLike = async (e: React.MouseEvent) => {
+    e.preventDefault(); 
     e.stopPropagation();
     // Prevent multiple simultaneous like attempts
     if (isLiking) return;
@@ -74,6 +77,7 @@ export const PostComp: React.FC<PostProps> = ({
   };
 
   const handleSave = async (e: React.MouseEvent) => {
+    e.preventDefault(); 
     e.stopPropagation();
     // Prevent multiple simultaneous save attempts
     if (isSaving) return;
@@ -93,7 +97,7 @@ export const PostComp: React.FC<PostProps> = ({
     
   return (
     <div
-      className="flex flex-col p-4 w-full bg-white rounded-2xl cursor-pointer"
+      className="flex flex-col p-4 mb-4 w-full bg-white rounded-2xl cursor-pointer"
       onClick={onClick}
     >
       {/* Header Section */}
