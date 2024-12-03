@@ -5,7 +5,6 @@ import {
 import axios from "axios";
 
 export async function POST(request: Request,{ params }: { params: Promise<{ id: string }>}) {
-
     let { id } = await params;
     if (!id) {
         return NextResponse.json(

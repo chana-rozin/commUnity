@@ -1,3 +1,4 @@
+import useUserStore from "@/stores/userStore";
 import { useState } from 'react';
 import { Comment } from '@/types/general.type';
 import http from '@/services/http';
@@ -9,6 +10,7 @@ const NewCommentInput: React.FC<ForumInputProps> = ({postId}) => {
   const [text, setText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const user = useUserStore((state) => state.user);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +23,7 @@ const NewCommentInput: React.FC<ForumInputProps> = ({postId}) => {
     try {
         const newComment: Comment = {
           _id: `${text}123${Date.now()}`,
-          creatorId: 'Anonymous', // TODO: Replace with actual user id
+          creatorId: user?._id ? user._id : '0',
           content: text.trim(),
           createdDate: new Date(),
           likedBy: [],
@@ -29,8 +31,6 @@ const NewCommentInput: React.FC<ForumInputProps> = ({postId}) => {
 
         await http.post('/pusher/send', {
             channel: `forum_${postId}`,
-            //channel: `forum`,
-
             event: 'new-message',
             message: newComment,
         });

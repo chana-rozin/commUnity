@@ -9,8 +9,26 @@ import { Post } from '@/types/post.type';
 import { Comment } from '@/types/general.type';
 import { likePost, savePost} from '@/services/posts';
 
+interface OpenPostSectionProps extends Post {
+  liked: boolean;
+  saved: boolean;
+  onLike: (postId: string, isCurrentlyLiked: boolean) => Promise<void>;
+  onSave: (postId: string) => Promise<void>;
+}
 
-const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,content,comments,likedBy}) => {
+const OpenPostSection: React.FC<OpenPostSectionProps> = ({
+  _id,
+  creatorId,
+  createdDate,
+  title,
+  liked,
+  saved,
+  content,
+  comments,
+  likedBy,
+  onLike,
+  onSave,
+}) => {
   const [allComments, setAllComments] = useState<Comment[]>(comments);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
@@ -34,23 +52,6 @@ const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,conten
     scrollToBottom();
   }, []);
 
-  const handleLike = async (postId:string, creatorId: string) => {
-    try {
-      await likePost( postId, creatorId);
-      
-    } catch (error) {
-      console.error("Error liking post:", error);
-    }
-  };
-
-  const handleSave = async (postId: string) => {
-    try {
-      await savePost(postId);
-    } catch (error) {
-      console.error("Error saving post:", error);
-    }
-  };
-
   return (
     <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
         <div className="mb-4">
@@ -58,11 +59,12 @@ const OpenPostSection: React.FC<Post> = ({_id,creatorId,createdDate,title,conten
             creatorId={creatorId}
             createdDate={createdDate}
             content={content}
-            commentCount={comments?.length || 0 }
+            commentCount={comments?.length || 0}
             likesCount={likedBy?.length || 0}
-            onClick={()=>{}}
-            onLike={(creatorId) => handleLike(_id, creatorId)} 
-            onSave={() => handleSave(_id)}
+            liked={liked} 
+            saved= {saved}
+            onLike={(isLiked) => onLike(_id, isLiked)}
+            onSave={() => onSave(_id)}
           />
         </div>
           <div className="flex flex-col justify-center items-center px-3 mt-4 w-full bg-white rounded-2xl min-h-[434px]">
