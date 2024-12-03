@@ -1,4 +1,4 @@
-import { likePost, unLikePost, savePost, getPosts } from '@/services/posts';
+import { likePost, unLikePost, savePost, unSavePost, getPosts } from '@/services/posts';
 import { Post } from '@/types/post.type';
 import React from 'react';
 
@@ -51,7 +51,6 @@ export const toggleLikePost = async (
   }
 };
 
-// Separate function for single post updates
 export const toggleSinglePostLike = async (
   postId: string,
   userId: string,
@@ -87,10 +86,56 @@ export const toggleSinglePostLike = async (
   }
 };
 
-export const savePostHandler = async (postId: string) => {
-  try {
-    await savePost(postId);
-  } catch (error) {
-    console.error('Error saving post:', error);
-  }
-};
+export const toggleSavePost = async (
+    postId: string,
+    userId: string,
+    isCurrentlySaved: boolean,
+    updatePostState: React.Dispatch<React.SetStateAction<Post[]>>
+  ) => {
+    try {
+      if (isCurrentlySaved) {
+        await unSavePost(postId, userId);
+        updatePostState((prevPosts) => 
+          prevPosts.map((post) =>
+            post._id === postId ? { ...post, saved: false } : post
+          )
+        );
+      } else {
+        await savePost(postId, userId);
+        updatePostState((prevPosts) => 
+          prevPosts.map((post) =>
+            post._id === postId ? { ...post, saved: true } : post
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Error toggling save:', error);
+    }
+  };
+  
+  export const toggleSinglePostSave = async (
+    postId: string,
+    userId: string,
+    isCurrentlySaved: boolean,
+    updatePostState: React.Dispatch<React.SetStateAction<Post | null>>
+  ) => {
+    try {
+      if (isCurrentlySaved) {
+        await unSavePost(postId, userId);
+        updatePostState((prevPost) => 
+          prevPost && prevPost._id === postId
+            ? { ...prevPost, saved: false }
+            : prevPost
+        );
+      } else {
+        await savePost(postId, userId);
+        updatePostState((prevPost) => 
+          prevPost && prevPost._id === postId
+            ? { ...prevPost, saved: true }
+            : prevPost
+        );
+      }
+    } catch (error) {
+      console.error('Error toggling save:', error);
+    }
+  };

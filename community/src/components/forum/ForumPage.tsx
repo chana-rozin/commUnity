@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { PostComp } from './Post';
 import { Post } from '@/types/post.type';
-import { fetchPosts, toggleLikePost, savePostHandler } from '@/services/forumUtils';
+import { fetchPosts, toggleLikePost, toggleSavePost } from '@/services/forumUtils';
 import { NewPostInput } from './NewPostInput';
 import Link from 'next/link';
 import useUserStore from "@/stores/userStore";
@@ -44,9 +44,10 @@ const ForumPage: React.FC = () => {
     if (!user?._id) return;
     
     try {
-      await savePostHandler(postId);
+      const isCurrentlySaved = user.savedPostsIds.includes(postId);
+      await toggleSavePost(postId, user._id, isCurrentlySaved, setPosts);
     } catch (error) {
-      console.error("Failed to save post:", error);
+      console.error("Failed to toggle save:", error);
     }
   };
 

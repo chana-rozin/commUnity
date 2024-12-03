@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import OpenPostSection from '@/components/forum/OpenPostSection';
 import { getPostById } from '@/services/posts';
 import { useParams } from 'next/navigation'
-import { toggleSinglePostLike, savePostHandler } from '@/services/forumUtils';
+import { toggleSinglePostLike, toggleSinglePostSave } from '@/services/forumUtils';
 import useUserStore from "@/stores/userStore";
 
 
@@ -61,8 +61,18 @@ const PostPage: React.FC = () => {
   };
   
 
-  const handleSave = async (postId: string) => {
-    savePostHandler(postId);
+  const handleSave = async () => {
+    if (!user?._id) {
+      console.error('User not authenticated');
+      return;
+    }
+  
+    try {
+      const isCurrentlySaved = user.savedPostsIds.includes(post._id);
+      await toggleSinglePostSave(post._id, user._id, isCurrentlySaved, setPost);
+    } catch (error) {
+      console.error("Error toggling save:", error);
+    }
   };
 
   return (
@@ -80,7 +90,7 @@ const PostPage: React.FC = () => {
         liked={post.likedBy.includes(user._id)}
         saved={user.savedPostsIds.includes(post._id)}
         onLike={(postId, isCurrentlyLiked) => handleLike(postId, isCurrentlyLiked)} // Ensure this matches the prop signature
-        onSave={() => handleSave(post._id)}        
+        onSave={() => handleSave()}        
       />
     </div>
   );

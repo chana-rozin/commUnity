@@ -40,11 +40,20 @@ export const unLikePost = async (postId: string, creatorId: string) => {
     }
 };
 
-export const savePost = async (postId: string) => {
+export const savePost = async (userId: string, postId: string) => {
     try {
-        //TODO: add proper logic here
-      //const response = await http.post(`/posts/${postId}/like`, creatorId );
-      //return response;
+      const response = await http.post(`/users/${userId}/posts`, postId );
+      return response;
+    } catch (error) {
+      console.error("Error liking post:", error);
+      throw error;
+    }
+};
+
+export const unSavePost = async (userId: string, postId: string) => {
+    try {
+      const response = await http.delete(`/users/${userId}/posts`, {data: postId});
+      return response;
     } catch (error) {
       console.error("Error liking post:", error);
       throw error;
