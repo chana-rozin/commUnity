@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
 import {  insertTemporaryDocument, getDocumentByQuery} from "@/services/mongodb";
-import nodemailer from 'nodemailer';
-import crypto from 'crypto';
 import {hashVerificationCode} from '@/services/crypto'
+import sendEmail from '@/services/sendEmail'
 
 export async function POST(request: Request) {
-    debugger
     const body = await request.json(); // Parse request body
     console.log(body);
     if (!body.email) {
@@ -23,6 +21,7 @@ export async function POST(request: Request) {
     }
     //Send Email Message
     console.log(verificationCode);
+    sendEmail(body.email, 'קוד אימות עבור commUnity', `קוד האימות שלך הוא: ${verificationCode}`);
     
     // Insert into the database
     const result = await insertTemporaryDocument("verify-email", newVerification, 300);

@@ -22,7 +22,7 @@ export interface TabProps {
 }
 
 export interface verificationCodePopUpProps{
-    sendVerificationCode: ()=> void;
-    code: string;
-    setCode: React.Dispatch<React.SetStateAction<string>>
+    sendVerificationCode: (email: string)=> void;
+    email: string;
+    checkVerificationCode: (email: string, code: string)=> void;
 }
