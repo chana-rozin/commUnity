@@ -1,84 +1,33 @@
-import { NextResponse } from "next/server"; // Import Next.js response object
-import { 
-  getAllDocuments,  
-  insertDocument, 
-  updateDocumentById, 
-  deleteDocumentById 
-} from "@/services/mongodb"; // Database functions from a shared service
+import { NextResponse } from "next/server";
+import {
+    getAllDocuments,
+    insertDocument,
+} from "@/services/mongodb";
 
-// Fetch all users
+// Fetch all posts
 export async function GET(request: Request) {
-    const data = await getAllDocuments("users"); // Retrieve all users from the "users" collection
-    return NextResponse.json(data); // Return the data as JSON
+    const posts = await getAllDocuments("posts"); // Retrieve all posts
+    return NextResponse.json(posts); // Return data as JSON
 }
 
-// Create a new user
+// Create a new post
 export async function POST(request: Request) {
-    const body = await request.json(); // Parse the request body
-    const result = await insertDocument("users", body); // Insert a new document into the "users" collection
+    const body = await request.json(); // Parse request body
+    console.log(body);
+    
+    // Insert into the database
+    const result = await insertDocument("posts", body);
 
     if (!result) {
         return NextResponse.json(
-            { message: "Failed to create user" },
+            { message: "Failed to create post" },
             { status: 500 } // Internal Server Error
         );
     }
 
     return NextResponse.json(
-        { ...body, _id: result.insertedId }, 
+        { ...body, _id: result.insertedId },
         { status: 201 } // Created
     );
 }
 
-// Update a user by ID
-export async function PUT(request: Request) {
-    const url = new URL(request.url); 
-    const id = url.searchParams.get("id"); // Get the user ID from query parameters
-    const body = await request.json(); // Parse the request body
-
-    if (!id) {
-        return NextResponse.json(
-            { message: "User ID is required" },
-            { status: 400 } // Bad Request
-        );
-    }
-
-    const result = await updateDocumentById("users", id, body); // Update the user in the database
-
-    if (!result) {
-        return NextResponse.json(
-            { message: "Failed to update user" },
-            { status: 500 } // Internal Server Error
-        );
-    }
-
-    return NextResponse.json(
-        { message: "User updated successfully" }
-    );
-}
-
-// Delete a user by ID
-export async function DELETE(request: Request) {
-    const url = new URL(request.url);
-    const id = url.searchParams.get("id"); // Get the user ID from query parameters
-
-    if (!id) {
-        return NextResponse.json(
-            { message: "User ID is required" },
-            { status: 400 } // Bad Request
-        );
-    }
-
-    const result = await deleteDocumentById("users", id); // Delete the user in the database
-
-    if (!result) {
-        return NextResponse.json(
-            { message: "Failed to delete user" },
-            { status: 500 } // Internal Server Error
-        );
-    }
-
-    return NextResponse.json(
-        { message: "User deleted successfully" }
-    );
-}
