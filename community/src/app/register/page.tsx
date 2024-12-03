@@ -30,6 +30,7 @@ const AuthPage: React.FC = () => {
             const user = result.user;
             setUser(user);
             console.log("User signed in:", user);
+            setStep(2);
         } catch (error) {
             console.error("Error signing in:", error);
         }
@@ -67,10 +68,19 @@ const AuthPage: React.FC = () => {
         }
         catch (error) {
             console.error('Error sending verification code:', error);
+            setUserGiveWrongCode(true);
         }
     }
 
-
+    async function handleStep(data: object) {
+        setStep((prev:number)=>{
+            return prev+1
+        });
+        setUser((prev:object)=>{
+            return {...prev,...data}
+        })
+        return;
+    }
 
     return (
         <div className="overflow-hidden py-10 pr-9 pl-16 bg-white max-md:px-5">
@@ -106,8 +116,8 @@ const AuthPage: React.FC = () => {
                 </div>
                 {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} /> : step === 2 ?
 
-                    <Step2 /> : step === 3 ? <Step3 /> : <></>}
-                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode}/>}
+                    <Step2 handleStep={handleStep}/> : step === 3 ? <Step3 /> : <></>}
+                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode}/>}
             </div>
         </div>
     );

@@ -26,4 +26,5 @@ export interface verificationCodePopUpProps{
     email: string;
     checkVerificationCode: (email: string, code: string)=> void;
     userGiveWrongCode: boolean;
+    setUserGiveWrongCode: React.Dispatch<React.SetStateAction<boolean>>
 }

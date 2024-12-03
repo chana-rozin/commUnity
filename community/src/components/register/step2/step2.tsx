@@ -1,7 +1,9 @@
 import * as React from "react";
 import { RegistrationForm } from './form';
-
-const Step2: React.FC = () => {
+interface props{
+    handleStep: (data: object) => void;
+}
+const Step2: React.FC<props> = ({handleStep}) => {
     return (
                 
                 <div className="flex flex-col ml-5 w-[45%] max-md:ml-0 max-md:w-full">
@@ -20,7 +22,7 @@ const Step2: React.FC = () => {
                                 רק עוד כמה פרטים קטנים ואנחנו שם!
                             </div>
                         </div>
-                        <RegistrationForm />
+                        <RegistrationForm handleStep={handleStep}/>
                     </div>
                 </div>
     );
