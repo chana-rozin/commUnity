@@ -9,11 +9,6 @@ export interface Preference {
     event_notifications: boolean;
 };
 
-export interface Image {
-    id: string;
-    url: string;
-}
-
 export interface Comment {
     _id: string;
     creatorId: string;

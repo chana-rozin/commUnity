@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { TiStarOutline, TiStarFullOutline } from "react-icons/ti";
+import useUserStore from "@/stores/userStore";
 
 
 export interface PostProps {
@@ -10,8 +11,9 @@ export interface PostProps {
   content: string;
   commentCount: number;
   likesCount: number;
-  onClick: () => void;
-  onLike?: (creatorId: string) => Promise<void>; 
+  liked: boolean;
+  saved: boolean;
+  onLike?: (isCurrentlyLiked: boolean) => Promise<void>; 
   onSave?: () => Promise<void>; 
 }
 
@@ -21,15 +23,15 @@ export const PostComp: React.FC<PostProps> = ({
   createdDate,
   content,
   commentCount,
-  onClick,  
+  liked,
+  saved,
   onLike,
   onSave,
 }) => {
-    //TODO: check if the post has already been saved
-    const [isSaved, setIsSaved] = useState(false);
+    const [isSaved, setIsSaved] = useState(saved);
     const [isSaving, setIsSaving] = useState(false);
     const [likesCount, setLikesCount] = useState(initialLikesCount);
-    const [isLiked, setIsLiked] = useState(false);
+    const [isLiked, setIsLiked] = useState(liked);
     const [isLiking, setIsLiking] = useState(false);
   const date = createdDate instanceof Date ? createdDate : new Date(createdDate);
 
@@ -50,6 +52,7 @@ export const PostComp: React.FC<PostProps> = ({
   };
 
   const handleLike = async (e: React.MouseEvent) => {
+    e.preventDefault(); 
     e.stopPropagation();
     // Prevent multiple simultaneous like attempts
     if (isLiking) return;
@@ -60,9 +63,8 @@ export const PostComp: React.FC<PostProps> = ({
       setIsLiked(!isLiked);
       setLikesCount(current => isLiked ? current - 1 : current + 1);
 
-      // If an onLike handler is provided, call it
       if (onLike) {
-        await onLike(creatorId); 
+        await onLike(isLiked); 
       }
     } catch (error) {
       setIsLiked(isLiked);
@@ -74,6 +76,7 @@ export const PostComp: React.FC<PostProps> = ({
   };
 
   const handleSave = async (e: React.MouseEvent) => {
+    e.preventDefault(); 
     e.stopPropagation();
     // Prevent multiple simultaneous save attempts
     if (isSaving) return;
@@ -93,8 +96,7 @@ export const PostComp: React.FC<PostProps> = ({
     
   return (
     <div
-      className="flex flex-col p-4 w-full bg-white rounded-2xl cursor-pointer"
-      onClick={onClick}
+      className="flex flex-col p-4 mb-4 w-full bg-white rounded-2xl cursor-pointer"
     >
       {/* Header Section */}
       <div className="flex gap-4 items-start mb-4">

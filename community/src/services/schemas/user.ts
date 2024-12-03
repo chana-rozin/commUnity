@@ -2,21 +2,18 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const userSchema = new mongoose.Schema({
-    first_name: { type: String},
-    last_name: { type: String},
-    email: { type: String, unique: true }, // Ensure emails are unique
+    first_name: { type: String, required: true },
+    last_name: { type: String, required: true },
+    email: { type: String, unique: true , require: true}, // Ensure emails are unique
     address: {
-        street: { type: String },
-        city: { type: String },
-        houseNumber: { type: String },
+        street: { type: String , required: true },
+        city: { type: String , required: true },
+        houseNumber: { type: String , required: true },
     },
-    phone_number: { type: String},
-    age: { type: Number },
-    profile_picture_url: {
-        _id: { type: String },
-        url: { type: String },
-    },
-    neighborhoodId: [{ type: Schema.Types.ObjectId, ref: 'neighborhood' }],
+    phone_number: { type: String, required: true },
+    age: { type: Number , required: true},
+    profile_picture_url: {type: String, required: true},
+    neighborhoodId: [{ type: Schema.Types.ObjectId, ref: 'neighborhood'}],
     communitiesIds: [{ type: Schema.Types.ObjectId, ref: 'community' }],
     preferences: {
         type: {

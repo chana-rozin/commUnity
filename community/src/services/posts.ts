@@ -6,10 +6,12 @@ export const getPosts = async (): Promise<any>=>{
     return response;
 }
 
-export const getPost = async (postId: string): Promise<any>=>{
-    const url = `/posts/${postId}`;    
+export const getPostById = async (postId: string): Promise<any>=>{
+    const url = `/posts/${postId}`; 
+    console.log("Fetching URL:", url);   
     const response = await http.get(url);
-    return response;
+    console.log("Response:",response);
+    return response.data;
 }
 
 export const createPost = async (post: any): Promise<any>=>{
@@ -28,11 +30,30 @@ export const likePost = async (postId: string, creatorId: string) => {
     }
 };
 
-export const savePost = async (postId: string) => {
+export const unLikePost = async (postId: string, creatorId: string) => {
     try {
-        //TODO: add proper logic here
-      //const response = await http.post(`/posts/${postId}/like`, creatorId );
-      //return response;
+      const response = await http.delete(`/posts/${postId}/likes`, {data: creatorId,} );
+      return response;
+    } catch (error) {
+      console.error("Error liking post:", error);
+      throw error;
+    }
+};
+
+export const savePost = async (userId: string, postId: string) => {
+    try {
+      const response = await http.post(`/users/${userId}/posts`, postId );
+      return response;
+    } catch (error) {
+      console.error("Error liking post:", error);
+      throw error;
+    }
+};
+
+export const unSavePost = async (userId: string, postId: string) => {
+    try {
+      const response = await http.delete(`/users/${userId}/posts`, {data: postId});
+      return response;
     } catch (error) {
       console.error("Error liking post:", error);
       throw error;
