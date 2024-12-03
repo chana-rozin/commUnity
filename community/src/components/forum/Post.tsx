@@ -12,7 +12,7 @@ export interface PostProps {
   likesCount: number;
   liked?: boolean;
   onClick: () => void;
-  onLike?: (creatorId: string) => Promise<void>; 
+  onLike?: (creatorId: string, isCurrentlyLiked: boolean) => Promise<void>; 
   onSave?: () => Promise<void>; 
 }
 
@@ -63,9 +63,8 @@ export const PostComp: React.FC<PostProps> = ({
       setIsLiked(!isLiked);
       setLikesCount(current => isLiked ? current - 1 : current + 1);
 
-      // If an onLike handler is provided, call it
       if (onLike) {
-        await onLike(creatorId); 
+        await onLike(creatorId, isLiked); 
       }
     } catch (error) {
       setIsLiked(isLiked);

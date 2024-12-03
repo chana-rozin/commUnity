@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { PostComp } from './Post';
 import { Post } from '@/types/post.type';
-import {getPosts, likePost, savePost} from '@/services/posts';
+import {getPosts, likePost, unLikePost, savePost} from '@/services/posts';
 import {NewPostInput} from './NewPostInput';
 import Link from 'next/link';
 
@@ -34,21 +34,39 @@ const ForumPage: React.FC = () => {
     fetchData();
   }, []);
 
-  const handleLike = async (postId:string, creatorId: string) => {
+  const handleLike = async (postId: string, creatorId: string, isCurrentlyLiked: boolean) => {
     try {
-      const response = await likePost( postId, creatorId);
-      setPosts(prevPosts => 
-        prevPosts.map(post => 
-          post.creatorId === creatorId 
-            ? { 
-                ...post, 
-                likesCount: response.data.likesCount 
-              } 
-            : post
-        )
-      );
+      if (isCurrentlyLiked) {
+        // Call unLikePost service if the post is currently liked
+        const response = await unLikePost(postId, creatorId);
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post._id === postId
+              ? {
+                  ...post,
+                  likedBy: post.likedBy.filter((id) => id !== creatorId),
+                  likesCount: response.data.likesCount,
+                }
+              : post
+          )
+        );
+      } else {
+        // Call likePost service if the post is not liked yet
+        const response = await likePost(postId, creatorId);
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post._id === postId
+              ? {
+                  ...post,
+                  likedBy: [...post.likedBy, creatorId],
+                  likesCount: response.data.likesCount,
+                }
+              : post
+          )
+        );
+      }
     } catch (error) {
-      console.error("Error liking post:", error);
+      console.error("Error toggling like:", error);
     }
   };
 
@@ -79,9 +97,9 @@ const ForumPage: React.FC = () => {
                  content={post.content}
                  commentCount={post.comments.length}
                  likesCount={post.likedBy.length || 0}
-                 //liked={post.likedBy.find(userId)}
+                 //liked={post.likedBy.includes(userId)}
                  onClick={() => setSelectedPostId(post._id)}
-                 onLike={(creatorId) => handleLike(post._id, creatorId)} 
+                 onLike={(creatorId, isLiked) => handleLike(post._id, creatorId, isLiked)} 
                  onSave={() => handleSave(post._id)}
               />
             </div>
