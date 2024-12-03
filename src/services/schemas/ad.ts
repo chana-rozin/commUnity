@@ -20,8 +20,4 @@ const adSchema = new Schema({
     },
 });
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 92ae6ac90e57734ccd6ebb79e482f21ac19243fb
 export default adSchema;
