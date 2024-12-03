@@ -4,7 +4,7 @@ import { Navbar } from '@/components/Navbar/Navbar';
 const HomePage = () => {
   return (
     <main className="flex overflow-hidden flex-col px-12 pt-6 pb-60 bg-violet-50 max-md:px-5 max-md:pb-24">
-      <Navbar />
+
 
       <div className="flex flex-wrap gap-4 items-start mt-5 w-full">
         {/* Right Column - Profile Section */}
