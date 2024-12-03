@@ -22,6 +22,7 @@ const AuthPage: React.FC = () => {
     const [verificationPopUp, setVerificationPopUp] = useState(false);
     const [step, setStep] = useState(1);
     const [user, setUser] = useState<any>(null);
+    const [userGiveWrongCode, setUserGiveWrongCode] = useState(false)
 
     async function loginWithGoogle() {
         try {
@@ -42,6 +43,7 @@ const AuthPage: React.FC = () => {
     }
 
     async function sendVerificationCode(email: string) {
+        debugger
         try {
             const result = http.post('/verify-email/send', { email: email })
         }
@@ -51,14 +53,24 @@ const AuthPage: React.FC = () => {
     }
 
     async function checkVerificationCode(email: string, code: string) {
+        debugger
         try {
-            const result = http.post('/verify-email/check', { email: email, code: code })
-
+            const result = await http.post('/verify-email/check', { email: email, code: code })
+            if(result.status === 200) {
+                setStep(2);
+                setVerificationPopUp(false);
+            }else{
+                setUserGiveWrongCode(true);
+            }
+            console.log(result);
+            
         }
         catch (error) {
             console.error('Error sending verification code:', error);
         }
     }
+
+
 
     return (
         <div className="overflow-hidden py-10 pr-9 pl-16 bg-white max-md:px-5">
@@ -95,7 +107,7 @@ const AuthPage: React.FC = () => {
                 {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} /> : step === 2 ?
 
                     <Step2 /> : step === 3 ? <Step3 /> : <></>}
-                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} />}
+                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode}/>}
             </div>
         </div>
     );
