@@ -1,7 +1,7 @@
 export interface Address {
     street: string;
     city: string;
-    houseNumber: number;
+    houseNumber: string;
 }
 export interface Preference {
     email_notifications: boolean;
