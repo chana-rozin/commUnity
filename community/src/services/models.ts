@@ -8,6 +8,7 @@ import loanSchema  from '../services/schemas/loan';
 import minyanSchema  from '../services/schemas/minyan';
 import neighborhoodSchema  from '../services/schemas/neighborhood';
 import postSchema  from '../services/schemas/post';
+import verifyEmailSchema from '../services/schemas/verifyEmail'
 
 export const User = mongoose.model('user', userSchema);
 export const Ad = mongoose.model('ad', adSchema);
@@ -18,3 +19,4 @@ export const Minyan = mongoose.model('minyan', minyanSchema);
 export const Loan = mongoose.model('loan', loanSchema);
 export const Event = mongoose.model('event', eventSchema);
 export const Community = mongoose.model('community', communitySchema);
+export const VerifyEmail = mongoose.model('verify-email', verifyEmailSchema);
