@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { TiStarOutline, TiStarFullOutline } from "react-icons/ti";
+import useUserStore from "@/stores/userStore";
 
 
 export interface PostProps {
@@ -10,9 +11,9 @@ export interface PostProps {
   content: string;
   commentCount: number;
   likesCount: number;
-  liked?: boolean;
-  onClick: () => void;
-  onLike?: (creatorId: string, isCurrentlyLiked: boolean) => Promise<void>; 
+  liked: boolean;
+  saved: boolean;
+  onLike?: (isCurrentlyLiked: boolean) => Promise<void>; 
   onSave?: () => Promise<void>; 
 }
 
@@ -23,15 +24,14 @@ export const PostComp: React.FC<PostProps> = ({
   content,
   commentCount,
   liked,
-  onClick,  
+  saved,
   onLike,
   onSave,
 }) => {
-    //TODO: check if the post has already been saved
-    const [isSaved, setIsSaved] = useState(false);
+    const [isSaved, setIsSaved] = useState(saved);
     const [isSaving, setIsSaving] = useState(false);
     const [likesCount, setLikesCount] = useState(initialLikesCount);
-    const [isLiked, setIsLiked] = useState(liked || false);
+    const [isLiked, setIsLiked] = useState(liked);
     const [isLiking, setIsLiking] = useState(false);
   const date = createdDate instanceof Date ? createdDate : new Date(createdDate);
 
@@ -64,7 +64,7 @@ export const PostComp: React.FC<PostProps> = ({
       setLikesCount(current => isLiked ? current - 1 : current + 1);
 
       if (onLike) {
-        await onLike(creatorId, isLiked); 
+        await onLike(isLiked); 
       }
     } catch (error) {
       setIsLiked(isLiked);
@@ -97,7 +97,6 @@ export const PostComp: React.FC<PostProps> = ({
   return (
     <div
       className="flex flex-col p-4 mb-4 w-full bg-white rounded-2xl cursor-pointer"
-      onClick={onClick}
     >
       {/* Header Section */}
       <div className="flex gap-4 items-start mb-4">

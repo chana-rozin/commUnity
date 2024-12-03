@@ -1,4 +1,5 @@
 import * as React from "react";
+import useUserStore from "@/stores/userStore";
 import { createPost } from "@/services/posts";
 import { Post } from "@/types/post.type";
 
@@ -30,6 +31,8 @@ export const NewPostInput: React.FC = () => {
   const [selectedAction, setSelectedAction] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const user = useUserStore((state) => state.user);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,8 +54,7 @@ export const NewPostInput: React.FC = () => {
         images: selectedAction === 'image' ? [] : undefined,
         comments: [],
         likedBy: [],
-        // You might want to add dynamically:
-        // creatorId: currentUser?.id,
+        creatorId: user?._id,
         // communityId: currentCommunity?.id,
       };
 
