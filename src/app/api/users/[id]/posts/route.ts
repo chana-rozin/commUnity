@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import http from "@/services/http";
 import {
     patchDocumentById,
 } from "@/services/mongodb";
@@ -13,7 +14,7 @@ export async function POST(request: Request,{ params }: { params: Promise<{ id: 
         );
     }
     const body = await request.json() // Parse request body
-    let userToUpdate = await axios.get(`http://localhost:3000/api/users/${id}`);
+    let userToUpdate = await http.get(`/users/${id}`);
     let user = await userToUpdate.data
     user.savedPostsIds.push(body);
     delete user._id;
