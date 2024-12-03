@@ -8,7 +8,7 @@ import Link from 'next/link';
 import useUserStore from "@/stores/userStore";
 
 const ForumPage: React.FC = () => {
-  const user = useUserStore((state) => state.user);
+  const {user,setUser} = useUserStore();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -45,7 +45,7 @@ const ForumPage: React.FC = () => {
     
     try {
       const isCurrentlySaved = user.savedPostsIds.includes(postId);
-      await toggleSavePost(postId, user._id, isCurrentlySaved, setPosts);
+      await toggleSavePost(postId, user._id, isCurrentlySaved,user,setUser, setPosts);
     } catch (error) {
       console.error("Failed to toggle save:", error);
     }

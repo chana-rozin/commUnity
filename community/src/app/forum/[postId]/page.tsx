@@ -11,7 +11,7 @@ import useUserStore from "@/stores/userStore";
 const PostPage: React.FC = () => {
 
   const { postId } = useParams();
-  const user = useUserStore((state) => state.user);
+  const {user, setUser} = useUserStore();
 
   const [post, setPost] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -62,6 +62,7 @@ const PostPage: React.FC = () => {
   
 
   const handleSave = async () => {
+    debugger
     if (!user?._id) {
       console.error('User not authenticated');
       return;
@@ -69,7 +70,7 @@ const PostPage: React.FC = () => {
   
     try {
       const isCurrentlySaved = user.savedPostsIds.includes(post._id);
-      await toggleSinglePostSave(post._id, user._id, isCurrentlySaved, setPost);
+      await toggleSinglePostSave(post._id, user._id, isCurrentlySaved,user, setUser, setPost);
     } catch (error) {
       console.error("Error toggling save:", error);
     }

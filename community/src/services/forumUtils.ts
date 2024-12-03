@@ -1,6 +1,7 @@
 import { likePost, unLikePost, savePost, unSavePost, getPosts } from '@/services/posts';
 import { Post } from '@/types/post.type';
 import React from 'react';
+import { User } from "@/types/user.type";  
 
 export const fetchPosts = async (): Promise<Post[]> => {
   try {
@@ -90,11 +91,14 @@ export const toggleSavePost = async (
     postId: string,
     userId: string,
     isCurrentlySaved: boolean,
+    user: User | null,
+    setUser: (user: User) => void,
     updatePostState: React.Dispatch<React.SetStateAction<Post[]>>
   ) => {
     try {
       if (isCurrentlySaved) {
         await unSavePost(userId,postId);
+        setUser({...user!, savedPostsIds: user!.savedPostsIds.filter((id)=> id!==postId)})
         updatePostState((prevPosts) => 
           prevPosts.map((post) =>
             post._id === postId ? { ...post, saved: false } : post
@@ -102,6 +106,7 @@ export const toggleSavePost = async (
         );
       } else {
         await savePost(userId,postId);
+        setUser({...user!, savedPostsIds: [...(user!.savedPostsIds), postId]})
         updatePostState((prevPosts) => 
           prevPosts.map((post) =>
             post._id === postId ? { ...post, saved: true } : post
@@ -117,11 +122,14 @@ export const toggleSavePost = async (
     postId: string,
     userId: string,
     isCurrentlySaved: boolean,
+    user: User | null,
+    setUser: (user: User) => void,
     updatePostState: React.Dispatch<React.SetStateAction<Post | null>>
   ) => {
     try {
       if (isCurrentlySaved) {
         await unSavePost(userId,postId);
+        setUser({...user!, savedPostsIds: user!.savedPostsIds.filter((id)=> id!==postId)})
         updatePostState((prevPost) => 
           prevPost && prevPost._id === postId
             ? { ...prevPost, saved: false }
@@ -129,6 +137,7 @@ export const toggleSavePost = async (
         );
       } else {
         await savePost(userId,postId);
+        setUser({...user!, savedPostsIds: [...(user!.savedPostsIds), postId]})
         updatePostState((prevPost) => 
           prevPost && prevPost._id === postId
             ? { ...prevPost, saved: true }
