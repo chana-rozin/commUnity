@@ -16,18 +16,8 @@ interface OpenPostSectionProps extends Post {
   onSave: (postId: string) => void;
 }
 
-const OpenPostSection: React.FC<OpenPostSectionProps> = ({
-  _id,
-  creatorId,
-  createdDate,
-  title,
-  liked,
-  saved,
-  content,
-  comments,
-  likedBy,
-  onLike,
-  onSave,
+const OpenPostSection: React.FC<OpenPostSectionProps> = ({_id, creatorId, createdDate, liked,
+  saved, content, comments, likedBy, onLike, onSave,
 }) => {
   const [allComments, setAllComments] = useState<Comment[]>(comments);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);

@@ -5,7 +5,7 @@ import OpenPostSection from '@/components/forum/OpenPostSection';
 import { getPostById } from '@/services/posts';
 import { Post } from '@/types/post.type';
 import { useParams } from 'next/navigation'
-import { useLikePost, useSavePost } from '@/utils/forumUtils';
+import { useLikePost, useSavePost } from '@/services/mutations/forum';
 import useUserStore from "@/stores/userStore";
 
 
@@ -22,40 +22,6 @@ const PostPage: React.FC = () => {
 
   const likeMutation = useLikePost();
   const saveMutation = useSavePost(user, setUser);
-
-  //const [post, setPost] = useState<any>(null);
-  //const [error, setError] = useState<string | null>(null);
-
-  
-  // useEffect(() => {
-  //   if (user) {
-  //       const fetchPost = async () => {
-  //           try {
-  //               const fetchedPost = await getPostById(postId as string);
-  //               if (!fetchedPost) {
-  //               throw new Error('Post not found');
-  //               }
-  //               setPost(fetchedPost);
-  //           } catch (err: any) {
-  //               console.error('Error fetching post:', err);
-  //               setError(err.message || 'An error occurred');
-  //           }
-  //       };
-  //       fetchPost();
-  //   }
-  // }, [postId, user]);
-
-  // if (error) {
-  //   return <div>{error}</div>;
-  // }
-
-  // if (!post) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (!user) {
-  //   return <div>Loading user...</div>;
-  // }
 
   const handleLike = () => {
     if (!user?._id || !post) {
@@ -109,7 +75,7 @@ const PostPage: React.FC = () => {
         images={post.images}
         liked={post.likedBy.includes(user._id)}
         saved={user.savedPostsIds.includes(post._id)}
-        onLike={() => handleLike()} // Ensure this matches the prop signature
+        onLike={() => handleLike()} 
         onSave={() => handleSave()}        
       />
     </div>

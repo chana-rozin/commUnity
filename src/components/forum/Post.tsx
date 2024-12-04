@@ -17,16 +17,8 @@ export interface PostProps {
   onSave?: () => void; 
 }
 
-export const PostComp: React.FC<PostProps> = ({
-  creatorId,
-  likesCount: initialLikesCount,
-  createdDate,
-  content,
-  commentCount,
-  liked,
-  saved,
-  onLike,
-  onSave,
+export const PostComp: React.FC<PostProps> = ({ creatorId, likesCount: initialLikesCount, createdDate, content,
+  commentCount, liked, saved, onLike, onSave,
 }) => {
     const [isSaved, setIsSaved] = useState(saved);
     const [isSaving, setIsSaving] = useState(false);
@@ -54,9 +46,7 @@ export const PostComp: React.FC<PostProps> = ({
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault(); 
     e.stopPropagation();
-    // Prevent multiple simultaneous like attempts
     if (isLiking) return;
-
     setIsLiking(true);
 
     try {
@@ -78,7 +68,6 @@ export const PostComp: React.FC<PostProps> = ({
   const handleSave = async (e: React.MouseEvent) => {
     e.preventDefault(); 
     e.stopPropagation();
-    // Prevent multiple simultaneous save attempts
     if (isSaving) return;
     setIsSaving(true);
     try {

@@ -2,6 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { likePost, unLikePost, savePost, unSavePost, getPosts } from '@/services/posts';
 import { Post } from '@/types/post.type';
 import { User } from "@/types/user.type";  
+import { Comment } from '@/types/general.type';
+import http from '../http';
 
 export const usePosts = () => {
   return useQuery<Post[]>({
@@ -13,6 +15,47 @@ export const usePosts = () => {
     retry: 1,
   });
 };
+
+export const useCreatePost = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<Post, Error, Partial<Post>>({
+    mutationFn: async (postData) => {
+      const response = await http.post('/posts', postData);
+      return response.data;
+    },
+    onSuccess: () => {
+      // Invalidate queries related to posts to refresh the list
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    },
+    onError: (error) => {
+      console.error('Failed to create post:', error);
+    },
+  });
+};
+
+export const useCreateComment = (postId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<void,Error,{ postId: string; newComment: Comment }>({
+    mutationFn: async ({ postId, newComment }) => {
+      // Notify via Pusher
+      await http.post('/pusher/send', {
+        channel: `forum_${postId}`,
+        event: 'new-message',
+        message: newComment,
+      });
+
+      // Send the comment to the backend
+      await http.post(`/posts/${postId}/comments`, newComment);
+    },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['comments', postId] });
+      },
+    }
+  );
+};
+
 
 interface LikeContext {
   previousPosts?: Post[];
