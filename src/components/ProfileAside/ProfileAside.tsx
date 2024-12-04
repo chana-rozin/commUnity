@@ -4,8 +4,9 @@ import useUserStore from "@/stores/userStore";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { getNeighborhood } from "@/services/neighborhoods";
-import { getCommunity } from "@/services/communities";
+import { getCommunitiesByUser } from "@/services/communities";
 import { useParams } from "next/navigation";
+import { Community } from "@/types/community.type";
 
 interface ProfileLink {
     href: string;
@@ -23,17 +24,13 @@ export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) =>
 
         const fetchLinks = async () => {
             try {
-                const communityLinks = await Promise.all(
-                    user.communitiesIds.map(async (id) => {
-                        const community = await getCommunity(id);
-                        return {
-                            href: `community/${community._id}`,
-                            text: community.name,
-                            isActive: communityId === community._id,
-                        };
-                    })
-                );
-
+                const communities = await getCommunitiesByUser(user);
+                const communitiesLinks = communities.map((community:Community) => ({
+                    href: `neighborhood/${community._id}`,
+                    text: community.name,
+                    isActive: communityId === community._id,
+                })
+                )
                 const neighborhood = await getNeighborhood(user.neighborhoodId);
                 const neighborhoodLink = {
                     href: `neighborhood/${neighborhood._id}`,
@@ -41,7 +38,7 @@ export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) =>
                     isActive: neighborhoodId === neighborhood._id,
                 };
 
-                setLinks([neighborhoodLink, ...communityLinks]);
+                setLinks([neighborhoodLink, ...communitiesLinks]);
             } catch (error) {
                 console.error("Failed to fetch communities or neighborhood:", error);
             }

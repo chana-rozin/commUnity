@@ -5,7 +5,7 @@ import {ObjectId} from 'mongodb'
 export async function GET(request: Request) {
     try {
         const url = new URL(request.url);
-        const searchQuery = url.searchParams.get('ids')?.split(' ').map(id=>new ObjectId(id));
+        const searchQuery = url.searchParams.get('ids')?.split(',').map(id=>new ObjectId(id));
         const query = {
             "_id": { $in: searchQuery }
         }
