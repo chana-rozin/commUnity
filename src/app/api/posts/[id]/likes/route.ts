@@ -17,8 +17,7 @@ export async function POST(request: Request,{ params }: { params: Promise<{ id: 
         );
     }
     const body = await request.json() // Parse request body
-    let postToUpdate = await http.get(`/posts/${id}`);
-    let post = await postToUpdate.data
+    let post = await getPostById(id);
     post.likedBy.push(body);
     delete post._id;
     
