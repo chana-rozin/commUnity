@@ -2,8 +2,6 @@ import * as React from 'react';
 import { useState } from 'react';
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { TiStarOutline, TiStarFullOutline } from "react-icons/ti";
-import useUserStore from "@/stores/userStore";
-
 
 export interface PostProps {
   creatorId: string;
