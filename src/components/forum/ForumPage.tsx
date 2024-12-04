@@ -1,7 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
 import { PostComp } from './Post';
-import { Post } from '@/types/post.type';
 import { usePosts, useLikePost, useSavePost } from '@/services/mutations/forum';
 import { NewPostInput } from './NewPostInput';
 import Link from 'next/link';
@@ -23,49 +21,6 @@ const ForumPage: React.FC = () => {
     saveMutation.mutate({ postId });
   };
 
-
- // const [posts, setPosts] = useState<Post[]>([]);
-  //const [loading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   // Only fetch posts if user is loaded
-  //   if (user) {
-  //     const fetchData = async () => {
-  //       try {
-  //         const fetchedPosts = await fetchPosts();
-  //         setPosts(fetchedPosts);
-  //       } catch (error) {
-  //         console.error("Failed to fetch posts:", error);
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //     };
-
-  //     fetchData();
-  //   }
-  // }, [user]); // Correct dependency array
-
-  // const handleLike = async (postId: string, isCurrentlyLiked: boolean): Promise<void> => {
-  //   if (!user?._id) return;
-    
-  //   try {
-  //     await toggleLikePost(postId, user._id, isCurrentlyLiked, setPosts);
-  //   } catch (error) {
-  //     console.error("Failed to toggle like:", error);
-  //   }
-  // };
-
-  // const handleSave = async (postId: string) => {
-  //   if (!user?._id) return;
-    
-  //   try {
-  //     const isCurrentlySaved = user.savedPostsIds.includes(postId);
-  //     await toggleSavePost(postId, user._id, isCurrentlySaved,user,setUser, setPosts);
-  //   } catch (error) {
-  //     console.error("Failed to toggle save:", error);
-  //   }
-  // };
-
   if (!user) {
     return <div>Loading user...</div>;
   }
@@ -84,6 +39,7 @@ const ForumPage: React.FC = () => {
               creatorId={post.creatorId}
               createdDate={post.createdDate}
               content={post.content}
+              images={post.images}
               commentCount={post.comments.length}
               likesCount={post.likedBy.length || 0}
               liked={post.likedBy.includes(user._id)}

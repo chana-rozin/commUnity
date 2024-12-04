@@ -1,5 +1,5 @@
 "use client"
-import ForumPage from '../../components/forum/ForumPage';
+import ForumPage from '../../components/Forum/ForumPage';
 import { Navbar } from '@/components/Navbar/Navbar';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside'
 import useUserStore from '@/stores/userStore';

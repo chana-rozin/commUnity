@@ -17,7 +17,7 @@ interface OpenPostSectionProps extends Post {
 }
 
 const OpenPostSection: React.FC<OpenPostSectionProps> = ({_id, creatorId, createdDate, liked,
-  saved, content, comments, likedBy, onLike, onSave,
+  saved, content, comments, images, likedBy, onLike, onSave,
 }) => {
   const [allComments, setAllComments] = useState<Comment[]>(comments);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
@@ -49,6 +49,7 @@ const OpenPostSection: React.FC<OpenPostSectionProps> = ({_id, creatorId, create
             creatorId={creatorId}
             createdDate={createdDate}
             content={content}
+            images={images}
             commentCount={comments?.length || 0}
             likesCount={likedBy?.length || 0}
             liked={liked} 
