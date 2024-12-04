@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { patchDocumentById, getDocumentById } from "@/services/mongodb";
-import { User } from "@/types/user.type";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
     debugger
@@ -19,13 +18,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
                 { status: 404 },  // OK Status Code 200
             );
         }
-        let user = userToUpdate.parse();
-        if (!user) {
-            throw new Error('User not found');
-        }
+        let user = userToUpdate;
         user.savedPostsIds.push(body);
-        delete user._id;
-
+        
         // Update the post in the database
         const result = await patchDocumentById("users", id, user);
 
@@ -67,16 +62,12 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
             );
         }
 
-        const user = userDocument.data as User;
-
-        // Create a new object without the _id field for update
-        const updateData: Omit<User, '_id'> = {
-            ...user,
-            savedPostsIds: user.savedPostsIds.filter((postId: string) => postId !== body)
-        };
+        let user = userDocument
+        let savedPostsIds = user.savedPostsIds.filter((postId:string) => postId!==body);
+        user.savedPostsIds = savedPostsIds;
 
         // Update the post in the database
-        const result = await patchDocumentById("users", id, updateData);
+        const result = await patchDocumentById("users", id, user);
 
         if (!result) {
             return NextResponse.json(

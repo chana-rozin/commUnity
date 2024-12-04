@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import {
     patchDocumentById,
-} from "@/services/mongodb";
-import {getPostById} from "@/services/posts";
-import axios from "axios";
-import { debug } from "util";
-import http from "@/services/http";
+    getDocumentById,
 
-export async function POST(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+} from "@/services/mongodb";
+
+
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
 
     let { id } = await params;
     if (!id) {
@@ -17,10 +16,15 @@ export async function POST(request: Request,{ params }: { params: Promise<{ id: 
         );
     }
     const body = await request.json() // Parse request body
-    let post = await getPostById(id);
+    let postToUpdate = await getDocumentById("posts", id)
+    if (!postToUpdate) {
+        return NextResponse.json(
+            { message: "Failed to found post" },
+            { status: 404 } // Internal Server Error
+        );
+    }
+    let post = postToUpdate;
     post.likedBy.push(body);
-    delete post._id;
-    
 
     // Update the post in the database
     const result = await patchDocumentById("posts", id, post);
@@ -39,7 +43,7 @@ export async function POST(request: Request,{ params }: { params: Promise<{ id: 
 }
 
 
-export async function DELETE(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     let { id } = await params;
     if (!id) {
         return NextResponse.json(
@@ -48,10 +52,18 @@ export async function DELETE(request: Request,{ params }: { params: Promise<{ id
         );
     }
     const body = await request.json() // Parse request body
-    let post = await getPostById(id);
-    post.likedBy = post.likedBy.filter((like: string) => like!== body);
-    delete post._id;
-    
+    const postDocument = await getDocumentById('posts', id);
+
+    if (!postDocument) {
+        return NextResponse.json(
+            { message: "User not found" },
+            { status: 404 } // Not Found
+        );
+    }
+
+    let post = postDocument
+
+    post.likedBy = post.likedBy.filter((like: string) => like !== body);
 
     // Update the post in the database
     const result = await patchDocumentById("posts", id, post);
@@ -65,6 +77,6 @@ export async function DELETE(request: Request,{ params }: { params: Promise<{ id
 
     return NextResponse.json(
         { message: "Like successfully deleted" },
-        { status: 200 }, 
+        { status: 200 },
     );
 }
