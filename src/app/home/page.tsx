@@ -3,7 +3,7 @@ import ForumPage from '../../components/forum/ForumPage';
 import { Navbar } from '@/components/Navbar/Navbar';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside'
 import useUserStore from '@/stores/userStore';
-import sampleUser from '@/utils/sampleUser'
+import sampleUser from '@/utils/sampleUser';
 import {useEffect} from 'react';
 
 const HomePage = () => {
