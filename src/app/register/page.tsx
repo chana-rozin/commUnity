@@ -1,5 +1,5 @@
 "use client"
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react'
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { auth } from '../../services/firebaseConfig'
@@ -7,6 +7,9 @@ import http from '../../services/http'
 import Step1 from '../../components/register/step1/step1'
 import Step2 from '../../components/register/step2/step2'
 import Step3 from '../../components/register/step3/step3'
+import Step4 from '../../components/register/step4/step4'
+import { User } from '../../types/user.type'
+import { Preference } from '@/types/general.type';
 
 
 
@@ -22,10 +25,16 @@ const AuthPage: React.FC = () => {
     const [verificationPopUp, setVerificationPopUp] = useState(false);
     const [step, setStep] = useState(1);
     const [user, setUser] = useState<any>(null);
-    const [userGiveWrongCode, setUserGiveWrongCode] = useState(false)
+    const [userGiveWrongCode, setUserGiveWrongCode] = useState(false);
+    const [signUpBy, setSignUpBy] = useState<string>();
+    useEffect(() => {
+        console.log(user);
+
+    }, [user])
 
     async function loginWithGoogle() {
         try {
+            setSignUpBy('google');
             const result = await signInWithPopup(auth, googleProvider);
             const user = result.user;
             setUser(user);
@@ -37,9 +46,10 @@ const AuthPage: React.FC = () => {
     }
 
     async function loginWithEmailAndPassword(email: string, password: string) {
+        setSignUpBy('email')
         setVerificationPopUp(true);
         setEmail(email);
-        setUser({email: email, password: password});
+        setUser({ email: email, password: password });
         sendVerificationCode(email);
     }
 
@@ -57,14 +67,14 @@ const AuthPage: React.FC = () => {
         debugger
         try {
             const result = await http.post('/verify-email/check', { email: email, code: code })
-            if(result.status === 200) {
+            if (result.status === 200) {
                 setStep(2);
                 setVerificationPopUp(false);
-            }else{
+            } else {
                 setUserGiveWrongCode(true);
             }
             console.log(result);
-            
+
         }
         catch (error) {
             console.error('Error sending verification code:', error);
@@ -72,14 +82,62 @@ const AuthPage: React.FC = () => {
         }
     }
 
-    async function handleStep(data: object) {
-        setStep((prev:number)=>{
-            return prev+1
-        });
-        setUser((prev:object)=>{
-            return {...prev,...data}
-        })
+    async function handleStep(data: object | null, more: boolean = true) {
+        if (more) {
+            if (step === 4) {
+                signUp();
+            }
+            setStep((prev: number) => {
+                return prev + 1
+            });
+        } else {
+
+            setStep((prev: number) => {
+                return prev - 1
+            });
+        }
+        if (data !== null) {
+            setUser((prev: object) => {
+                return { ...prev, ...data }
+            })
+        }
         return;
+    }
+    
+    async function signUp() {
+        debugger
+        console.log(user);
+
+        const preferences: Preference =
+        {
+            email_notifications: true,
+            minyan_notifications: true,
+            event_notifications: true
+        };
+        let newUser: User = {
+            first_name: user.firstName,
+            last_name: user.lastNname,
+            email: user.email,
+            address: user.address,
+            phone_number: user.phoneNumber,
+            profile_picture_url: user.imageUrl,
+            neighborhoodId: "675042e6292054c85b9b65d6",
+            communitiesIds: [],
+            preferences: preferences,
+            savedPostsIds: []
+        }
+        if (signUpBy === "google") {
+            const result = await http.post('/register/google', newUser, {
+                headers: {
+                    Authorization: user.accessToken,
+                    Uid: user.uid
+                }
+            });
+        } else {
+            const userWithPass = { ...newUser, password: user.password }
+            const result = await http.post('/register/email', userWithPass);
+        }
+
     }
 
     return (
@@ -116,8 +174,8 @@ const AuthPage: React.FC = () => {
                 </div>
                 {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} /> : step === 2 ?
 
-                    <Step2 handleStep={handleStep}/> : step === 3 ? <Step3 /> : <></>}
-                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode}/>}
+                    <Step2 handleStep={handleStep} /> : step === 3 ? <Step3 handleStep={handleStep} /> : <Step4 handleStep={handleStep} />}
+                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode} />}
             </div>
         </div>
     );

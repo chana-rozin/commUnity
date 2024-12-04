@@ -1,12 +1,11 @@
 import { Address, Preference } from './general.type'
 export interface User {
-    _id: string;
     first_name: string;
     last_name: string;
     email: string;
     address: Address;
     phone_number: string;
-    age: number;
+    age?: number;
     profile_picture_url: string;
     neighborhoodId: string;
     communitiesIds: string[];
