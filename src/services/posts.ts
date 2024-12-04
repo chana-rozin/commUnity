@@ -45,7 +45,7 @@ export const savePost = async (userId: string, postId: string) => {
       const response = await http.post(`/users/${userId}/posts`, postId );
       return response;
     } catch (error) {
-      console.error("Error liking post:", error);
+      console.error("Error saving post:", error);
       throw error;
     }
 };
@@ -55,7 +55,7 @@ export const unSavePost = async (userId: string, postId: string) => {
       const response = await http.delete(`/users/${userId}/posts`, {data: postId});
       return response;
     } catch (error) {
-      console.error("Error liking post:", error);
+      console.error("Error unSaving post:", error);
       throw error;
     }
 };

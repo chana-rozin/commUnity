@@ -13,8 +13,8 @@ export interface PostProps {
   likesCount: number;
   liked: boolean;
   saved: boolean;
-  onLike?: (isCurrentlyLiked: boolean) => Promise<void>; 
-  onSave?: () => Promise<void>; 
+  onLike?: (isCurrentlyLiked: boolean) => void; 
+  onSave?: () => void; 
 }
 
 export const PostComp: React.FC<PostProps> = ({
