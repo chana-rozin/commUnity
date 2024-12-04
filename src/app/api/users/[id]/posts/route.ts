@@ -1,31 +1,33 @@
 import { NextResponse } from "next/server";
-import {patchDocumentById, getDocumentById} from "@/services/mongodb";
+import { patchDocumentById, getDocumentById } from "@/services/mongodb";
 import { User } from "@/types/user.type";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    debugger
     try {
         let { id } = await params;
         if (!id) {
             throw new Error('User ID is required');
         }
         const body = await request.json(); // Parse request body
-        
+
         // Fetch the user document
         const userToUpdate = await getDocumentById('users', id);
-        let user = userToUpdate?.data as User;
-        
+        if (!userToUpdate) {
+            return NextResponse.json(
+                { message: "User not found" },
+                { status: 404 },  // OK Status Code 200
+            );
+        }
+        let user = userToUpdate.parse();
         if (!user) {
             throw new Error('User not found');
         }
-
-        // Create a new object without the _id field for update
-        const updateData: Omit<User, '_id'> = {
-            ...user,
-            savedPostsIds: [...user.savedPostsIds, body]
-        };
+        user.savedPostsIds.push(body);
+        delete user._id;
 
         // Update the post in the database
-        const result = await patchDocumentById("users", id, updateData);
+        const result = await patchDocumentById("users", id, user);
 
         if (!result) {
             throw new Error('Update failed');
@@ -54,10 +56,10 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
                 { status: 400 } // Bad Request
             );
         }
-        
+
         const body = await request.json(); // Parse request body
         const userDocument = await getDocumentById('users', id);
-        
+
         if (!userDocument) {
             return NextResponse.json(
                 { message: "User not found" },
