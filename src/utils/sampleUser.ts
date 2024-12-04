@@ -29,7 +29,7 @@ const sampleUser:User = {
 import http from "@/services/http";
 
 const getSampleUser = async ()=>{
-    const res = await http.get("/user/674ed9fb04a9dba04cdfaea7");
+    const res = await http.get("/users/674ed9fb04a9dba04cdfaea7");
     return res.data as User;
 }
 
