@@ -3,20 +3,23 @@ import ForumPage from '../../components/forum/ForumPage';
 import { Navbar } from '@/components/Navbar/Navbar';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside'
 import useUserStore from '@/stores/userStore';
-import sampleUser from '@/utils/sampleUser'
-import {useEffect} from 'react';
+import {sampleUser, getSampleUser} from '@/utils/sampleUser';
+import { useEffect } from 'react';
 
 const HomePage = () => {
 
-  const setUser = useUserStore((state) => state.setUser);
-  const user = useUserStore((state) => state.user);
+  const { user, setUser } = useUserStore();
 
   useEffect(() => {
     if (!user) {
-      setUser(sampleUser);
-      console.log("Sample user set:", sampleUser);
+      // setUser(sampleUser);
+      (async () => {
+        const sampleUser = await getSampleUser();
+        setUser(sampleUser);
+      })();
+      console.log("Sample user set:", user);
     }
-  }, [setUser]);
+  }, []);
 
   console.log("User store:", user);
 

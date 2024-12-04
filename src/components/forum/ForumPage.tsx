@@ -2,69 +2,83 @@
 import React, { useState, useEffect } from 'react';
 import { PostComp } from './Post';
 import { Post } from '@/types/post.type';
-import { fetchPosts, toggleLikePost, toggleSavePost } from '@/services/forumUtils';
+import { usePosts, useLikePost, useSavePost } from '@/services/mutations/forum';
 import { NewPostInput } from './NewPostInput';
 import Link from 'next/link';
 import useUserStore from "@/stores/userStore";
 
 const ForumPage: React.FC = () => {
   const {user,setUser} = useUserStore();
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: posts, isLoading, error } = usePosts();
+  const likeMutation = useLikePost();
+  const saveMutation = useSavePost(user, setUser);
 
-  useEffect(() => {
-    // Only fetch posts if user is loaded
-    if (user) {
-      const fetchData = async () => {
-        try {
-          const fetchedPosts = await fetchPosts();
-          setPosts(fetchedPosts);
-        } catch (error) {
-          console.error("Failed to fetch posts:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchData();
-    }
-  }, [user]); // Correct dependency array
-
-  const handleLike = async (postId: string, isCurrentlyLiked: boolean): Promise<void> => {
+  const handleLike = (postId: string, isCurrentlyLiked: boolean) => {
     if (!user?._id) return;
-    
-    try {
-      await toggleLikePost(postId, user._id, isCurrentlyLiked, setPosts);
-    } catch (error) {
-      console.error("Failed to toggle like:", error);
-    }
+    likeMutation.mutate({ postId, userId: user._id, isCurrentlyLiked });
   };
 
-  const handleSave = async (postId: string) => {
+  const handleSave = (postId: string) => {
     if (!user?._id) return;
-    
-    try {
-      const isCurrentlySaved = user.savedPostsIds.includes(postId);
-      await toggleSavePost(postId, user._id, isCurrentlySaved,user,setUser, setPosts);
-    } catch (error) {
-      console.error("Failed to toggle save:", error);
-    }
+    saveMutation.mutate({ postId });
   };
 
-  // Early return if user is not loaded
+
+ // const [posts, setPosts] = useState<Post[]>([]);
+  //const [loading, setLoading] = useState(true);
+
+  // useEffect(() => {
+  //   // Only fetch posts if user is loaded
+  //   if (user) {
+  //     const fetchData = async () => {
+  //       try {
+  //         const fetchedPosts = await fetchPosts();
+  //         setPosts(fetchedPosts);
+  //       } catch (error) {
+  //         console.error("Failed to fetch posts:", error);
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     };
+
+  //     fetchData();
+  //   }
+  // }, [user]); // Correct dependency array
+
+  // const handleLike = async (postId: string, isCurrentlyLiked: boolean): Promise<void> => {
+  //   if (!user?._id) return;
+    
+  //   try {
+  //     await toggleLikePost(postId, user._id, isCurrentlyLiked, setPosts);
+  //   } catch (error) {
+  //     console.error("Failed to toggle like:", error);
+  //   }
+  // };
+
+  // const handleSave = async (postId: string) => {
+  //   if (!user?._id) return;
+    
+  //   try {
+  //     const isCurrentlySaved = user.savedPostsIds.includes(postId);
+  //     await toggleSavePost(postId, user._id, isCurrentlySaved,user,setUser, setPosts);
+  //   } catch (error) {
+  //     console.error("Failed to toggle save:", error);
+  //   }
+  // };
+
   if (!user) {
     return <div>Loading user...</div>;
   }
+  if (isLoading) return <div>Loading posts...</div>;
+  if (error) return <div>Error loading posts</div>;
 
   return (
     <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
       <NewPostInput />
-      {loading ? (
-        <div>Loading posts...</div>
-      ) : posts.length === 0 ? (
+       {posts && posts.length === 0 ? (
         <div>No posts to display.</div>
       ) : (
-        posts.map((post) => (
+        posts?.map((post) => (
           <Link key={post._id} href={`/forum/${post._id}`}>
             <PostComp
               creatorId={post.creatorId}

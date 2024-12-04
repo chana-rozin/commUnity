@@ -2,8 +2,6 @@ import * as React from 'react';
 import { useState } from 'react';
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { TiStarOutline, TiStarFullOutline } from "react-icons/ti";
-import useUserStore from "@/stores/userStore";
-
 
 export interface PostProps {
   creatorId: string;
@@ -13,20 +11,12 @@ export interface PostProps {
   likesCount: number;
   liked: boolean;
   saved: boolean;
-  onLike?: (isCurrentlyLiked: boolean) => Promise<void>; 
-  onSave?: () => Promise<void>; 
+  onLike?: (isCurrentlyLiked: boolean) => void; 
+  onSave?: () => void; 
 }
 
-export const PostComp: React.FC<PostProps> = ({
-  creatorId,
-  likesCount: initialLikesCount,
-  createdDate,
-  content,
-  commentCount,
-  liked,
-  saved,
-  onLike,
-  onSave,
+export const PostComp: React.FC<PostProps> = ({ creatorId, likesCount: initialLikesCount, createdDate, content,
+  commentCount, liked, saved, onLike, onSave,
 }) => {
     const [isSaved, setIsSaved] = useState(saved);
     const [isSaving, setIsSaving] = useState(false);
@@ -54,9 +44,7 @@ export const PostComp: React.FC<PostProps> = ({
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault(); 
     e.stopPropagation();
-    // Prevent multiple simultaneous like attempts
     if (isLiking) return;
-
     setIsLiking(true);
 
     try {
@@ -78,7 +66,6 @@ export const PostComp: React.FC<PostProps> = ({
   const handleSave = async (e: React.MouseEvent) => {
     e.preventDefault(); 
     e.stopPropagation();
-    // Prevent multiple simultaneous save attempts
     if (isSaving) return;
     setIsSaving(true);
     try {

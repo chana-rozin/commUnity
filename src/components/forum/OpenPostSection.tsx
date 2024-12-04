@@ -12,22 +12,12 @@ import { likePost, savePost} from '@/services/posts';
 interface OpenPostSectionProps extends Post {
   liked: boolean;
   saved: boolean;
-  onLike: (postId: string, isCurrentlyLiked: boolean) => Promise<void>;
-  onSave: (postId: string) => Promise<void>;
+  onLike: (postId: string, isCurrentlyLiked: boolean) => void;
+  onSave: (postId: string) => void;
 }
 
-const OpenPostSection: React.FC<OpenPostSectionProps> = ({
-  _id,
-  creatorId,
-  createdDate,
-  title,
-  liked,
-  saved,
-  content,
-  comments,
-  likedBy,
-  onLike,
-  onSave,
+const OpenPostSection: React.FC<OpenPostSectionProps> = ({_id, creatorId, createdDate, liked,
+  saved, content, comments, likedBy, onLike, onSave,
 }) => {
   const [allComments, setAllComments] = useState<Comment[]>(comments);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
