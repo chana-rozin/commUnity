@@ -12,8 +12,8 @@ import { likePost, savePost} from '@/services/posts';
 interface OpenPostSectionProps extends Post {
   liked: boolean;
   saved: boolean;
-  onLike: (postId: string, isCurrentlyLiked: boolean) => Promise<void>;
-  onSave: (postId: string) => Promise<void>;
+  onLike: (postId: string, isCurrentlyLiked: boolean) => void;
+  onSave: (postId: string) => void;
 }
 
 const OpenPostSection: React.FC<OpenPostSectionProps> = ({
