@@ -26,5 +26,12 @@ const sampleUser:User = {
     savedPostsIds: ["645c1ab8e8f1a7a1b5c8d9f5", "645c1ab8e8f1a7a1b5c8d9f6"], // Example post IDs
 };
 
+import http from "@/services/http";
 
-export default sampleUser;
+const getSampleUser = async ()=>{
+    const res = await http.get("/user/674ed9fb04a9dba04cdfaea7");
+    return res.data as User;
+}
+
+
+export { sampleUser, getSampleUser};
