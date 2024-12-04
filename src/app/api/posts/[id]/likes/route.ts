@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import {
     patchDocumentById,
 } from "@/services/mongodb";
+import {getPostById} from "@/services/posts";
 import axios from "axios";
 import { debug } from "util";
+import http from "@/services/http";
 
 export async function POST(request: Request,{ params }: { params: Promise<{ id: string }>}) {
 
@@ -15,7 +17,7 @@ export async function POST(request: Request,{ params }: { params: Promise<{ id: 
         );
     }
     const body = await request.json() // Parse request body
-    let postToUpdate = await axios.get(`http://localhost:3000/api/posts/${id}`);
+    let postToUpdate = await http.get(`/posts/${id}`);
     let post = await postToUpdate.data
     post.likedBy.push(body);
     delete post._id;
@@ -47,8 +49,7 @@ export async function DELETE(request: Request,{ params }: { params: Promise<{ id
         );
     }
     const body = await request.json() // Parse request body
-    let postToUpdate = await axios.get(`http://localhost:3000/api/posts/${id}`);
-    let post = await postToUpdate.data
+    let post = await getPostById(id);
     post.likedBy = post.likedBy.filter((like: string) => like!== body);
     delete post._id;
     

@@ -164,8 +164,8 @@ export const useSavePost = (user: User | null, setUser: (user: User) => void) =>
       const isCurrentlySaved = user?.savedPostsIds.includes(postId);
       
       return isCurrentlySaved 
-        ? await unSavePost(user!._id, postId)
-        : await savePost(user!._id, postId);
+        ? await savePost(user!._id, postId)
+        : await unSavePost(user!._id, postId);
     },
     onMutate: async ({ postId }) => {
       // Cancel any ongoing refetches

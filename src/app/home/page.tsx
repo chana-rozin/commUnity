@@ -19,7 +19,7 @@ const HomePage = () => {
       })();
       console.log("Sample user set:", user);
     }
-  }, [setUser]);
+  }, []);
 
   console.log("User store:", user);
 
