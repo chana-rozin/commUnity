@@ -5,7 +5,7 @@ import OpenPostSection from '@/components/forum/OpenPostSection';
 import { getPostById } from '@/services/posts';
 import { Post } from '@/types/post.type';
 import { useParams } from 'next/navigation'
-import { useLikePost, useSavePost } from '@/services/forumUtils';
+import { useLikePost, useSavePost } from '@/utils/forumUtils';
 import useUserStore from "@/stores/userStore";
 
 
