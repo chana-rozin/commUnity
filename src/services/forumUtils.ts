@@ -115,40 +115,40 @@ export const useLikePost = () => {
 //   }
 // };
 
-export const toggleSinglePostLike = async (
-  postId: string,
-  userId: string,
-  isCurrentlyLiked: boolean,
-  updatePostState: React.Dispatch<React.SetStateAction<Post | null>>
-) => {
-  try {
-    if (isCurrentlyLiked) {
-      const response = await unLikePost(postId, userId);
-      updatePostState((prevPost) => 
-        prevPost && prevPost._id === postId
-          ? {
-              ...prevPost,
-              likedBy: prevPost.likedBy.filter((id) => id !== userId),
-              likesCount: response.data.likesCount,
-            }
-          : prevPost
-      );
-    } else {
-      const response = await likePost(postId, userId);
-      updatePostState((prevPost) => 
-        prevPost && prevPost._id === postId
-          ? {
-              ...prevPost,
-              likedBy: [...prevPost.likedBy, userId],
-              likesCount: response.data.likesCount,
-            }
-          : prevPost
-      );
-    }
-  } catch (error) {
-    console.error('Error toggling like:', error);
-  }
-};
+// export const toggleSinglePostLike = async (
+//   postId: string,
+//   userId: string,
+//   isCurrentlyLiked: boolean,
+//   updatePostState: React.Dispatch<React.SetStateAction<Post | null>>
+// ) => {
+//   try {
+//     if (isCurrentlyLiked) {
+//       const response = await unLikePost(postId, userId);
+//       updatePostState((prevPost) => 
+//         prevPost && prevPost._id === postId
+//           ? {
+//               ...prevPost,
+//               likedBy: prevPost.likedBy.filter((id) => id !== userId),
+//               likesCount: response.data.likesCount,
+//             }
+//           : prevPost
+//       );
+//     } else {
+//       const response = await likePost(postId, userId);
+//       updatePostState((prevPost) => 
+//         prevPost && prevPost._id === postId
+//           ? {
+//               ...prevPost,
+//               likedBy: [...prevPost.likedBy, userId],
+//               likesCount: response.data.likesCount,
+//             }
+//           : prevPost
+//       );
+//     }
+//   } catch (error) {
+//     console.error('Error toggling like:', error);
+//   }
+// };
 
 interface SaveContext {
   previousPosts?: Post[];
@@ -251,33 +251,33 @@ export const useSavePost = (user: User | null, setUser: (user: User) => void) =>
 //     }
 //   };
   
-export const toggleSinglePostSave = async (
-    postId: string,
-    userId: string,
-    isCurrentlySaved: boolean,
-    user: User | null,
-    setUser: (user: User) => void,
-    updatePostState: React.Dispatch<React.SetStateAction<Post | null>>
-  ) => {
-    try {
-      if (isCurrentlySaved) {
-        await unSavePost(userId,postId);
-        setUser({...user!, savedPostsIds: user!.savedPostsIds.filter((id)=> id!==postId)})
-        updatePostState((prevPost) => 
-          prevPost && prevPost._id === postId
-            ? { ...prevPost, saved: false }
-            : prevPost
-        );
-      } else {
-        await savePost(userId,postId);
-        setUser({...user!, savedPostsIds: [...(user!.savedPostsIds), postId]})
-        updatePostState((prevPost) => 
-          prevPost && prevPost._id === postId
-            ? { ...prevPost, saved: true }
-            : prevPost
-        );
-      }
-    } catch (error) {
-      console.error('Error toggling save:', error);
-    }
-  };
+// export const toggleSinglePostSave = async (
+//     postId: string,
+//     userId: string,
+//     isCurrentlySaved: boolean,
+//     user: User | null,
+//     setUser: (user: User) => void,
+//     updatePostState: React.Dispatch<React.SetStateAction<Post | null>>
+//   ) => {
+//     try {
+//       if (isCurrentlySaved) {
+//         await unSavePost(userId,postId);
+//         setUser({...user!, savedPostsIds: user!.savedPostsIds.filter((id)=> id!==postId)})
+//         updatePostState((prevPost) => 
+//           prevPost && prevPost._id === postId
+//             ? { ...prevPost, saved: false }
+//             : prevPost
+//         );
+//       } else {
+//         await savePost(userId,postId);
+//         setUser({...user!, savedPostsIds: [...(user!.savedPostsIds), postId]})
+//         updatePostState((prevPost) => 
+//           prevPost && prevPost._id === postId
+//             ? { ...prevPost, saved: true }
+//             : prevPost
+//         );
+//       }
+//     } catch (error) {
+//       console.error('Error toggling save:', error);
+//     }
+//   };
