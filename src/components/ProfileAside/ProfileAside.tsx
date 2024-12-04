@@ -75,7 +75,7 @@ export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) =>
                 <Link
                     className="gap-1 self-stretch px-4 py-2 mt-3.5 text-sm font-medium leading-none text-center text-white bg-indigo-600 rounded-md"
                     aria-label="View my profile"
-                    href="/myProfile"
+                    href="/settings/myProfile"
                 >הפרופיל שלי
                 </Link>
             </div>

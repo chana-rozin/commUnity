@@ -61,7 +61,7 @@ const ProfilePage: React.FC = () => {
 
     return (
         <div className="flex flex-col items-end self-stretch pt-4 pr-4 pb-24 bg-white rounded-2xl" >
-            <div className="flex flex-col px-8 pt-8 w-full h-[716px] max-md:px-5" >
+            <div className="flex flex-col px-8 pt-8 w-full max-md:px-5" >
                 <div className="flex flex-col items-start w-full min-h-[684px] max-md:max-w-full" >
                     <header className="flex gap-4 items-center self-stretch pb-5 w-full leading-none text-right border-b border-solid border-b-slate-200 max-md:max-w-full" >
                         <div className="flex flex-col flex-1 shrink self-stretch my-auto w-full basis-0 min-w-[240px] max-md:max-w-full" >
@@ -100,9 +100,9 @@ const ProfilePage: React.FC = () => {
                         >
                             <div className="flex flex-wrap grow shrink gap-3 items-start min-w-[240px] w-[468px] max-md:max-w-full" >
                                 <img
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/1b2b752429e0790c1875b68b01ce47323cebd843a2dbd42e947aa5a30305a2e4?placeholderIfAbsent=true&apiKey=526d563cdba2451a913eb25ca7c41611"
+                                    src={user?.profile_picture_url}
                                     alt=""
-                                    className="object-contain shrink-0 w-16 aspect-square"
+                                    className="object-contain shrink-0 w-16 aspect-square rounded-full"
                                 />
                                 <ProfileUploader />
                             </div>
