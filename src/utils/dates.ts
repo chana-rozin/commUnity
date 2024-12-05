@@ -1,6 +1,7 @@
+
 export const formatDate = (date: Date) => {
     return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-  };
+};
 
 
 export const getTimeDifference = (pastDate: Date): string => {
@@ -11,10 +12,10 @@ export const getTimeDifference = (pastDate: Date): string => {
     const diffDays = Math.floor(diffHours / 24);
 
     if (diffMinutes < 60) {
-      return `${diffMinutes} דקות`;
+        return `${diffMinutes} דקות`;
     } else if (diffHours < 24) {
-      return `${diffHours} שעות`;
+        return `${diffHours} שעות`;
     } else {
-      return `${diffDays} ימים`;
+        return `${diffDays} ימים`;
     }
-  };
+};
