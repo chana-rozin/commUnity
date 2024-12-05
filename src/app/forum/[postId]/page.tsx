@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import OpenPostSection from '@/components/Forum/OpenPostSection';
+import OpenPostSection from '@/components/Forum1/OpenPostSection';
 import { getPostById } from '@/services/posts';
 import { Post } from '@/types/post.type';
 import { useParams } from 'next/navigation'

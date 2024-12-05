@@ -1,5 +1,5 @@
 "use client"
-import ForumPage from '../../components/Forum/ForumPage';
+import ForumPage from '../../components/Forum1/ForumPage';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside'
 import useUserStore from '@/stores/userStore';
 import { getSampleUser } from '@/utils/sampleUser';
