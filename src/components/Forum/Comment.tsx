@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {formatDate} from '@/utils/dates';
 
 export interface CommentProps {
   creatorId: string;
@@ -30,11 +31,6 @@ export const CommentComp: React.FC<CommentProps> = ({ creatorId, createdDate, co
       date1.getMonth() !== date2.getMonth() ||
       date1.getDate() !== date2.getDate()
     );
-  };
-
-  // Format date
-  const formatDate = (date: Date) => {
-    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
   };
   //----------------------------------------------------------------
 

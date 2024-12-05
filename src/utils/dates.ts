@@ -1,3 +1,8 @@
+export const formatDate = (date: Date) => {
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  };
+
+
 export const getTimeDifference = (pastDate: Date): string => {
     const now = new Date();
     const diffMs = now.getTime() - pastDate.getTime();
