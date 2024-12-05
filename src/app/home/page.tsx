@@ -1,6 +1,7 @@
 "use client"
 import ForumPage from '../../components/Forum/ForumPage';
-import { ProfileAside } from '@/components/ProfileAside/ProfileAside'
+import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
+import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
 import useUserStore from '@/stores/userStore';
 import { getSampleUser } from '@/utils/sampleUser';
 import { useEffect } from 'react';
@@ -77,13 +78,7 @@ const HomePage = () => {
 
           {/* Events Section */}
           <div className="flex flex-col p-5 mt-4 w-full bg-white rounded-2xl">
-            {/* Uncomment and replace with actual components when needed */}
-            {/* <EventCard 
-              date="יח חשוון תשפ״ה, 19:45"
-              title="אסיפת דיירים חזון איש 5"
-              location="לובי הבניין, חזו״א 5"
-              participants={7}
-            /> */}
+            <EventsNotificationsCard/>
           </div>
         </div>
       </div>
