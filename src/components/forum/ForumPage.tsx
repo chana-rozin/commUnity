@@ -30,8 +30,8 @@ const ForumPage: React.FC = () => {
   return (
     <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
       <NewPostInput />
-       {posts && posts.length === 0 ? (
-        <div>No posts to display.</div>
+        {posts && posts.length === 0 ? (
+          <div>No posts to display.</div>
       ) : (
         posts?.map((post) => (
           <Link key={post._id} href={`/forum/${post._id}`}>

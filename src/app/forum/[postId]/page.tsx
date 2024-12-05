@@ -8,9 +8,7 @@ import { useParams } from 'next/navigation'
 import { useLikePost, useSavePost } from '@/services/mutations/forum';
 import useUserStore from "@/stores/userStore";
 
-
 const PostPage: React.FC = () => {
-
   const { postId } = useParams();
   const {user, setUser} = useUserStore();
 
@@ -32,11 +30,7 @@ const PostPage: React.FC = () => {
     const isCurrentlyLiked = post.likedBy.includes(user._id);
     
     try {
-      likeMutation.mutate({ 
-        postId: post._id, 
-        userId: user._id, 
-        isCurrentlyLiked 
-      });
+      likeMutation.mutate({ postId: post._id, userId: user._id, isCurrentlyLiked });
     } catch (error) {
       console.error("Error toggling like:", error);
     }

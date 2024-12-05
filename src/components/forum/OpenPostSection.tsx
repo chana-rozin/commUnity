@@ -7,7 +7,6 @@ import { CommentComp } from './Comment';
 import NewCommentInput from './NewCommentInput';
 import { Post } from '@/types/post.type';
 import { Comment } from '@/types/general.type';
-import { likePost, savePost} from '@/services/posts';
 
 interface OpenPostSectionProps extends Post {
   liked: boolean;

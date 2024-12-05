@@ -1,9 +1,8 @@
 "use client"
 import ForumPage from '../../components/Forum/ForumPage';
-import { Navbar } from '@/components/Navbar/Navbar';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside'
 import useUserStore from '@/stores/userStore';
-import {sampleUser, getSampleUser} from '@/utils/sampleUser';
+import { getSampleUser } from '@/utils/sampleUser';
 import { useEffect } from 'react';
 
 const HomePage = () => {
@@ -12,7 +11,6 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!user) {
-      // setUser(sampleUser);
       (async () => {
         const sampleUser = await getSampleUser();
         setUser(sampleUser);
@@ -27,10 +25,7 @@ const HomePage = () => {
     <main>
       <div className="flex flex-wrap gap-4 items-start mt-5 w-full">
         {/* Right Column - Profile Section */}
-        <aside
-          className="flex flex-col min-h-[909px] w-[211px] max-w-full"
-          role="complementary"
-        >
+        <aside className="flex flex-col min-h-[909px] w-[211px] max-w-full" role="complementary">
           <ProfileAside saved={false} />
         </aside>
 

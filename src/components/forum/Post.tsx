@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
+import { getTimeDifference } from "@/utils/dates";
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { TiStarOutline, TiStarFullOutline } from "react-icons/ti";
 
@@ -16,17 +17,8 @@ export interface PostProps {
   onSave?: () => void; 
 }
 
-export const PostComp: React.FC<PostProps> = ({
-  creatorId,
-  likesCount: initialLikesCount,
-  createdDate,
-  content,
-  commentCount,
-  liked,
-  saved,
-  images,
-  onLike,
-  onSave,
+export const PostComp: React.FC<PostProps> = ({creatorId,likesCount: initialLikesCount,createdDate,content,
+  commentCount,liked,saved,images,onLike,onSave,
 }) => {
   const [isSaved, setIsSaved] = useState(saved);
   const [isSaving, setIsSaving] = useState(false);
@@ -34,22 +26,6 @@ export const PostComp: React.FC<PostProps> = ({
   const [isLiked, setIsLiked] = useState(liked);
   const [isLiking, setIsLiking] = useState(false);
   const date = createdDate instanceof Date ? createdDate : new Date(createdDate);
-
-  const getTimeDifference = (pastDate: Date): string => {
-    const now = new Date();
-    const diffMs = now.getTime() - pastDate.getTime();
-    const diffMinutes = Math.floor(diffMs / (1000 * 60));
-    const diffHours = Math.floor(diffMinutes / 60);
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (diffMinutes < 60) {
-      return `${diffMinutes} דקות`;
-    } else if (diffHours < 24) {
-      return `${diffHours} שעות`;
-    } else {
-      return `${diffDays} ימים`;
-    }
-  };
 
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -60,7 +36,6 @@ export const PostComp: React.FC<PostProps> = ({
     try {
       setIsLiked(!isLiked);
       setLikesCount((current) => (isLiked ? current - 1 : current + 1));
-
       if (onLike) {
         await onLike(isLiked);
       }
@@ -96,11 +71,7 @@ export const PostComp: React.FC<PostProps> = ({
       {/* Header Section */}
       <div className="flex gap-4 items-start mb-4">
         <div className="flex items-center gap-3">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/68b95c1707a8445652f77e217614fe7ec26ad8b08cd2f80fdc0fcd5190bb58e2"
-            alt="User avatar"
-            className="w-10 h-10 rounded-full"
-          />
+          <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/68b95c1707a8445652f77e217614fe7ec26ad8b08cd2f80fdc0fcd5190bb58e2" alt="User avatar" className="w-10 h-10 rounded-full"/>
         </div>
         <div className="flex flex-col items-start">
           <div className="text-sm font-semibold text-neutral-950">{creatorId}</div>
@@ -119,12 +90,7 @@ export const PostComp: React.FC<PostProps> = ({
       {images?.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 rounded-lg overflow-hidden">
           {images.map((image, index) => (
-            <img
-              key={index}
-              src={image}
-              alt={`Post image ${index + 1}`}
-              className="w-full h-auto rounded-lg object-cover"
-            />
+            <img key={index} src={image} alt={`Post image ${index + 1}`} className="w-full h-auto rounded-lg object-cover"/>
           ))}
         </div>
       )}
@@ -141,12 +107,8 @@ export const PostComp: React.FC<PostProps> = ({
 
         {/* Right: Actions */}
         <div className="flex gap-5">
-          <button
-            onClick={handleLike}
-            disabled={isLiking}
-            className={`flex items-center gap-2 px-3 py-1 rounded-full transition-colors ${
-              isLiked ? "bg-indigo-100 text-indigo-600" : "bg-neutral-100"
-            }`}
+          <button onClick={handleLike} disabled={isLiking} className={`flex items-center gap-2 px-3 py-1 rounded-full transition-colors ${
+              isLiked ? "bg-indigo-100 text-indigo-600" : "bg-neutral-100"}`}
           >
             <span className="text-sm">אהבתי</span>
             {isLiked ? (
@@ -155,12 +117,8 @@ export const PostComp: React.FC<PostProps> = ({
               <BiLike className="w-4 h-4" />
             )}
           </button>
-          <button
-            onClick={handleSave}
-            disabled={isSaving}
-            className={`flex items-center gap-2 px-3 py-1 rounded-full transition-colors ${
-              isSaved ? "bg-indigo-100 text-indigo-600" : "bg-neutral-100"
-            }`}
+          <button onClick={handleSave} disabled={isSaving} className={`flex items-center gap-2 px-3 py-1 rounded-full transition-colors ${
+              isSaved ? "bg-indigo-100 text-indigo-600" : "bg-neutral-100"}`}
           >
             <span className="text-sm">שמור</span>
             {isSaved ? (
