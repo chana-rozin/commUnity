@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {formatDate} from '@/utils/dates';
 
 export interface CommentProps {
   creatorId: string;
@@ -7,12 +8,9 @@ export interface CommentProps {
   previousDate?: Date | string; 
 }
 
-export const CommentComp: React.FC<CommentProps> = ({
-  creatorId,
-  createdDate,
-  content,
-  previousDate,
-}) => {
+export const CommentComp: React.FC<CommentProps> = ({ creatorId, createdDate, content, previousDate,}) => {
+  //-------TEMPORARY--------------------
+  // Replace with a function to get the hebrew date and format it
   // Conversion function to ensure we always have a Date object
   const toDate = (dateInput: Date | string): Date => {
     if (dateInput instanceof Date) {
@@ -34,11 +32,7 @@ export const CommentComp: React.FC<CommentProps> = ({
       date1.getDate() !== date2.getDate()
     );
   };
-
-  // Format date
-  const formatDate = (date: Date) => {
-    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-  };
+  //----------------------------------------------------------------
 
   return (
     <>
@@ -69,7 +63,6 @@ export const CommentComp: React.FC<CommentProps> = ({
               {`${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`}
             </div>
           </div>
-     
           {/* Comment Content */}
           <div className="mt-1 text-xs leading-4 text-right text-neutral-800 max-w-[565px] max-md:max-w-full">
             {content}

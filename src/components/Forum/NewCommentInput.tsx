@@ -1,49 +1,37 @@
 import useUserStore from "@/stores/userStore";
 import { useState } from 'react';
 import { Comment } from '@/types/general.type';
-import http from '@/services/http';
+import { useCreateComment } from '@/services/mutations/forum';
 
 interface ForumInputProps {
     postId: string; 
   }
 const NewCommentInput: React.FC<ForumInputProps> = ({postId}) => {
   const [text, setText] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const user = useUserStore((state) => state.user);
+  const createCommentMutation = useCreateComment(postId);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!text.trim()) return;
 
-    setIsLoading(true);
-    setError(null);
+    const newComment: Comment = {
+      _id: `${text}123${Date.now()}`, 
+      creatorId: user?._id || '0',
+      content: text.trim(),
+      createdDate: new Date(),
+      likedBy: [],
+    };
 
-    try {
-        const newComment: Comment = {
-          _id: `${text}123${Date.now()}`,
-          creatorId: user?._id ? user._id : '0',
-          content: text.trim(),
-          createdDate: new Date(),
-          likedBy: [],
-        };
-
-        await http.post('/pusher/send', {
-            channel: `forum_${postId}`,
-            event: 'new-message',
-            message: newComment,
-        });
-
-        await http.post(`/posts/${postId}/comments`,  newComment );
-
-        setText('');
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
-        console.error(err);
-      } finally {
-        setIsLoading(false);
+    createCommentMutation.mutate(
+      { postId, newComment },
+      { onSuccess: () => setText(''), 
+        onError: (error) => {
+          console.error('Failed to add comment:', error);
+        },
       }
+    );
   };
 
   return (
@@ -58,7 +46,6 @@ const NewCommentInput: React.FC<ForumInputProps> = ({postId}) => {
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="גם לך יש מה לומר? הוסף תגובה.."
-        disabled={isLoading}
         className="grow shrink min-w-0 bg-transparent border-none outline-none"
         aria-label="Add your comment"
       />
