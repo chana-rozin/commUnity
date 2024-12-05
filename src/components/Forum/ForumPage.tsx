@@ -40,9 +40,9 @@ const ForumPage: React.FC = () => {
               createdDate={post.createdDate}
               content={post.content}
               images={post.images}
-              commentCount={post.comments.length}
-              likesCount={post.likedBy.length || 0}
-              liked={post.likedBy.includes(user._id)}
+              commentCount={post.comments?.length || 0}
+              likesCount={post.likedBy?.length || 0}
+              liked={post.likedBy?.includes(user._id)}
               saved={user.savedPostsIds.includes(post._id)}
               onLike={(isLiked) => handleLike(post._id, isLiked)}
               onSave={() => handleSave(post._id)}
