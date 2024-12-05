@@ -8,9 +8,10 @@ import { useForm,SubmitHandler } from "react-hook-form";
 interface props {
     loginWithGoogle: () => void;
     loginWithEmailAndPassword: (email: string, password: string) => void;
+    userExists: boolean;
 }
 
-const step1: React.FC<props>=({loginWithGoogle,loginWithEmailAndPassword})=> {
+const step1: React.FC<props>=({loginWithGoogle,loginWithEmailAndPassword,userExists})=> {
     const {
         register,
         handleSubmit,
@@ -123,6 +124,7 @@ const step1: React.FC<props>=({loginWithGoogle,loginWithEmailAndPassword})=> {
                         <span onClick={loginWithGoogle}>הירשם עם גוגל</span>
                     </div>
                 </AuthButton>
+                {userExists && <span>המשתמש כבר קיים... הכנס</span>}
             </div>
         </div>
     )
