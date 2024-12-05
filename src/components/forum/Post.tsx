@@ -13,12 +13,12 @@ export interface PostProps {
   likesCount: number;
   liked: boolean;
   saved: boolean;
-  onLike?: (isCurrentlyLiked: boolean) => void; 
-  onSave?: () => void; 
+  onLike?: (isCurrentlyLiked: boolean) => void;
+  onSave?: () => void;
 }
 
-export const PostComp: React.FC<PostProps> = ({creatorId,likesCount: initialLikesCount,createdDate,content,
-  commentCount,liked,saved,images,onLike,onSave,
+export const PostComp: React.FC<PostProps> = ({ creatorId, likesCount: initialLikesCount, createdDate, content,
+  commentCount, liked, saved, images, onLike, onSave,
 }) => {
   const [isSaved, setIsSaved] = useState(saved);
   const [isSaving, setIsSaving] = useState(false);
@@ -71,7 +71,7 @@ export const PostComp: React.FC<PostProps> = ({creatorId,likesCount: initialLike
       {/* Header Section */}
       <div className="flex gap-4 items-start mb-4">
         <div className="flex items-center gap-3">
-          <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/68b95c1707a8445652f77e217614fe7ec26ad8b08cd2f80fdc0fcd5190bb58e2" alt="User avatar" className="w-10 h-10 rounded-full"/>
+          <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/68b95c1707a8445652f77e217614fe7ec26ad8b08cd2f80fdc0fcd5190bb58e2" alt="User avatar" className="w-10 h-10 rounded-full" />
         </div>
         <div className="flex flex-col items-start">
           <div className="text-sm font-semibold text-neutral-950">{creatorId}</div>
@@ -90,7 +90,7 @@ export const PostComp: React.FC<PostProps> = ({creatorId,likesCount: initialLike
       {images?.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 rounded-lg overflow-hidden">
           {images.map((image, index) => (
-            <img key={index} src={image} alt={`Post image ${index + 1}`} className="w-full h-auto rounded-lg object-cover"/>
+            <img key={index} src={image} alt={`Post image ${index + 1}`} className="w-full h-auto rounded-lg object-cover" />
           ))}
         </div>
       )}
@@ -107,8 +107,13 @@ export const PostComp: React.FC<PostProps> = ({creatorId,likesCount: initialLike
 
         {/* Right: Actions */}
         <div className="flex gap-5">
-          <button onClick={handleLike} disabled={isLiking} className={`flex items-center gap-2 px-3 py-1 rounded-full transition-colors ${
-              isLiked ? "bg-indigo-100 text-indigo-600" : "bg-neutral-100"}`}
+          <button
+            onClick={handleLike}
+            disabled={isLiking}
+            className={`flex items-center gap-2 px-3 py-1 rounded-full transition-colors ${isLiked
+                ? "bg-indigo-100 text-indigo-600 hover:bg-indigo-200"
+                : "bg-neutral-100 hover:bg-neutral-200"
+              }`}
           >
             <span className="text-sm">אהבתי</span>
             {isLiked ? (
@@ -117,8 +122,13 @@ export const PostComp: React.FC<PostProps> = ({creatorId,likesCount: initialLike
               <BiLike className="w-4 h-4" />
             )}
           </button>
-          <button onClick={handleSave} disabled={isSaving} className={`flex items-center gap-2 px-3 py-1 rounded-full transition-colors ${
-              isSaved ? "bg-indigo-100 text-indigo-600" : "bg-neutral-100"}`}
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className={`flex items-center gap-2 px-3 py-1 rounded-full transition-colors ${isSaved
+                ? "bg-indigo-100 text-indigo-600 hover:bg-indigo-200"
+                : "bg-neutral-100 hover:bg-neutral-200"
+              }`}
           >
             <span className="text-sm">שמור</span>
             {isSaved ? (

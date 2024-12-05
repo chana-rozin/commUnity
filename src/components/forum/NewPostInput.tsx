@@ -74,18 +74,13 @@ export const NewPostInput: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="flex justify-between items-center gap-4 mt-3 w-full">
-          <button
-            type="button"
-            onClick={() => setShowImageUpload(!showImageUpload)}
+          <button type="button" onClick={() => setShowImageUpload(!showImageUpload)}
             className="flex gap-2 items-center px-5 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-all"
           >
             <FaImages className="w-5 h-5 text-indigo-600" />
             הוסף תמונה
           </button>
-          <button
-            type="submit"
-            className="flex items-center justify-center px-6 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 transition-all"
-          >
+          <button type="submit" className="flex items-center justify-center px-6 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 transition-all">
             פרסם
           </button>
         </div>
