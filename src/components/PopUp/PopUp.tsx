@@ -1,41 +1,35 @@
-"use client";
 import * as React from "react";
 
-export interface PopupProps {
+interface PopupProps {
   title: string;
-  text: string;
+  content: React.ReactNode;
+  isOpen: boolean;
   onClose: () => void;
-  buttons?: React.ReactNode; // Optional additional buttons
 }
 
-export const Popup: React.FC<PopupProps> = ({ title, text, onClose, buttons }) => {
+const Popup: React.FC<PopupProps> = ({ title, content, isOpen, onClose }) => {
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-lg w-[400px] max-h-[80%] overflow-y-auto">
-        {/* Header */}
-        <header className="flex justify-between items-center p-4 border-b border-gray-300">
-          <h2 className="text-lg font-bold">{title}</h2>
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            className="text-gray-600 hover:text-black"
-          >
-            ✖
-          </button>
-        </header>
+    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
+      <div className="relative bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+          aria-label="Close Popup"
+        >
+          ✖
+        </button>
 
-        {/* Body */}
-        <div className="p-4 text-gray-700">
-          <p>{text}</p>
-        </div>
+        {/* Popup Title */}
+        <h2 className="text-xl font-bold text-gray-900">{title}</h2>
 
-        {/* Footer */}
-        {buttons && (
-          <footer className="p-4 border-t border-gray-300 flex justify-end gap-2">
-            {buttons}
-          </footer>
-        )}
+        {/* Popup Content */}
+        <div className="mt-4 text-sm text-gray-700">{content}</div>
       </div>
     </div>
   );
 };
+
+export default Popup;
