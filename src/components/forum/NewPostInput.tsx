@@ -88,7 +88,7 @@ export const NewPostInput: React.FC = () => {
 
         {/* Image Upload Component */}
         {showImageUpload && (
-          <div className="mt-4">
+          <div className="">
             <ImageUpload setImageUrl={handleImageUpload} />
           </div>
         )}
