@@ -4,8 +4,9 @@ import { NavigationButton } from '../step3/navigateBtn';
 import { Button } from './btn';
 interface step4Props{
     handleStep: (imageUrl: object | null, more?: boolean) => void;
+    signUp: ()=>void;
 }
-const Step4: React.FC<step4Props> = ({handleStep}) => {
+const Step4: React.FC<step4Props> = ({handleStep,signUp}) => {
     return (
         <div className="overflow-hidden py-10 pr-9 pl-16 bg-white max-md:px-5">
             <div className="flex gap-5 max-md:flex-col">
@@ -31,8 +32,8 @@ const Step4: React.FC<step4Props> = ({handleStep}) => {
                                 עכשיו זה הזמן להתחבר, לשתף, ולהיות חלק מקהילה תוססת ומשפחתית ב-CommUnity!
                             </div>
                             <NavigationButton label="הקודם" onClick={() => { handleStep(null, false) }} />
-                            <Button onClick={() => { handleStep(null, true) }} className="gap-1 px-4 py-2 mt-16 ml-20 max-w-full text-base text-white bg-indigo-600 rounded-md w-[140px] max-md:mt-10">
-                                המשך לאתר
+                            <Button onClick={() => { signUp() }} className="gap-1 px-4 py-2 mt-16 ml-20 max-w-full text-base text-white bg-indigo-600 rounded-md w-[140px] max-md:mt-10">
+                                אישור הרשמה
                             </Button>
                             <ImageComponent
                                 src="https://cdn.builder.io/api/v1/image/assets/TEMP/8003bab8e2fa60343c63c22a247c0e689c6edb6b1b39218588b31ac3335be3b3?placeholderIfAbsent=true&apiKey=7db810be59414fad871df25414a5c08b"

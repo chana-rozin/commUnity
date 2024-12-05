@@ -12,7 +12,7 @@ export async function POST(request: Request,{ params }: { params: Promise<{ id: 
     let post = await postToUpdate.data
     post.comments.push(body);
     delete post._id;
-    if (!id) {
+     if (!id) {
         return NextResponse.json(
             { message: "Post ID is required" },
             { status: 400 } // Bad Request
