@@ -1,7 +1,13 @@
 
-export const formatDate = (date: Date) => {
-    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+export const formatDate = (date: Date | string) => {
+    const validDate = typeof date === "string" ? new Date(date) : date;
+    if (isNaN(validDate.getTime())) {
+        console.error("Invalid date:", date);
+        return "Invalid date"; 
+    }
+    return `${validDate.getDate()}/${validDate.getMonth() + 1}/${validDate.getFullYear()}`;
 };
+
 
 
 export const getTimeDifference = (pastDate: Date): string => {
@@ -18,4 +24,4 @@ export const getTimeDifference = (pastDate: Date): string => {
     } else {
         return `${diffDays} ימים`;
     }
-};
+}
