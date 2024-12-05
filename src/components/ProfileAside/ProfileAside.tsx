@@ -2,15 +2,11 @@
 import * as React from "react";
 import useUserStore from "@/stores/userStore";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { getNeighborhood } from "@/services/neighborhoods";
-import { getCommunitiesByUser } from "@/services/communities";
 import { useParams } from "next/navigation";
 import { Community } from "@/types/community.type";
 import { useCommunities, useNeighborhood } from "@/services/mutations/profileAside";
 
 export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) => {
-    // const [links, setLinks] = useState<ProfileLink[]>([]);
     const { user } = useUserStore();
     const { communityId, neighborhoodId } = useParams();
     const { data: communities = [] } = useCommunities();
@@ -23,7 +19,7 @@ export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) =>
             isActive: neighborhoodId === neighborhood?._id,
         },
         ...communities.map((community: Community) => ({
-            href: `neighborhood/${community._id}`,
+            href: `community/${community._id}`,
             text: community.name,
             isActive: communityId === community._id,
         })),
@@ -32,39 +28,6 @@ export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) =>
     if (!user) return null;
 
     const { first_name, last_name, address, profile_picture_url } = user;
-
-    // useEffect(() => {
-
-    //     const fetchLinks = async () => {
-    //         try {
-    //             if (!user)
-    //                 throw new Error;
-    //             const communities = await getCommunitiesByUser(user);
-    //             const communitiesLinks = communities.map((community: Community) => ({
-    //                 href: `neighborhood/${community._id}`,
-    //                 text: community.name,
-    //                 isActive: communityId === community._id,
-    //             })
-    //             )
-    //             const neighborhood = await getNeighborhood(user.neighborhoodId);
-    //             const neighborhoodLink = {
-    //                 href: `neighborhood/${neighborhood._id}`,
-    //                 text: neighborhood.name,
-    //                 isActive: neighborhoodId === neighborhood._id,
-    //             };
-
-    //             setLinks([neighborhoodLink, ...communitiesLinks]);
-    //         } catch (error) {
-    //             console.error("Failed to fetch communities or neighborhood:", error);
-    //         }
-    //     };
-
-    //     fetchLinks();
-    // }, [user, communityId, neighborhoodId]);
-
-    // if (!user) return <></>;
-
-    // const { first_name, last_name, address, profile_picture_url } = user;
 
     return (
         <main className="flex flex-col justify-center items-center w-full bg-white rounded-2xl min-h-[678px]">
