@@ -6,12 +6,7 @@ const postSchema = new Schema({
     createdDate: { type: Date },
     title: { type: String},
     content: { type: String },
-    images: [{
-        type: {
-            _id: { type: String },
-            url: { type: String },
-        }
-    }],
+    images: [{type: String}],
     comments: [{ type: String }],
     likedBy: [{ type: Schema.Types.ObjectId, ref: 'user' }],
 })

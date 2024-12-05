@@ -1,130 +1,112 @@
+"use client";
 import * as React from "react";
 import useUserStore from "@/stores/userStore";
-import { createPost } from "@/services/posts";
+import { useCreatePost } from "@/services/mutations/forum";
 import { Post } from "@/types/post.type";
-
-export interface ActionButtonProps {
-  icon: string;
-  label: string;
-  onClick?: () => void;
-}
-
-const ActionButton: React.FC<ActionButtonProps> = ({ icon, label, onClick }) => {
-  return (
-    <button 
-      onClick={onClick}
-      className="flex gap-3 items-center p-2 whitespace-nowrap border border-solid border-neutral-200 rounded-[50px] hover:bg-neutral-100 transition-colors"
-    >
-      <img
-        loading="lazy"
-        src={icon}
-        alt={label}
-        className="object-contain shrink-0 self-stretch my-auto w-5 aspect-square"
-      />
-      <div className="self-stretch my-auto pl-4">{label}</div>
-    </button>
-  );
-};
+import { ImageUpload } from "@/components/uploadImage/uploadImage";
+import { FaImages } from "react-icons/fa6"
 
 export const NewPostInput: React.FC = () => {
   const [text, setText] = React.useState("");
-  const [selectedAction, setSelectedAction] = React.useState<string | null>(null);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [images, setImages] = React.useState<string[]>([]);
+  const [showImageUpload, setShowImageUpload] = React.useState(false);
   const user = useUserStore((state) => state.user);
 
+  const createPostMutation = useCreatePost();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!text.trim()) {
-      setError("Cannot submit an empty post");
+
+    if (!text.trim() && images.length === 0) {
+      console.error("Cannot submit an empty post");
       return;
     }
 
-    setIsLoading(true);
-    setError(null);
+    const postData: Partial<Post> = {
+      content: text,
+      title: text.slice(0, 50),
+      createdDate: new Date(),
+      images,
+      comments: [],
+      likedBy: [],
+      creatorId: user?._id,
+    };
 
-    try {
-      // Prepare post data
-      const postData: Partial<Post> = {
-        content: text,
-        title: text.slice(0, 50), // Use first 50 chars as title
-        createdDate: new Date(),
-        images: selectedAction === 'image' ? [] : undefined,
-        comments: [],
-        likedBy: [],
-        creatorId: user?._id,
-        // communityId: currentCommunity?.id,
-      };
-
-      // Submit post
-      const response = await createPost(postData);
-      
-      // Reset form
-      setText("");
-      setSelectedAction(null);
-
-      // Optional: show success message or update UI
-      console.log("Post created:", response);
-    } catch (err) {
-      // Handle error
-      setError(err instanceof Error ? err.message : "Failed to create post");
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
+    createPostMutation.mutate(postData, {
+      onSuccess: () => {
+        setText("");
+        setShowImageUpload(false);
+        setImages([]);
+      },
+      onError: (err) => {
+        console.error(err instanceof Error ? err.message : "Failed to create post");
+      },
+    });
   };
 
-  const handleActionSelect = (action: string) => {
-    setSelectedAction(action);
+  const handleImageUpload = (newImageUrl: string) => {
+    if (images.length < 4) {
+      setImages((prev) => [...prev, newImageUrl]);
+    } else {
+      console.warn("Maximum 4 images allowed.");
+    }
   };
 
   return (
     <div className="flex flex-col p-5 mt-4 mb-4 w-full font-medium bg-white rounded-2xl text-neutral-950 max-md:max-w-full">
-      <form onSubmit={handleSubmit} className="flex flex-wrap gap-4 items-center w-full text-base text-right max-md:max-w-full">
-        <label htmlFor="discussionInput" className="sr-only">התחל דיון חדש</label>
-        <img
-          loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/c8591468def0ca3dfa10517b7eff16bf4ac52321869a9c501d891cc98883401c?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-          alt=""
-          className="object-contain shrink-0 self-stretch my-auto w-12 aspect-square"
-        />
-        <input
-          id="discussionInput"
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          className="flex-1 shrink gap-2.5 self-stretch p-3 my-auto bg-violet-50 rounded-xl min-w-[240px] max-md:max-w-full border-none outline-none"
-          placeholder="התחל דיון חדש.."
-          aria-label="התחל דיון חדש"
-        />
-      </form>        
-        
-      <div className="flex gap-5 mt-3 max-w-full text-base leading-none w-[404px]">
-        <ActionButton
-          icon="https://cdn.builder.io/api/v1/image/assets/TEMP/c90f84387b0fb15e5cda12ef3a844a33fdc6b9e464dc6b521127ee70b43b0601?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-          label="כתוב מאמר"
-          onClick={() => handleActionSelect("article")}
-        />
-        <ActionButton
-          icon="https://cdn.builder.io/api/v1/image/assets/TEMP/67ace55c122ff42c1bfc5875a9a4ac21ea13b38199880b6602e31d23173f516e?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-          label="לינק"
-          onClick={() => handleActionSelect("link")}
-        />
-        <ActionButton
-          icon="https://cdn.builder.io/api/v1/image/assets/TEMP/8f1ea1511ee451d3c926e8a799eec79171aa269e978949d3ab6f252f4c28e9e2?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-          label="תמונה"
-          onClick={() => handleActionSelect("image")}
-        />
-        <button 
-          type="submit"
-          className="gap-1 self-stretch px-4 py-2 text-sm leading-none text-center text-white whitespace-nowrap bg-indigo-600 rounded-md"
-          onClick={handleSubmit}
-        >
-          שלח
-        </button>
-      </div>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
+        {/* Profile Picture */}
+        <div className="flex gap-4 items-center">
+          <img
+            loading="lazy"
+            src="https://cdn.builder.io/api/v1/image/assets/TEMP/c8591468def0ca3dfa10517b7eff16bf4ac52321869a9c501d891cc98883401c"
+            alt="User avatar"
+            className="object-contain shrink-0 self-stretch my-auto w-12 aspect-square rounded-full"
+          />
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            className="flex-1 p-3 bg-violet-50 rounded-xl min-h-[80px] border-none outline-none resize-none "
+            placeholder="התחל דיון חדש.."
+            aria-label="התחל דיון חדש"
+          />
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex justify-between items-center gap-4 mt-3 w-full">
+          <button type="button" onClick={() => setShowImageUpload(!showImageUpload)}
+            className="flex gap-2 items-center px-5 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-all"
+          >
+            <FaImages className="w-5 h-5 text-indigo-600" />
+            הוסף תמונה
+          </button>
+          <button type="submit" className="flex items-center justify-center px-6 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 transition-all">
+            פרסם
+          </button>
+        </div>
+
+
+        {/* Image Upload Component */}
+        {showImageUpload && (
+          <div className="mt-4">
+            <ImageUpload setImageUrl={handleImageUpload} />
+          </div>
+        )}
+
+        {/* Image Preview */}
+        {images.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 rounded-lg overflow-hidden mt-3">
+            {images.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Uploaded image ${index + 1}`}
+                className="w-full h-auto rounded-lg object-cover"
+              />
+            ))}
+          </div>
+        )}
+      </form>
     </div>
   );
 };
