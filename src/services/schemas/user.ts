@@ -15,6 +15,8 @@ const userSchema = new mongoose.Schema({
     profile_picture_url: {type: String, required: true},
     neighborhoodId: [{ type: Schema.Types.ObjectId, ref: 'neighborhood'}],
     communitiesIds: [{ type: Schema.Types.ObjectId, ref: 'community' }],
+    savedPostsIds: [{ type: Schema.Types.ObjectId, ref: 'post' }], 
+    savedEventsIds: [{ type: Schema.Types.ObjectId, ref: 'events' }], 
     preferences: {
         type: {
             email_notifications: { type: Boolean, default: false },

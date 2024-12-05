@@ -45,7 +45,7 @@ const HomePage = () => {
 
 
         {/* Left Column */}
-        <div className="flex flex-col flex-1 shrink basis-0 min-w-[240px]">
+        <div className="flex flex-col flex-1 shrink basis-0 min-w-[260px]">
           {/* Notifications Section */}
           <div className="flex gap-2 items-start w-full text-neutral-950">
             {/* Uncomment and replace with actual components when needed */}
