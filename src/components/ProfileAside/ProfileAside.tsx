@@ -7,7 +7,7 @@ import { getNeighborhood } from "@/services/neighborhoods";
 import { getCommunitiesByUser } from "@/services/communities";
 import { useParams } from "next/navigation";
 import { Community } from "@/types/community.type";
-import { useCommunities, useNeighborhood } from "@/hooks/useDataHooks";
+import { useCommunities, useNeighborhood } from "@/services/mutations/profileAside";
 
 export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) => {
     // const [links, setLinks] = useState<ProfileLink[]>([]);
@@ -18,9 +18,9 @@ export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) =>
 
     const links = [
         {
-            href: `neighborhood/${neighborhood._id}`,
-            text: neighborhood.name,
-            isActive: neighborhoodId === neighborhood._id,
+            href: `neighborhood/${neighborhood?._id}`,
+            text: neighborhood?.name,
+            isActive: neighborhoodId === neighborhood?._id,
         },
         ...communities.map((community: Community) => ({
             href: `neighborhood/${community._id}`,
