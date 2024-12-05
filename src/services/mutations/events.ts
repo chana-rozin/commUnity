@@ -27,8 +27,8 @@ export const useSaveEvent = (user: User | null, setUser: (user: User) => void) =
       const isCurrentlySaved = user?.savedEventsIds.includes(eventId);
 
       return isCurrentlySaved
-        ? await unSaveEvent(user!._id, eventId)
-        : await saveEvent(user!._id, eventId);
+        ? await unSaveEvent(user!._id || "", eventId)
+        : await saveEvent(user!._id || "", eventId);
     },
     onMutate: async ({ eventId }) => {
       await queryClient.cancelQueries({ queryKey: ['events'] });

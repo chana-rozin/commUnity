@@ -67,7 +67,7 @@ const PostPage: React.FC = () => {
         likedBy={post.likedBy}
         communityId="0"
         images={post.images}
-        liked={post.likedBy.includes(user._id)}
+        liked={post.likedBy.includes(user._id || "")}
         saved={user.savedPostsIds.includes(post._id)}
         onLike={() => handleLike()} 
         onSave={() => handleSave()}        
