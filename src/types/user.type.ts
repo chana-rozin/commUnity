@@ -12,6 +12,7 @@ export interface User {
     communitiesIds: string[];
     preferences: Preference;
     savedPostsIds: string[];
+    savedEventsIds: string[];
 }
 /*
 משתמש:

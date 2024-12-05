@@ -35,7 +35,6 @@ export async function insertDocument(collection: string, document: object) {
 export async function getAllDocuments(collection: string) {
     const db = client.db('community');
     const documents = await db.collection(collection).find().toArray();
-    console.log('documents:', documents);
     return documents;
 }
 

@@ -1,9 +1,9 @@
 "use client"
-import ForumPage from '../../components/forum/ForumPage';
-import { Navbar } from '@/components/Navbar/Navbar';
-import { ProfileAside } from '@/components/ProfileAside/ProfileAside'
+import ForumPage from '../../components/Forum/ForumPage';
+import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
+import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
 import useUserStore from '@/stores/userStore';
-import {sampleUser, getSampleUser} from '@/utils/sampleUser';
+import { getSampleUser } from '@/utils/sampleUser';
 import { useEffect } from 'react';
 
 const HomePage = () => {
@@ -12,14 +12,13 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!user) {
-      // setUser(sampleUser);
       (async () => {
         const sampleUser = await getSampleUser();
         setUser(sampleUser);
       })();
       console.log("Sample user set:", user);
     }
-  }, [setUser]);
+  }, []);
 
   console.log("User store:", user);
 
@@ -27,10 +26,7 @@ const HomePage = () => {
     <main>
       <div className="flex flex-wrap gap-4 items-start mt-5 w-full">
         {/* Right Column - Profile Section */}
-        <aside
-          className="flex flex-col min-h-[909px] w-[211px] max-w-full"
-          role="complementary"
-        >
+        <aside className="flex flex-col min-h-[909px] w-[211px] max-w-full" role="complementary">
           <ProfileAside saved={false} />
         </aside>
 
@@ -49,7 +45,7 @@ const HomePage = () => {
 
 
         {/* Left Column */}
-        <div className="flex flex-col flex-1 shrink basis-0 min-w-[240px]">
+        <div className="flex flex-col flex-1 shrink basis-0 min-w-[260px]">
           {/* Notifications Section */}
           <div className="flex gap-2 items-start w-full text-neutral-950">
             {/* Uncomment and replace with actual components when needed */}
@@ -82,13 +78,7 @@ const HomePage = () => {
 
           {/* Events Section */}
           <div className="flex flex-col p-5 mt-4 w-full bg-white rounded-2xl">
-            {/* Uncomment and replace with actual components when needed */}
-            {/* <EventCard 
-              date="יח חשוון תשפ״ה, 19:45"
-              title="אסיפת דיירים חזון איש 5"
-              location="לובי הבניין, חזו״א 5"
-              participants={7}
-            /> */}
+            <EventsNotificationsCard/>
           </div>
         </div>
       </div>

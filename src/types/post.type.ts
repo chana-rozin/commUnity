@@ -6,7 +6,7 @@ export interface Post{
     createdDate: Date;
     title: string;
     content: string;
-    images: ImageFile[];
+    images: string[];
     comments: Comment[];
     likedBy: string[];
 }
