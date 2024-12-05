@@ -16,7 +16,7 @@ import { Preference } from '@/types/general.type';
 import VerificationCodePopUp from '../../components/register/verificationCodePopUp'
 const googleProvider = new GoogleAuthProvider();
 import useUserStore from '@/stores/userStore';
-import { Span } from 'next/dist/trace';
+import { useRouter } from 'next/navigation';
 
 
 
@@ -30,11 +30,8 @@ const signUp: React.FC = () => {
     const [userGiveWrongCode, setUserGiveWrongCode] = useState(false);
     const [signUpBy, setSignUpBy] = useState<string>();
     const [userExists, setUserExists] = useState(false);
-    useEffect(() => {
-        console.log(user);
-
-    }, [user])
-
+    const router = useRouter();
+    
     async function loginWithGoogle() {
         try {
             setSignUpBy('google');
@@ -145,16 +142,13 @@ const signUp: React.FC = () => {
                 neighborhoodId: "675042e6292054c85b9b65d6",
                 communitiesIds: [],
                 preferences: preferences,
-                savedPostsIds: []
+                savedPostsIds: [],
+                savedEventsIds: []
             }
             var result;
             if (signUpBy === "google") {
-                result = await http.post('/register/google', newUser, {
-                    headers: {
-                        Authorization: user.accessToken,
-                        Uid: user.uid
-                    }
-                });
+                const userWithToken =  { ...newUser, accessToken: user.accessToken }
+                result = await http.post('/register/google', userWithToken);
             } else {
                 const userWithPass = { ...newUser, password: user.password }
                 result = await http.post('/register/email', userWithPass);
@@ -164,7 +158,8 @@ const signUp: React.FC = () => {
             }
             else {
                 newUser._id = result.data.insertedId;
-                useUserStore.getState().setUser(newUser)
+                useUserStore.getState().setUser(newUser);
+                router.push('/home');
             }
         } catch (err) {
             console.log(err);

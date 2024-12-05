@@ -14,21 +14,7 @@ export async function POST(request: Request) {
         const decodedToken = await auth.verifyIdToken(accessToken);
         console.log('Decoded token:', decodedToken);
 
-        // Check if email exists in Firebase Auth
-        const userRecord = await auth.getUserByEmail(email).catch(err => {
-            if (err.code === 'auth/user-not-found') {
-                return null; // Email does not exist
-            }
-            throw err; // Re-throw other errors
-        });
-
-        if (userRecord) {
-            return NextResponse.json(
-                { message: "Email already exists" },
-                { status: 409 }
-            );
-        }
-
+        delete body.accessToken;
         // Insert into the database
         const result = await insertDocument("users", body);
         if (!result) {
