@@ -41,7 +41,8 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
                             onSuccess={handleSuccess}
                         >
                             {({ open }: { open: () => void }) => (
-                                <button className="self-stretch my-auto font-bold text-center text-indigo-600" tabIndex={0} onClick={() => {
+                                <button type="button"
+                                className="self-stretch my-auto font-bold text-center text-indigo-600" tabIndex={0} onClick={() => {
                                     open();
                                 }}>לחץ כאן</button>
                             )}
