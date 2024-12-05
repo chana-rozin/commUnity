@@ -5,7 +5,8 @@ export const ProfileField: React.FC<ProfileFieldProps> = ({
     iconSrc,
     name,
     error,
-    register
+    register,
+    disabled=false,
 }) => {
     const inputId = `profile-${name}`;
 
@@ -21,6 +22,7 @@ export const ProfileField: React.FC<ProfileFieldProps> = ({
                     className="flex-1 bg-transparent border-none outline-none"
                     aria-invalid={error ? "true" : "false"}
                     {...register(name)} // Make sure the full path (e.g., "address.street") is passed to register
+                    disabled ={disabled}
                 />
                 <img
                     src={iconSrc}
