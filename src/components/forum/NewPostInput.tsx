@@ -4,10 +4,11 @@ import useUserStore from "@/stores/userStore";
 import { useCreatePost } from "@/services/mutations/forum";
 import { Post } from "@/types/post.type";
 import { ImageUpload } from "@/components/uploadImage/uploadImage";
+import { FaImages } from "react-icons/fa6"
 
 export const NewPostInput: React.FC = () => {
   const [text, setText] = React.useState("");
-  const [imageUrl, setImageUrl] = React.useState<string | null>(null);
+  const [images, setImages] = React.useState<string[]>([]);
   const [showImageUpload, setShowImageUpload] = React.useState(false);
   const user = useUserStore((state) => state.user);
 
@@ -16,7 +17,7 @@ export const NewPostInput: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!text.trim() && !imageUrl) {
+    if (!text.trim() && images.length === 0) {
       console.error("Cannot submit an empty post");
       return;
     }
@@ -25,7 +26,7 @@ export const NewPostInput: React.FC = () => {
       content: text,
       title: text.slice(0, 50),
       createdDate: new Date(),
-      images: imageUrl ? [imageUrl] : [],
+      images,
       comments: [],
       likedBy: [],
       creatorId: user?._id,
@@ -35,12 +36,20 @@ export const NewPostInput: React.FC = () => {
       onSuccess: () => {
         setText("");
         setShowImageUpload(false);
-        setImageUrl(null);
+        setImages([]);
       },
       onError: (err) => {
         console.error(err instanceof Error ? err.message : "Failed to create post");
       },
     });
+  };
+
+  const handleImageUpload = (newImageUrl: string) => {
+    if (images.length < 4) {
+      setImages((prev) => [...prev, newImageUrl]);
+    } else {
+      console.warn("Maximum 4 images allowed.");
+    }
   };
 
   return (
@@ -64,41 +73,42 @@ export const NewPostInput: React.FC = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-5 mt-3 max-w-full">
+        <div className="flex justify-between items-center gap-4 mt-3 w-full">
           <button
             type="button"
             onClick={() => setShowImageUpload(!showImageUpload)}
-            className="flex gap-2 items-center px-4 py-2 text-sm leading-none text-indigo-600 border border-neutral-200 rounded-md hover:bg-neutral-100 transition-colors"
+            className="flex gap-2 items-center px-5 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-all"
           >
-            <img
-              loading="lazy"
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/8f1ea1511ee451d3c926e8a799eec79171aa269e978949d3ab6f252f4c28e9e2"
-              alt="Add Image"
-              className="object-contain w-5 h-5"
-            />
-            תמונה
+            <FaImages className="w-5 h-5 text-indigo-600" />
+            הוסף תמונה
           </button>
           <button
             type="submit"
-            className="px-4 py-2 text-sm leading-none text-center text-white bg-indigo-600 rounded-md hover:bg-indigo-500 transition-colors"
+            className="flex items-center justify-center px-6 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 transition-all"
           >
-            שלח
+            פרסם
           </button>
         </div>
+
 
         {/* Image Upload Component */}
         {showImageUpload && (
           <div className="mt-4">
-            <ImageUpload setImageUrl={setImageUrl} />
-            {imageUrl && (
-              <div className="mt-3">
-                <img
-                  src={imageUrl}
-                  alt="Uploaded preview"
-                  className="max-w-full h-auto rounded-lg border border-neutral-200"
-                />
-              </div>
-            )}
+            <ImageUpload setImageUrl={handleImageUpload} />
+          </div>
+        )}
+
+        {/* Image Preview */}
+        {images.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 rounded-lg overflow-hidden mt-3">
+            {images.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Uploaded image ${index + 1}`}
+                className="w-full h-auto rounded-lg object-cover"
+              />
+            ))}
           </div>
         )}
       </form>
