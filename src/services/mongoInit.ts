@@ -11,6 +11,7 @@ import { Minyan } from './models';
 import { Neighborhood } from './models';
 import { Post } from './models';
 import { VerifyEmail } from './models';
+import { Password } from './models';
 
 interface ModelDefinition {
     name: string;
@@ -28,6 +29,7 @@ const models: ModelDefinition[] = [
     { name: 'neighborhoods', model: Neighborhood },
     { name: 'posts', model: Post },
     { name:"verify-email", model: VerifyEmail },
+    { name:"password", model: Password }
 ];
 
 
