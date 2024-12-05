@@ -19,8 +19,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
             );
         }
         let user = userToUpdate;
-        user.savedPostsIds.push(body);
-        
+        user.savedEventsIds.push(body);
+
         // Update the post in the database
         const result = await patchDocumentById("users", id, user);
 
@@ -29,14 +29,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         }
 
         return NextResponse.json(
-            { message: "Post successfully added to user saves" },
+            { message: "Event successfully added to user saves" },
             { status: 200 },  // OK Status Code 200
         );
     }
     catch (error) {
         console.error(error);
         return NextResponse.json(
-            { message: "Failed to Add post to user saves" },
+            { message: "Failed to Add event to user saves" },
             { status: 500 } // Internal Server Error
         );
     }
@@ -63,21 +63,21 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         }
 
         let user = userDocument
-        let savedPostsIds = user.savedPostsIds.filter((postId:string) => postId!==body);
-        user.savedPostsIds = savedPostsIds;
+        let savedEventsIds = user.savedEventsIds.filter((postId: string) => postId !== body);
+        user.savedEventsIds = savedEventsIds;
 
         // Update the post in the database
         const result = await patchDocumentById("users", id, user);
 
         if (!result) {
             return NextResponse.json(
-                { message: "Failed to Delete post from user saves" },
+                { message: "Failed to Delete event from user saves" },
                 { status: 500 } // Internal Server Error
             );
         }
 
         return NextResponse.json(
-            { message: "Post deleted successfully" },
+            { message: "Event deleted successfully" },
             { status: 200 },
         );
     }
