@@ -1,41 +1,27 @@
-"use client";
-import * as React from "react";
+import React from "react";
 
-export interface PopupProps {
+interface PopupProps {
   title: string;
-  text: string;
+  text: React.ReactNode; // This will allow dynamic content like forms
   onClose: () => void;
-  buttons?: React.ReactNode; // Optional additional buttons
 }
 
-export const Popup: React.FC<PopupProps> = ({ title, text, onClose, buttons }) => {
+const Popup: React.FC<PopupProps> = ({ title, text, onClose }) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-lg w-[400px] max-h-[80%] overflow-y-auto">
-        {/* Header */}
-        <header className="flex justify-between items-center p-4 border-b border-gray-300">
-          <h2 className="text-lg font-bold">{title}</h2>
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            className="text-gray-600 hover:text-black"
-          >
-            ✖
-          </button>
-        </header>
-
-        {/* Body */}
-        <div className="p-4 text-gray-700">
-          <p>{text}</p>
-        </div>
-
-        {/* Footer */}
-        {buttons && (
-          <footer className="p-4 border-t border-gray-300 flex justify-end gap-2">
-            {buttons}
-          </footer>
-        )}
+    <div className="popup-overlay fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="popup-content bg-white p-6 rounded-lg max-w-lg">
+        <h2 className="text-xl font-bold">{title}</h2>
+        <div className="mt-4">{text}</div>
+        <button
+          onClick={onClose}
+          className="mt-4 px-4 py-2 bg-red-600 text-white rounded"
+        >
+          סגור
+        </button>
       </div>
     </div>
   );
 };
+
+// Export Popup component
+export { Popup };

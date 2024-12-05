@@ -1,9 +1,9 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import EventCard from './EventCard';
-import SearchBar from './SearchBar';
-import { getEvents } from '@/services/events';
-import { Event } from '@/types/event.type';
+import React, { useState, useEffect } from "react";
+import EventCard from "./EventCard";
+import SearchBar from "./SearchBar";
+import { getEvents } from "@/services/events";
+import { Event } from "@/types/event.type";
 
 const EventsPage: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -29,7 +29,7 @@ const EventsPage: React.FC = () => {
     const lowercasedQuery = query.toLowerCase();
     const filtered = events.filter((event) =>
       event.name.toLowerCase().includes(lowercasedQuery) ||
-      event.description.toLowerCase().includes(lowercasedQuery)
+      event.location.toLowerCase().includes(lowercasedQuery)
     );
     setFilteredEvents(filtered);
   };
@@ -68,7 +68,14 @@ const EventsPage: React.FC = () => {
                 <p>No events to display.</p>
               ) : (
                 filteredEvents.map((event, index) => (
-                  <EventCard key={index} {...event} />
+                  <EventCard
+                    key={index}
+                    name={event.name}
+                    location={event.location}
+                    date={event.date}
+                    locationIcon="/icons/location-icon.svg" // Replace with actual path
+                    timeIcon="/icons/time-icon.svg" // Replace with actual path
+                  />
                 ))
               )}
             </div>
