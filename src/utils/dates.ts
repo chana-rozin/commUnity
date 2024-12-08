@@ -1,3 +1,15 @@
+
+export const formatDate = (date: Date | string) => {
+    const validDate = typeof date === "string" ? new Date(date) : date;
+    if (isNaN(validDate.getTime())) {
+        console.error("Invalid date:", date);
+        return "Invalid date"; 
+    }
+    return `${validDate.getDate()}/${validDate.getMonth() + 1}/${validDate.getFullYear()}`;
+};
+
+
+
 export const getTimeDifference = (pastDate: Date): string => {
     const now = new Date();
     const diffMs = now.getTime() - pastDate.getTime();
@@ -6,10 +18,10 @@ export const getTimeDifference = (pastDate: Date): string => {
     const diffDays = Math.floor(diffHours / 24);
 
     if (diffMinutes < 60) {
-      return `${diffMinutes} דקות`;
+        return `${diffMinutes} דקות`;
     } else if (diffHours < 24) {
-      return `${diffHours} שעות`;
+        return `${diffHours} שעות`;
     } else {
-      return `${diffDays} ימים`;
+        return `${diffDays} ימים`;
     }
-  };
+}
