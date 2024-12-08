@@ -5,7 +5,6 @@ import { auth } from '@/services/firebaseAdmin';
 
 // Create a new post
 export async function POST(request: Request) {
-    debugger
     try {
         const body = await request.json(); // Parse request body
         const { accessToken, email, communitiesIds, neighborhoodId } = body;
