@@ -16,7 +16,7 @@ const EventCard: React.FC<EventCardProps> = ({ name, description, date, location
     <div className="relative flex flex-col p-5 bg-white rounded-xl shadow-md min-h-[196px] w-[200px]">
       {/* Title */}
       <header className="mb-2">
-        <h3 className="text-lg font-bold text-black break-words">{name || "Untitled Event"}</h3>
+        <h3 className="text-lg font-bold text-black truncate">{name || "Untitled Event"}</h3>
       </header>
 
       {/* Location */}
