@@ -30,7 +30,9 @@ export const NewPostInput: React.FC = () => {
       comments: [],
       likedBy: [],
       creatorId: user?._id,
+      communityId: user?.neighborhoodId
     };
+
 
     createPostMutation.mutate(postData, {
       onSuccess: () => {

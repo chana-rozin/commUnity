@@ -24,7 +24,7 @@ const sampleUser:User = {
         event_notifications: true,
     },
     savedPostsIds: ["645c1ab8e8f1a7a1b5c8d9f5", "645c1ab8e8f1a7a1b5c8d9f6"], // Example post IDs
-    savedEventsIds: ["645c1ab8e8f1a7a1b5c8d9f7", "645c1ab8e8f1a7a1b5c8d9f8"], // Example event IDs
+    savedEventsIds: [], // Example event IDs
 };
 
 import http from "@/services/http";
