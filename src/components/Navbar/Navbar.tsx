@@ -2,8 +2,10 @@
 import React from 'react'; 
 import Link from 'next/link'; 
 import { usePathname } from 'next/navigation'; 
+import useUserStore from "@/stores/userStore";
  
 export function Navbar() { 
+  const user = useUserStore((state) => state.user);
   const pathname = usePathname(); 
  
   const navItems = [ 
@@ -52,9 +54,9 @@ export function Navbar() {
         /> 
         <img 
           loading="lazy" 
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/34f84af3c8632e8bfe2f55daa61109dcedd0eded7ccf81089672ba8cdccc7be1?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e" 
+          src={user?.profile_picture_url}
           alt="Icon 3" 
-          className="object-contain w-10 aspect-square" 
+          className="object-contain w-10  aspect-square rounded-full" 
         /> 
       </div> 
     </nav> 
