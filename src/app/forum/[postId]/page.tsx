@@ -65,7 +65,7 @@ const PostPage: React.FC = () => {
         content={post.content}
         comments={post.comments}
         likedBy={post.likedBy}
-        communityId="0"
+        communitiesIds={post.communitiesIds}
         images={post.images}
         liked={post.likedBy.includes(user._id || "")}
         saved={user.savedPostsIds.includes(post._id)}
