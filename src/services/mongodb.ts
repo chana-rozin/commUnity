@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 let client: MongoClient;
 
 export async function connectDatabase() {
+    
     console.log("Starting database connection");
     if (!client) {
         const dbConnectionString = process.env.DB_CONNECTION;
