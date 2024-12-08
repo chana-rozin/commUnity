@@ -2,9 +2,9 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProfileField } from "./ProfileField";
-import { ProfileSection } from "./ProfileSection";
-import { profileSchema, ProfileFormData } from "./types";
+import { ProfileField } from "../../../components/Profile/ProfileField";
+import { ProfileSection } from "@/components/Profile/ProfileSection";
+import { profileSchema, ProfileFormData } from "@/types/profileComponent.type";
 import useUserStore from "@/stores/userStore";
 import { ImageUpload } from "@/components/uploadImage/uploadImage";
 import { User } from "@/types/user.type"
@@ -43,12 +43,11 @@ const ProfilePage: React.FC = () => {
         defaultValues,
     });
 
-    // Sync form values with user data
     React.useEffect(() => {
         if (user) {
             reset(user);
         }
-    }, [user, reset]);
+    }, [user]);
 
     const onSubmit = async (data: ProfileFormData) => {
         try {
