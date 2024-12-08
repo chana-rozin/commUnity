@@ -7,22 +7,22 @@ export const getEvents = async (): Promise<any> => {
 };
 
 
-export const saveEvent = async (userId: string, postId: string) => {
+export const saveEvent = async (userId: string, eventId: string) => {
   try {
-    const response = await http.post(`/users/${userId}/posts`, postId );
+    const response = await http.post(`/users/${userId}/events`, eventId );
     return response;
   } catch (error) {
-    console.error("Error saving post:", error);
+    console.error("Error saving event:", error);
     throw error;
   }
 };
 
-export const unSaveEvent = async (userId: string, postId: string) => {
+export const unSaveEvent = async (userId: string, eventId: string) => {
   try {
-    const response = await http.delete(`/users/${userId}/posts`, {data: postId});
+    const response = await http.delete(`/users/${userId}/events`, {data: eventId});
     return response;
   } catch (error) {
-    console.error("Error unSaving post:", error);
+    console.error("Error unSaving event:", error);
     throw error;
   }
 };

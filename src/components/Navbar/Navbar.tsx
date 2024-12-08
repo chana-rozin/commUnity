@@ -14,7 +14,7 @@ export function Navbar() {
   ]; 
  
   return ( 
-    <nav className="flex flex-wrap gap-8 justify-between items-center px-5 py-2.5 w-full bg-white shadow-xl rounded-[30px]" role="navigation"> 
+    <nav className="sticky top-0 z-50 flex flex-wrap gap-8 justify-between items-center px-5 py-2.5 w-full bg-white shadow-xl rounded-[30px]" role="navigation"> 
       {/* Logo */} 
       <img 
         loading="lazy" 
