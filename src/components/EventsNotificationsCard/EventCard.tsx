@@ -25,8 +25,8 @@ export const EventCard: React.FC<Event> = ({
             {/* Date, Name, and Location */}
             <div className="flex flex-col justify-start items-start w-full text-xs leading-none text-neutral-950">
                 <div className="font-medium text-gray-400">{formatDate(date)}</div>
-                <div className="font-semibold text-lg text-neutral-950">{name}</div>
-                <div className="text-sm text-neutral-600">{location}</div>
+                <div className="font-semibold text-sm text-neutral-950">{name}</div>
+                <div className="text-xs text-neutral-600">{location}</div>
             </div>
 
             {/* Bottom Section for Action (e.g., Save Star Icon) */}
