@@ -1,6 +1,7 @@
 "use client"
 import ForumPage from '../../components/Forum/ForumPage';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
+import {LoansNotificationsCard} from '@/components/LoansNotificationsCard/LoansNotificationsCard';
 import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
 import useUserStore from '@/stores/userStore';
 import { getSampleUser } from '@/utils/sampleUser';
@@ -92,13 +93,7 @@ const HomePage = () => {
 
           {/* Loans Section */}
           <div className="flex flex-col p-5 mt-4 w-full bg-white rounded-2xl">
-            {/* Uncomment and replace with actual components when needed */}
-            {/* <LoanItem 
-              timeAgo="לפני שבוע"
-              title="2 שקיות חלב"
-              userType="השואל"
-              userName="רותי אדל"
-            /> */}
+            <LoansNotificationsCard/>
           </div>
 
           {/* Events Section */}
