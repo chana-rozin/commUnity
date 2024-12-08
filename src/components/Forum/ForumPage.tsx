@@ -7,7 +7,7 @@ import useUserStore from "@/stores/userStore";
 
 const ForumPage: React.FC = () => {
   const {user,setUser} = useUserStore();
-  const { data: posts, isLoading, error } = usePosts();
+  const { data: posts, isLoading, error } = usePosts(user?.neighborhoodId || "");//TODO: change to the selected community id, not just default
   const likeMutation = useLikePost();
   const saveMutation = useSavePost(user, setUser);
 

@@ -1,15 +1,23 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { likePost, unLikePost, savePost, unSavePost, getPosts } from '@/services/posts';
+import { likePost, unLikePost, savePost, unSavePost, getPosts, getPostsByCommunityId } from '@/services/posts';
 import { Post } from '@/types/post.type';
 import { User } from "@/types/user.type";  
 import { Comment } from '@/types/general.type';
 import http from '../http';
 
-export const usePosts = () => {
-  return useQuery<Post[]>({ queryKey: ['posts'], queryFn: async () => {
-      const response = await getPosts();
-      return Array.isArray(response.data) ? response.data : [];
-    },
+// export const usePosts = () => {
+//   return useQuery<Post[]>({ queryKey: ['posts'], queryFn: async () => {
+//       const response = await getPosts();
+//       return Array.isArray(response.data) ? response.data : [];
+//     },
+//     retry: 1,
+//   });
+// };
+
+export const usePosts = (communityId: string) => {
+  return useQuery<Post[]>({
+    queryKey: ['posts', communityId], 
+    queryFn: () => getPostsByCommunityId(communityId), 
     retry: 1,
   });
 };
