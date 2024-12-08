@@ -30,7 +30,7 @@ export const NewPostInput: React.FC = () => {
       comments: [],
       likedBy: [],
       creatorId: user?._id,
-      communityId: user?.neighborhoodId
+      communitiesIds: [user?.neighborhoodId || ""] 
     };
 
 

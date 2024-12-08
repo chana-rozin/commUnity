@@ -67,35 +67,12 @@ const HomePage = () => {
           {/* Posts Section */}
           <ForumPage />
         </div>
-
-
-
         {/* Left Column */}
         <div className="flex flex-col flex-1 shrink basis-0 min-w-[260px]">
-          {/* Notifications Section */}
-          <div className="flex gap-2 items-start w-full text-neutral-950">
-            {/* Uncomment and replace with actual components when needed */}
-            {/* <NotificationCard 
-              count={5}
-              title="התראות"
-              subtitle=""
-              timeText="ב5 הימים האחרונים"
-              timeIcon="https://cdn.builder.io/api/v1/image/assets/TEMP/1bd7943f9cd8cf6430654cdea38cf0282c2f1e92e5dc28dacc089e37e7dae0ff?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-            />
-            <NotificationCard 
-              count={89}
-              title="תגובות חדשות בדיונים ששמרת"
-              subtitle=""
-              timeText="בשבוע האחרון"
-              timeIcon="https://cdn.builder.io/api/v1/image/assets/TEMP/1bd7943f9cd8cf6430654cdea38cf0282c2f1e92e5dc28dacc089e37e7dae0ff?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
-            /> */}
-          </div>
-
           {/* Loans Section */}
-          <div className="flex flex-col p-5 mt-4 w-full bg-white rounded-2xl">
+          <div className="flex flex-col p-5  w-full bg-white rounded-2xl">
             <LoansNotificationsCard/>
           </div>
-
           {/* Events Section */}
           <div className="flex flex-col p-5 mt-4 w-full bg-white rounded-2xl">
             <EventsNotificationsCard />
