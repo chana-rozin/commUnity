@@ -11,8 +11,13 @@ export const formatDate = (date: Date | string) => {
 
 
 export const getTimeDifference = (pastDate: Date): string => {
+    const validDate = typeof pastDate === "string" ? new Date(pastDate) : pastDate;
+    if (isNaN(validDate.getTime())) {
+        console.error("Invalid date:", pastDate);
+        return "Invalid date"; 
+    }
     const now = new Date();
-    const diffMs = now.getTime() - pastDate.getTime();
+    const diffMs = now.getTime() - validDate.getTime();
     const diffMinutes = Math.floor(diffMs / (1000 * 60));
     const diffHours = Math.floor(diffMinutes / 60);
     const diffDays = Math.floor(diffHours / 24);
