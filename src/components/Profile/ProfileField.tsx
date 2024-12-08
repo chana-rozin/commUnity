@@ -1,4 +1,18 @@
-import { ProfileFieldProps } from "./types"; 
+import { UseFormRegister } from "react-hook-form";
+import { ProfileFormData } from "@/types/profileComponent.type";
+
+type NestedKeys<T> = T extends object
+    ? { [K in keyof T]: `${K & string}` | `${K & string}.${NestedKeys<T[K]>}` }[keyof T]
+    : never;
+
+interface ProfileFieldProps {
+    name: NestedKeys<ProfileFormData>; // This now allows nested keys like "address.street"
+    label: string;
+    iconSrc: string;
+    register: UseFormRegister<ProfileFormData>;
+    error?: string;
+    disabled?: boolean;
+}
 
 export const ProfileField: React.FC<ProfileFieldProps> = ({
     label,
