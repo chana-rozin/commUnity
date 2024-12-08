@@ -25,7 +25,7 @@ const signUp: React.FC = () => {
 
     const [email, setEmail] = useState('');
     const [verificationPopUp, setVerificationPopUp] = useState(false);
-    const [step, setStep] = useState(2);
+    const [step, setStep] = useState(1);
     const [user, setUser] = useState<any>(null);
     const [userGiveWrongCode, setUserGiveWrongCode] = useState(false);
     const [signUpBy, setSignUpBy] = useState<string>();
@@ -199,10 +199,10 @@ const signUp: React.FC = () => {
                     </div>
                 </div>
 
-                {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} userExists={userExists}/> : step === 2 ?
+                {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} userExists={userExists} /> : step === 2 ?
 
                     <Step2 handleStep={handleStep} /> : step === 3 ? <Step3 handleStep={handleStep} /> : <Step4 handleStep={handleStep} signUp={signUp}/>}
-                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode} />}
+                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode} setVerificationPopUp={setVerificationPopUp}/>}
             </div>
         </div>
     );

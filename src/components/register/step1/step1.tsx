@@ -81,14 +81,8 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
                                     name="password"
                                     className="flex-1 shrink self-stretch my-auto basis-0 text-neutral-500 outline-none"
                                 />
-                                {showPassword?<MdOutlineVisibility onClick={togglePassword} className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square text-neutral-500" />:
-                                <MdOutlineVisibilityOff onClick={togglePassword} className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square text-neutral-500" />}
-                                {/* <img onClick={togglePassword}
-                                    loading="lazy"
-                                    alt=""
-                                    className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square"
-                                    src={showPassword?"https://cdn.builder.io/api/v1/image/assets/TEMP/2cf8a64ad474b7246d38d38dbabcd2e4c076d9ebf782d9b64f2dd9f881bb93b5?placeholderIfAbsent=true&apiKey=7db810be59414fad871df25414a5c08b":"https://cdn.builder.io/api/v1/image/assets/TEMP/851cb2cb08d45b02d0d510b4ba2f63f617f144aae59a1dd3c0b139b8f6050957?placeholderIfAbsent=true&apiKey=7db810be59414fad871df25414a5c08b"}
-                                /> */}
+                                {showPassword ? <MdOutlineVisibility onClick={togglePassword} className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square text-neutral-500" /> :
+                                    <MdOutlineVisibilityOff onClick={togglePassword} className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square text-neutral-500" />}
                             </div>
                             {errors.password && <span>{errors.password.message}</span>}
                         </div>
