@@ -31,7 +31,7 @@ export async function POST(request: Request) {
         const token = generateToken(user._id.toString(), user.communitiesIds, user.neighborhoodId);
 
         const response = NextResponse.json(
-            { data: user },
+            { user: user },
             { status: 200 },
         );
 

@@ -56,46 +56,50 @@ const signUp: React.FC = () => {
     async function loginWithGoogle() {
         try {
             const result = await signInWithPopup(auth, googleProvider);
-            const googleUser:any = result.user;
-            if(!googleUser){
+            const googleUser: any = result.user;
+            if (!googleUser) {
                 setUserExists(false);
             }
-            const userExist = await http.post(`/login`,{
+            const userExist = await http.post(`/login/google`, {
                 email: googleUser.email,
                 accessToken: googleUser.accessToken,
             })
             setUserExists(true)
-            const user =  userExist.data;
-            useUserStore.getState().setUser(user,remember);
+            if (!userExist.data.user) {
+                setUserExists(false);
+                return;
+            }
+            useUserStore.getState().setUser(userExist.data.user, remember);
             router.push('/home');
         } catch (error: any) {
             if (error.status === 409) {
                 setUserExists(false);
                 return;
             }
-            else{
+            else {
                 console.error("Error signing in:", error);
             }
         }
     }
-    async function loginWithEmail(email: string, password: string){
+    async function loginWithEmail(email: string, password: string) {
         try {
-            const userExist = await http.post(`/login/${email}`,{
+            const userExist = await http.post(`/login/email`, {
+                email: email,
                 password: password
             })
-            if(!userExist.data){
+            if (!userExist.data.user) {
                 setUserExists(false);
                 return;
             }
             setUserExists(true)
-            useUserStore.getState().setUser(userExist.data,remember);
+            useUserStore.getState().setUser(userExist.data.user, remember);
             router.push('/home');
         } catch (error: any) {
             if (error.status === 409) {
                 setUserExists(false);
                 return;
             }
-            else{
+            else {
                 console.error("Error login in:", error);
             }
         }
@@ -111,6 +115,7 @@ const signUp: React.FC = () => {
         setRemember(event.target.checked); // Update state based on the checkbox value
     };
     const onSubmit: SubmitHandler<formTypesSchema> = async (data) => {
+        debugger
         loginWithEmail(data.email, data.password);
     }
     return (
@@ -164,8 +169,7 @@ const signUp: React.FC = () => {
                                 <div className="flex flex-col mt-8">
                                     <button
                                         type="submit"
-                                        className={`${baseStyles} ${variantStyles['primary']}`}
-                                    >הכנס
+                                        className={`${baseStyles} ${variantStyles['primary']}`}>הכנס
                                     </button>
                                     <div className="flex gap-2 items-center py-1.5 mt-4">
                                         <input onChange={handleRememberMeBtn}

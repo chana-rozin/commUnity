@@ -28,10 +28,7 @@ const Step3: React.FC<step3Props> = ({ handleStep, googleImage }) => {
                     className="object-contain shrink-0 w-16 aspect-square rounded-full self-center"
                 />}
                 <section className="flex flex-wrap gap-8 items-start self-stretch w-full text-sm max-md:max-w-full mt-7">
-                    <div className="flex flex-col min-w-[240px] w-[260px]">
-
-                    </div>
-                    <div className="flex flex-wrap grow shrink gap-3 items-start min-w-[240px] w-[468px] max-md:max-w-full" >
+                    <div className="flex flex-wrap grow shrink gap-3 items-start min-w-[240px] w-[100%] max-md:max-w-full" >
 
                         <ImageUpload setImageUrl={setImageUrl} />
                     </div>

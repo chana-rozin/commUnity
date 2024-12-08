@@ -6,6 +6,7 @@ import { hashVerificationCode } from '@/services/crypto'
 
 // Create a new post
 export async function POST(request: Request) {
+    debugger
     const body = await request.json(); // Parse request body
     const { password , email} = body;
     if(!password) {
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
         email: email,
         password: hashPassword
     }
-    const currentPass = await getDocumentByQuery('passwords', getPass);
+    const currentPass = await getDocumentByQuery('password', getPass);
     if(currentPass.length===0){
         return NextResponse.json(
             { message: "Invalid password" },
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
         const token = generateToken(user._id.toString(), user.communitiesIds, user.neighborhoodId);
 
         const response = NextResponse.json(
-            { data: user },
+            { user: user },
             { status: 200 },
         );
 
