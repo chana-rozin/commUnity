@@ -1,6 +1,5 @@
 import * as React from "react";
 import { EventCard } from "./EventCard";
-import { Event } from "@/types/event.type";
 import { useEvents } from "@/services/mutations/events";  
 
 
