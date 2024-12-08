@@ -21,7 +21,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
     return (
         // By default, the CldImage component applies auto-format and auto-quality to all delivery URLs for optimized delivery
-        <div className=" min-h-[200px] flex overflow-hidden flex-col flex-1 shrink justify-center p-6 mt-3 w-full bg-white border border-dashed basis-0 border-slate-300 min-w-[240px] rounded-[32px] max-md:px-5 max-md:max-w-full" >
+        <div className=" min-h-[200px] flex overflow-hidden flex-col flex-1 shrink justify-center p-6 w-full bg-white border border-dashed basis-0 border-slate-300 min-w-[240px] rounded-[32px] max-md:px-5 max-md:max-w-full" >
             <div className="flex flex-col w-full max-md:max-w-full ">
                 <div className="flex gap-2.5 justify-center items-center self-center w-12 h-12 bg-violet-50 min-h-[48px] rounded-[123px]">
                     <img

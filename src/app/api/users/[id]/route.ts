@@ -8,7 +8,7 @@ import {
 
 //Get a post by ID
 
-export async function GET(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     let { id } = await params;
 
     if (!id) {
@@ -19,9 +19,9 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
     }
 
     // Retrieve the post from the database
-    const user = await getDocumentById('users',id);
+    const user = await getDocumentById('users', id);
     console.log('post:', user);
-    
+
     if (!user) {
         return NextResponse.json(
             { message: "User not found" },
@@ -29,38 +29,42 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
         );
     }
 
-    return NextResponse.json(user, { status: 200});
+    return NextResponse.json(user, { status: 200 });
 }
 
 //Patch a post by ID
 
-export async function PATCH(request: Request,{ params }: { params: Promise<{ id: string }>}) {
-    let { id } = await params;
-    const body = await request.json(); // Parse request body
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    try {
+        let { id } = await params;
+        const body = await request.json(); // Parse request body
 
-    if (!id) {
+        if (!id) {
+            throw new Error('User ID is required');
+        }
+
+
+        if (body._id)
+            delete body._id; // Delete id from body to avoid conflicts
+        // Update the post in the database
+        const result = await patchDocumentById("users", id, body);
+
+        if (!result) {
+            throw new Error()
+        }
+
         return NextResponse.json(
-            { message: "User ID is required" },
-            { status: 400 } // Bad Request
+            { message: "User updated successfully" }
         );
-    }
-
-    // Update the post in the database
-    const result = await patchDocumentById("users", id, body);
-
-    if (!result) {
+    } catch (error) {
         return NextResponse.json(
-            { message: "Failed to update user" },
+            { message: "Failed to update user" + (error as Error).message },
             { status: 500 } // Internal Server Error
         );
     }
-
-    return NextResponse.json(
-        { message: "User updated successfully" }
-    );
 }
 // Delete a post by ID
-export async function DELETE(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     let { id } = await params;
 
 
