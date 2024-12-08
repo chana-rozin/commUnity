@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ProfileSectionProps } from "./types";
+import { ProfileSectionProps } from "@/types/profileComponent.type";
 
 export const ProfileSection: React.FC<ProfileSectionProps> = ({
     title,

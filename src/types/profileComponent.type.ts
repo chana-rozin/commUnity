@@ -22,15 +22,6 @@ type NestedKeys<T> = T extends object
     ? { [K in keyof T]: `${K & string}` | `${K & string}.${NestedKeys<T[K]>}` }[keyof T]
     : never;
 
-export interface ProfileFieldProps {
-    name: NestedKeys<ProfileFormData>; // This now allows nested keys like "address.street"
-    label: string;
-    iconSrc: string;
-    register: UseFormRegister<ProfileFormData>;
-    error?: string;
-    disabled?: boolean;
-}
-
 export interface ProfileSectionProps {
     title: string;
     description: string;
