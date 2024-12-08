@@ -52,7 +52,7 @@ const ProfilePage: React.FC = () => {
         try {
             console.log("Submitted data:", data);
             const updatedUser: User = { ...user!, ...data };
-            await updateUser(user!._id, updatedUser);
+            await updateUser(user!._id!, updatedUser);
             //TODO: save to to db using react-query ans then updated the store
             setUser(updatedUser);
         } catch (err) {
