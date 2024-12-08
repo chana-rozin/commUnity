@@ -27,6 +27,8 @@ export async function connectDatabase() {
 export async function insertDocument(collection: string, document: object) {
     const db = client.db('community');
     const result = await db.collection(collection).insertOne(document);
+    console.log(result);
+    
     return result;
 }
 

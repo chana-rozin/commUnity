@@ -24,7 +24,7 @@ export const EventCard: React.FC<Event> = ({
         <div className="flex flex-col justify-between items-start p-4 w-full bg-violet-50 rounded-xl">
             {/* Date, Name, and Location */}
             <div className="flex flex-col justify-start items-start w-full text-xs leading-none text-neutral-950">
-                <div className="font-medium text-gray-400">{""}</div>
+                <div className="font-medium text-gray-400">{formatDate(date)}</div>
                 <div className="font-semibold text-lg text-neutral-950">{name}</div>
                 <div className="text-sm text-neutral-600">{location}</div>
             </div>

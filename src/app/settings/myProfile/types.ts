@@ -1,18 +1,16 @@
 import { z } from "zod";
 
 export const profileSchema = z.object({
-    firstName: z.string().min(2, "שם פרטי חייב להכיל לפחות 2 תווים"),
-    lastName: z.string().min(2, "שם משפחה חייב להכיל לפחות 2 תווים"),
+    first_name: z.string().min(2, "שם פרטי חייב להכיל לפחות 2 תווים"),
+    last_name: z.string().min(2, "שם משפחה חייב להכיל לפחות 2 תווים"),
     email: z.string().email("כתובת אימייל לא תקינה"),
-    phone: z.string().regex(/^[0-9+\-\s]+$/, "מספר טלפון לא תקין"),
+    phone_number: z.string().regex(/^[0-9+\-\s]+$/, "מספר טלפון לא תקין"),
     address: z.object({
         street: z.string().min(5, "רחוב חייב להכיל לפחות 5 תווים"),
         city: z.string().min(2, "עיר חייבת להכיל לפחות 2 תווים"),
-        houseNumber: z.union([
-            z.string().min(1, "מספר בית חייב להכיל לפחות 1 תו"),
-            z.number().min(1, "מספר בית חייב להיות מספר חיובי")
-        ])
-    })
+        houseNumber:  z.string().min(1, "מספר בית חייב להכיל לפחות 1 תו")
+    }),
+    profile_picture_url: z.string()
 });
 
 export type ProfileFormData = z.infer<typeof profileSchema>;
@@ -30,6 +28,7 @@ export interface ProfileFieldProps {
     iconSrc: string;
     register: UseFormRegister<ProfileFormData>;
     error?: string;
+    disabled?: boolean;
 }
 
 export interface ProfileSectionProps {

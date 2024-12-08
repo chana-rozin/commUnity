@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
     phone_number: { type: String, required: true },
     age: { type: Number , required: true},
     profile_picture_url: {type: String, required: true},
-    neighborhoodId: [{ type: Schema.Types.ObjectId, ref: 'neighborhood'}],
+    neighborhoodId: { type: Schema.Types.ObjectId, ref: 'neighborhood'},
     communitiesIds: [{ type: Schema.Types.ObjectId, ref: 'community' }],
     savedPostsIds: [{ type: Schema.Types.ObjectId, ref: 'post' }], 
     savedEventsIds: [{ type: Schema.Types.ObjectId, ref: 'events' }], 

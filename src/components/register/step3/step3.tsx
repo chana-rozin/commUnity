@@ -1,8 +1,12 @@
 import * as React from "react";
-import { ImageUpload } from "./imageUpload";
+import { ImageUpload } from "../../uploadImage/uploadImage";
 import { NavigationButton } from "./navigateBtn";
 
-const Step3: React.FC = () => {
+interface step3Props {
+    handleStep: (data: object | null, more?: boolean) => void;
+}
+const Step3: React.FC<step3Props> = ({ handleStep }) => {
+    const [imageUrl, setImageUrl] = React.useState<any>(null);
     return (
 
         <div className="flex flex-col ml-5 w-[46%] max-md:ml-0 max-md:w-full">
@@ -21,11 +25,24 @@ const Step3: React.FC = () => {
                         רוצה שהשכנים יזהו אותך? הוסיפ/י תמונת פרופיל מתאימה (לבחירתך).
                     </div>
                 </div>
-                <ImageUpload />
+                <section className="flex flex-wrap gap-8 items-start self-stretch w-full text-sm max-md:max-w-full mt-7">
+                    <div className="flex flex-col min-w-[240px] w-[260px]">
+
+                    </div>
+                    <div className="flex flex-wrap grow shrink gap-3 items-start min-w-[240px] w-[468px] max-md:max-w-full" >
+                        {imageUrl && <img
+                            src={imageUrl}
+                            alt=""
+                            className="object-contain shrink-0 w-16 aspect-square rounded-full"
+                        />}
+                        <ImageUpload setImageUrl={setImageUrl} />
+                    </div>                
+                    </section>
+
                 <div className="flex gap-3 items-start mt-16 max-md:mt-10" />
                 <div className="flex gap-5 justify-between mt-9 ml-10 max-w-full text-base font-medium text-center text-white whitespace-nowrap w-[472px] max-md:mt-10">
-                    <NavigationButton label="דלג" />
-                    <NavigationButton label="הקודם" />
+                    <NavigationButton label="הקודם" onClick={() => { handleStep(imageUrl, false) }} />
+                    <NavigationButton label={imageUrl?"הבא":"דלג"} onClick={() => { handleStep({imageUrl: imageUrl}) }} />
                 </div>
             </div>
         </div>
