@@ -25,7 +25,7 @@ const signUp: React.FC = () => {
 
     const [email, setEmail] = useState('');
     const [verificationPopUp, setVerificationPopUp] = useState(false);
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(2);
     const [user, setUser] = useState<any>(null);
     const [userGiveWrongCode, setUserGiveWrongCode] = useState(false);
     const [signUpBy, setSignUpBy] = useState<string>();
