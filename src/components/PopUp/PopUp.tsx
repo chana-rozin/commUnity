@@ -1,27 +1,35 @@
-import React from "react";
+import * as React from "react";
 
 interface PopupProps {
   title: string;
-  text: React.ReactNode; // This will allow dynamic content like forms
+  content: React.ReactNode;
+  isOpen: boolean;
   onClose: () => void;
 }
 
-const Popup: React.FC<PopupProps> = ({ title, text, onClose }) => {
+const Popup: React.FC<PopupProps> = ({ title, content, isOpen, onClose }) => {
+  if (!isOpen) return null;
+
   return (
-    <div className="popup-overlay fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="popup-content bg-white p-6 rounded-lg max-w-lg">
-        <h2 className="text-xl font-bold">{title}</h2>
-        <div className="mt-4">{text}</div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
+      <div className="relative bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6">
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="mt-4 px-4 py-2 bg-red-600 text-white rounded"
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+          aria-label="Close Popup"
         >
-          סגור
+          ✖
         </button>
+
+        {/* Popup Title */}
+        <h2 className="text-xl font-bold text-gray-900">{title}</h2>
+
+        {/* Popup Content */}
+        <div className="mt-4 text-sm text-gray-700">{content}</div>
       </div>
     </div>
   );
 };
 
-// Export Popup component
-export { Popup };
+export default Popup;

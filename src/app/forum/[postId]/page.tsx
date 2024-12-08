@@ -1,16 +1,14 @@
 'use client';
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import OpenPostSection from '@/components/forum/OpenPostSection';
+import OpenPostSection from '@/components/Forum/OpenPostSection';
 import { getPostById } from '@/services/posts';
 import { Post } from '@/types/post.type';
 import { useParams } from 'next/navigation'
-import { useLikePost, useSavePost } from '@/utils/forumUtils';
+import { useLikePost, useSavePost } from '@/services/mutations/forum';
 import useUserStore from "@/stores/userStore";
 
-
 const PostPage: React.FC = () => {
-
   const { postId } = useParams();
   const {user, setUser} = useUserStore();
 
@@ -23,40 +21,6 @@ const PostPage: React.FC = () => {
   const likeMutation = useLikePost();
   const saveMutation = useSavePost(user, setUser);
 
-  //const [post, setPost] = useState<any>(null);
-  //const [error, setError] = useState<string | null>(null);
-
-  
-  // useEffect(() => {
-  //   if (user) {
-  //       const fetchPost = async () => {
-  //           try {
-  //               const fetchedPost = await getPostById(postId as string);
-  //               if (!fetchedPost) {
-  //               throw new Error('Post not found');
-  //               }
-  //               setPost(fetchedPost);
-  //           } catch (err: any) {
-  //               console.error('Error fetching post:', err);
-  //               setError(err.message || 'An error occurred');
-  //           }
-  //       };
-  //       fetchPost();
-  //   }
-  // }, [postId, user]);
-
-  // if (error) {
-  //   return <div>{error}</div>;
-  // }
-
-  // if (!post) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (!user) {
-  //   return <div>Loading user...</div>;
-  // }
-
   const handleLike = () => {
     if (!user?._id || !post) {
       console.error('User not authenticated or no post');
@@ -66,11 +30,7 @@ const PostPage: React.FC = () => {
     const isCurrentlyLiked = post.likedBy.includes(user._id);
     
     try {
-      likeMutation.mutate({ 
-        postId: post._id, 
-        userId: user._id, 
-        isCurrentlyLiked 
-      });
+      likeMutation.mutate({ postId: post._id, userId: user._id, isCurrentlyLiked });
     } catch (error) {
       console.error("Error toggling like:", error);
     }
@@ -105,11 +65,11 @@ const PostPage: React.FC = () => {
         content={post.content}
         comments={post.comments}
         likedBy={post.likedBy}
-        communityId="0"
+        communitiesIds={post.communitiesIds}
         images={post.images}
-        liked={post.likedBy.includes(user._id)}
+        liked={post.likedBy.includes(user._id || "")}
         saved={user.savedPostsIds.includes(post._id)}
-        onLike={() => handleLike()} // Ensure this matches the prop signature
+        onLike={() => handleLike()} 
         onSave={() => handleSave()}        
       />
     </div>

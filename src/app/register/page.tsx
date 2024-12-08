@@ -1,46 +1,73 @@
 "use client"
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react'
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
-import { auth } from '../../services/firebaseConfig'
+import { auth } from '@/services/firebaseConfig'
 import http from '../../services/http'
 import Step1 from '../../components/register/step1/step1'
 import Step2 from '../../components/register/step2/step2'
 import Step3 from '../../components/register/step3/step3'
+import Step4 from '../../components/register/step4/step4'
+import { User } from '../../types/user.type'
+import { Preference } from '@/types/general.type';
 
 
 
 import VerificationCodePopUp from '../../components/register/verificationCodePopUp'
 const googleProvider = new GoogleAuthProvider();
+import useUserStore from '@/stores/userStore';
+import { useRouter } from 'next/navigation';
 
 
 
-const AuthPage: React.FC = () => {
+const signUp: React.FC = () => {
 
 
     const [email, setEmail] = useState('');
     const [verificationPopUp, setVerificationPopUp] = useState(false);
     const [step, setStep] = useState(1);
     const [user, setUser] = useState<any>(null);
-    const [userGiveWrongCode, setUserGiveWrongCode] = useState(false)
-
+    const [userGiveWrongCode, setUserGiveWrongCode] = useState(false);
+    const [signUpBy, setSignUpBy] = useState<string>();
+    const [userExists, setUserExists] = useState(false);
+    const router = useRouter();
+    
     async function loginWithGoogle() {
         try {
+            setSignUpBy('google');
             const result = await signInWithPopup(auth, googleProvider);
             const user = result.user;
+            const userExist = await http.post(`/register/${user.email}`)
+            setUserExists(false)
             setUser(user);
             console.log("User signed in:", user);
             setStep(2);
-        } catch (error) {
+        } catch (error: any) {
+            if (error.status === 409) {
+                setUserExists(true);
+                return;
+            }
             console.error("Error signing in:", error);
         }
     }
 
     async function loginWithEmailAndPassword(email: string, password: string) {
-        setVerificationPopUp(true);
-        setEmail(email);
-        setUser({email: email, password: password});
-        sendVerificationCode(email);
+        debugger
+        try {
+            setSignUpBy('email')
+            const userExist = await http.post(`/register/${email}`)
+            setUserExists(false);
+            setVerificationPopUp(true);
+            setEmail(email);
+            setUser({ email: email, password: password });
+            sendVerificationCode(email);
+        } catch (error: any) {
+            if (error.status === 409) {
+                setUserExists(true);
+                return;
+            }
+            console.error("Error signing in:", error);
+        }
     }
 
     async function sendVerificationCode(email: string) {
@@ -57,14 +84,14 @@ const AuthPage: React.FC = () => {
         debugger
         try {
             const result = await http.post('/verify-email/check', { email: email, code: code })
-            if(result.status === 200) {
+            if (result.status === 200) {
                 setStep(2);
                 setVerificationPopUp(false);
-            }else{
+            } else {
                 setUserGiveWrongCode(true);
             }
             console.log(result);
-            
+
         }
         catch (error) {
             console.error('Error sending verification code:', error);
@@ -72,14 +99,71 @@ const AuthPage: React.FC = () => {
         }
     }
 
-    async function handleStep(data: object) {
-        setStep((prev:number)=>{
-            return prev+1
-        });
-        setUser((prev:object)=>{
-            return {...prev,...data}
-        })
+    async function handleStep(data: object | null, more: boolean = true) {
+        if (more) {
+            if (step === 4) {
+                signUp();
+            }
+            setStep((prev: number) => {
+                return prev + 1
+            });
+        } else {
+
+            setStep((prev: number) => {
+                return prev - 1
+            });
+        }
+        if (data !== null) {
+            setUser((prev: object) => {
+                return { ...prev, ...data }
+            })
+        }
         return;
+    }
+
+    async function signUp() {
+        debugger
+        try {
+            console.log(user);
+
+            const preferences: Preference =
+            {
+                email_notifications: true,
+                minyan_notifications: true,
+                event_notifications: true
+            };
+            let newUser: User = {
+                first_name: user.firstName,
+                last_name: user.lastName,
+                email: user.email,
+                address: user.address,
+                phone_number: user.phone,
+                profile_picture_url: user.imageUrl,
+                neighborhoodId: "675042e6292054c85b9b65d6",
+                communitiesIds: [],
+                preferences: preferences,
+                savedPostsIds: [],
+                savedEventsIds: []
+            }
+            var result;
+            if (signUpBy === "google") {
+                const userWithToken =  { ...newUser, accessToken: user.accessToken }
+                result = await http.post('/register/google', userWithToken);
+            } else {
+                const userWithPass = { ...newUser, password: user.password }
+                result = await http.post('/register/email', userWithPass);
+            }
+            if (result.status !== 201) {
+                throw new Error('Failed to add user to the database');
+            }
+            else {
+                newUser._id = result.data.insertedId;
+                useUserStore.getState().setUser(newUser);
+                router.push('/home');
+            }
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     return (
@@ -114,13 +198,15 @@ const AuthPage: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} /> : step === 2 ?
 
-                    <Step2 handleStep={handleStep}/> : step === 3 ? <Step3 /> : <></>}
-                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode}/>}
+                {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} userExists={userExists} /> : step === 2 ?
+
+                    <Step2 handleStep={handleStep} /> : step === 3 ? <Step3 handleStep={handleStep} /> : <Step4 handleStep={handleStep} signUp={signUp}/>}
+                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode} setVerificationPopUp={setVerificationPopUp}/>}
             </div>
         </div>
     );
 };
 
-export default AuthPage;
+
+export default signUp;

@@ -47,7 +47,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         let { id } = await params;
         if (!id) {
             return NextResponse.json(
-                { message: "Post ID is required" },
+                { message: "User ID is required" },
                 { status: 400 } // Bad Request
             );
         }

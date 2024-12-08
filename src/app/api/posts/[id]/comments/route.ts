@@ -5,7 +5,7 @@ import {
 } from "@/services/mongodb";
 export async function POST(request: Request,{ params }: { params: Promise<{ id: string }>}) {
     console.log('post comment');
-    debugger
+    
     let { id } = await params;
     const body = await request.json(); // Parse request body
     let postToUpdate = await getDocumentById("posts",id)
