@@ -11,7 +11,8 @@ export interface Preference {
     sound_alerts: boolean;
     ai_training_data: boolean;
     general_usage_data: boolean;
-};
+}
+
 
 export interface Comment {
     _id: string;
