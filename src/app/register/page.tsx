@@ -31,7 +31,7 @@ const signUp: React.FC = () => {
     const [signUpBy, setSignUpBy] = useState<string>();
     const [userExists, setUserExists] = useState(false);
     const router = useRouter();
-    
+
     async function loginWithGoogle() {
         try {
             setSignUpBy('google');
@@ -130,7 +130,10 @@ const signUp: React.FC = () => {
             {
                 email_notifications: true,
                 minyan_notifications: true,
-                event_notifications: true
+                event_notifications: true,
+                sound_alerts: false,
+                ai_training_data: false,
+                general_usage_data: false
             };
             let newUser: User = {
                 first_name: user.firstName,
@@ -147,7 +150,7 @@ const signUp: React.FC = () => {
             }
             var result;
             if (signUpBy === "google") {
-                const userWithToken =  { ...newUser, accessToken: user.accessToken }
+                const userWithToken = { ...newUser, accessToken: user.accessToken }
                 result = await http.post('/register/google', userWithToken);
             } else {
                 const userWithPass = { ...newUser, password: user.password }
@@ -201,8 +204,8 @@ const signUp: React.FC = () => {
 
                 {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} userExists={userExists} /> : step === 2 ?
 
-                    <Step2 handleStep={handleStep} /> : step === 3 ? <Step3 handleStep={handleStep} /> : <Step4 handleStep={handleStep} signUp={signUp}/>}
-                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode} setVerificationPopUp={setVerificationPopUp}/>}
+                    <Step2 handleStep={handleStep} /> : step === 3 ? <Step3 handleStep={handleStep} /> : <Step4 handleStep={handleStep} signUp={signUp} />}
+                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode} setVerificationPopUp={setVerificationPopUp} />}
             </div>
         </div>
     );
