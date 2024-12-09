@@ -2,6 +2,7 @@
 import { Noto_Sans_Hebrew } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar/Navbar";
+import {Footer} from "@/components/Footer/Footer"
 import QueryProvider from "./QueryProvider";
 import useUserStore from "@/stores/userStore";
 import { useRouter } from "next/navigation"; // Import useRouter
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <QueryProvider>
           {children}
         </QueryProvider>
+        <Footer/>
       </body>
     </html>
   );
