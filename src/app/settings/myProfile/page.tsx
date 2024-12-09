@@ -71,8 +71,8 @@ const ProfilePage: React.FC = () => {
         <>
             <div className="flex flex-col items-end self-stretch p-16 bg-white rounded-2xl">
                 <div className="flex flex-col w-full max-md:px-5">
-                    <header className="...">
-                        <h1>פרטי פרופיל</h1>
+                    <header className="border-b border-solid border-b-slate-200 pb-4">
+                        <h1 className="font-bold text-2xl">פרטי פרופיל</h1>
                         <p>כאן תוכל לשנות את פרטי הפרופיל שלך</p>
                     </header>
 
