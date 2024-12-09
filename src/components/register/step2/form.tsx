@@ -38,6 +38,12 @@ export const RegistrationForm: React.FC<props> = ({ handleStep }) => {
 
     return (
         <form className="flex flex-col mt-20 max-w-full text-sm leading-none min-h-[234px] text-neutral-500 w-[430px] max-md:mt-10" onSubmit={handleSubmit(onSubmit)}>
+            <h1 className="mt-9 text-3xl font-bold text-right text-neutral-950">
+                איזה כיף שאת/ה כאן!
+            </h1>
+            <p className="self-start mt-0 text-base text-right text-neutral-950">
+                רק עוד כמה פרטים קטנים ואנחנו שם!
+            </p>
             <div className="flex flex-col w-full max-md:max-w-full">
                 <div className="flex flex-col mt-4 w-full max-md:max-w-full">
                     <div className="flex flex-col w-full max-md:max-w-full">

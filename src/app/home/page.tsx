@@ -6,20 +6,23 @@ import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/Ev
 import useUserStore from '@/stores/userStore';
 import { getSampleUser } from '@/utils/sampleUser';
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
 
 const HomePage = () => {
-
-  const { user, setUser } = useUserStore();
+  const router = useRouter();
+    const { user, setUser } = useUserStore();
 
   useEffect(() => {
+    debugger
     if (!user) {
       (async () => {
-        const sampleUser = await getSampleUser();
-        setUser(sampleUser);
+        // const sampleUser = await getSampleUser();
+        // setUser(sampleUser);
       })();
       console.log("Sample user set:", user);
     }
-  }, []);
+  }, [user]);
 
   console.log("User store:", user);
 
