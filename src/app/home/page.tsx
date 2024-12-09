@@ -1,30 +1,17 @@
 "use client"
 import ForumPage from '../../components/Forum/ForumPage';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
-import {LoansNotificationsCard} from '@/components/LoansNotificationsCard/LoansNotificationsCard';
+import { LoansNotificationsCard } from '@/components/LoansNotificationsCard/LoansNotificationsCard';
 import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
 import useUserStore from '@/stores/userStore';
 import { getSampleUser } from '@/utils/sampleUser';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 
 const HomePage = () => {
   const router = useRouter();
-    const { user, setUser } = useUserStore();
-
-  useEffect(() => {
-    debugger
-    if (!user) {
-      (async () => {
-        // const sampleUser = await getSampleUser();
-        // setUser(sampleUser);
-      })();
-      console.log("Sample user set:", user);
-    }
-  }, [user]);
-
-  console.log("User store:", user);
+  const { user, setUser } = useUserStore();
 
   return (
     <main>
@@ -74,7 +61,7 @@ const HomePage = () => {
         <div className="flex flex-col flex-1 shrink basis-0 min-w-[260px]">
           {/* Loans Section */}
           <div className="flex flex-col p-5  w-full bg-white rounded-2xl">
-            <LoansNotificationsCard/>
+            <LoansNotificationsCard />
           </div>
           {/* Events Section */}
           <div className="flex flex-col p-5 mt-4 w-full bg-white rounded-2xl">

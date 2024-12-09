@@ -19,9 +19,10 @@ interface props {
     userExists: boolean;
     setRememberMe: React.Dispatch<React.SetStateAction<boolean>>;
     rememberMe: boolean;
+    setEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, userExists ,setRememberMe, rememberMe}) => {
+const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, userExists ,setRememberMe, rememberMe, setEmail}) => {
     const router = useRouter();
     const {
         register,
@@ -29,7 +30,7 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
         formState: { errors }
     } = useForm<firstformTypesSchema>({ resolver: zodResolver(firstformTypes) });
     const [showPassword, setShowPassword] = React.useState(false);
-
+    
     const baseStyles = "gap-1 px-4 py-2 text-base font-medium text-center rounded-md w-full";
     const variantStyles = {
         primary: "bg-indigo-600 text-white",
@@ -47,6 +48,9 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
     const handleRememberMeBtn = (event: any) => {
         setRememberMe(event.target.checked); // Update state based on the checkbox value
     };
+    function onChange(event: any) {
+        setEmail(event.target.value);
+    }
     return (
         <div className={styles.step1Container}>
             <div className="flex flex-col items-start mt-4 w-full max-md:mt-10 max-md:max-w-full">
@@ -73,7 +77,8 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
                                     {...register("email")}
                                     type="email"
                                     id="email"
-                                    name="email" />
+                                    name="email"
+                                    onChange={onChange} />
                             </div>
                             {errors.email && <span>{errors.email.message}</span>}
                         </div>

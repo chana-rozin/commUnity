@@ -5,7 +5,6 @@ import { AuthTab } from '../../components/register/step1/AuthTab'
 import OpeningImage from '../../components/OpeningImage/OpeningImage'
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { auth } from '@/services/firebaseConfig'
-import VerificationCodePopUp from '../../components/register/verificationCodePopUp'
 import Logo from '../../components/register/logo'
 import { useRouter } from 'next/navigation';
 import { z } from "zod";
@@ -16,8 +15,8 @@ import { MdOutlineVisibility } from "react-icons/md";
 import { MdOutlineVisibilityOff } from "react-icons/md";
 import http from '../../services/http'
 import useUserStore from '@/stores/userStore';
-import { access } from 'fs';
-
+import FormPopUp from '@/components/PopUp/FormPopUp'
+import { Span } from 'next/dist/trace';
 
 
 
@@ -36,17 +35,36 @@ export const form = z
     })
 type formTypesSchema = z.infer<typeof form>;
 const googleProvider = new GoogleAuthProvider();
+const formObj = {
+    input: z
+        .string()
+        .min(8, { message: 'Be at least 8 characters long' })
+        .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
+        .regex(/[0-9]/, { message: 'Contain at least one number.' })
+        .regex(/[^a-zA-Z0-9]/, {
+            message: 'Contain at least one special character.',
+        })
+        .trim()
+}
 
 const signUp: React.FC = () => {
     const [userExists, setUserExists] = React.useState(true);
     const [remember, setRemember] = React.useState(false);
+    const [verificationPopUp, setVerificationPopUp] = React.useState<boolean>(false);
+    const [newPasswordPopUp, setNewPasswordPopUp] = React.useState<boolean>(false);
+    const [verifyError, setVerifyError] = React.useState<string | null>(null)
+    const [newPassError, setNewPassError] = React.useState<string | null>(null);
+    const [forgetPasswordError, setForgetPasswordError] = React.useState<string | null>(null);
     const router = useRouter();
+
     const {
         register,
         handleSubmit,
+        watch,
         formState: { errors }
     } = useForm<formTypesSchema>({ resolver: zodResolver(form) });
     const [showPassword, setShowPassword] = React.useState(false);
+    const emailValue = watch("email");
 
     const baseStyles = "gap-1 px-4 py-2 text-base font-medium text-center rounded-md w-full";
     const variantStyles = {
@@ -118,6 +136,74 @@ const signUp: React.FC = () => {
         debugger
         loginWithEmail(data.email, data.password);
     }
+
+    async function handleForgetPassword() {
+        if (emailValue) {
+            if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue) &&
+                emailValue.length >= 8 &&
+                /[a-zA-Z]/.test(emailValue) &&
+                /[0-9]/.test(emailValue) &&
+                /[^a-zA-Z0-9]/.test(emailValue))) {
+                setForgetPasswordError('נא להכניס כתובת מייל תקנית')
+            } else {
+                try {
+                    setForgetPasswordError(null)
+                    sendVerificationCode(emailValue);
+                }
+                catch (error) {
+                    console.error('Error sending password reset code:', error);
+                }
+            }
+
+        } else {
+            setForgetPasswordError('נא להכניס כתובת מייל')
+            console.error('Error: email value is required.');
+        }
+    }
+    async function sendVerificationCode(email: string) {
+        try {
+            setVerificationPopUp(true);
+            const result = http.post('/verify-email/send', { email: email })
+        }
+        catch (error) {
+            console.error('Error sending verification code:', error);
+
+        }
+    }
+    async function checkVerificationCode(email: string, code: string) {
+        debugger
+        try {
+            const result = await http.post('/verify-email/check', { email: email, code: code })
+            if (result.status === 200) {
+                setVerifyError(null)
+                setVerificationPopUp(false);
+                setNewPasswordPopUp(true);
+            } else {
+                setVerifyError('error checking code try again in a few seconds');
+            }
+            console.log(result);
+
+        }
+        catch (error: any) {
+            console.error('Error sending verification code:', error);
+            setVerifyError('הקוד שגוי , נסה שוב!');
+        }
+    }
+    async function handlePasswordChange(email: string, password: string) {
+        try {
+            const result = await http.post('/passwords', { email: email, password: password });
+            if(result.status === 200) {
+                setNewPassError(null)
+                setNewPasswordPopUp(false);
+            }
+            else{
+                throw new Error(result.data);
+            }
+        } catch (error) {
+            setNewPassError('שינוי סיסמה נכשל, נסה שוב')
+        }
+    }
+
     return (
         <div className="overflow-hidden py-10 pr-9 pl-16 bg-white max-md:px-5">
             <div className="flex gap-5 max-md:flex-col">
@@ -166,6 +252,8 @@ const signUp: React.FC = () => {
                                         {errors.password && <span>{errors.password.message}</span>}
                                     </div>
                                 </div>
+                                <span className="bg-neutral-100 text-indigo-900" onClick={handleForgetPassword}>שכחתי סיסמא</span>
+                                {forgetPasswordError && <span>{forgetPasswordError}</span>}
                                 <div className="flex flex-col mt-8">
                                     <button
                                         type="submit"
@@ -205,11 +293,12 @@ const signUp: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                {/* {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode} />} */}
+                <FormPopUp onSubmit={checkVerificationCode} inputRole={"קוד אימות"} isResend='לא קיבלת קוד? שלח שוב' resend={sendVerificationCode} inputError={verifyError} setInputError={setVerifyError} title='נשלח קוד אימות לכתובת המייל' isOpen={verificationPopUp} onClose={() => { setVerificationPopUp(false) }} data={emailValue} formObj={{ input: z.string() }} />
+                <FormPopUp onSubmit={handlePasswordChange} inputRole={"סיסמה חדשה"} isResend={newPassError} resend={sendVerificationCode} inputError={newPassError} setInputError={setNewPassError} title='הכנס סיסמה חדשה' isOpen={newPasswordPopUp} onClose={() => { setNewPasswordPopUp(false) }} data={emailValue} formObj={formObj} />
             </div>
         </div>
     );
 };
 
 
-export default signUp;
+export default signUp; 
