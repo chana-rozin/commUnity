@@ -44,8 +44,8 @@ const PreferencesPage: React.FC = () => {
     };
 
     return (
-        <main className="flex flex-col items-end self-stretch p-16 bg-white rounded-2xl max-md:pb-24" role="main">
-            <div className="flex flex-col w-full max-w-[1096px] max-md:pl-5 max-md:max-w-full">
+        <main className="flex flex-col items-start w-full self-stretch p-16 bg-white rounded-2xl max-md:pb-24" role="main">
+            <div className="flex flex-col w-full max-md:pl-5 max-md:max-w-full">
                 <header className="flex gap-4 items-center self-stretch pb-5 w-full leading-none text-right border-b border-solid border-b-slate-200 max-md:max-w-full">
                     <div className="flex flex-col flex-1 shrink self-stretch my-auto w-full basis-0 min-w-[240px] max-md:max-w-full">
                         <h1 className="text-lg font-bold tracking-normal text-slate-800 max-md:max-w-full">
