@@ -10,6 +10,7 @@ import Logo from '../../components/register/logo'
 import { useRouter } from 'next/navigation';
 import { z } from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { form, formTypesSchema } from "@/schemas/loginFormSchema";
 import { zodResolver } from '@hookform/resolvers/zod';
 import styles from './login.module.css'
 import { MdOutlineVisibility } from "react-icons/md";
@@ -18,23 +19,6 @@ import http from '../../services/http'
 import useUserStore from '@/stores/userStore';
 import { access } from 'fs';
 
-
-
-
-export const form = z
-    .object({
-        email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
-        password: z
-            .string()
-            .min(8, { message: 'Be at least 8 characters long' })
-            .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
-            .regex(/[0-9]/, { message: 'Contain at least one number.' })
-            .regex(/[^a-zA-Z0-9]/, {
-                message: 'Contain at least one special character.',
-            })
-            .trim()
-    })
-type formTypesSchema = z.infer<typeof form>;
 const googleProvider = new GoogleAuthProvider();
 
 const signUp: React.FC = () => {
