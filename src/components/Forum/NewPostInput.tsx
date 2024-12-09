@@ -61,7 +61,7 @@ export const NewPostInput: React.FC = () => {
         <div className="flex gap-4 items-center">
           <img
             loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/c8591468def0ca3dfa10517b7eff16bf4ac52321869a9c501d891cc98883401c"
+            src={user?.profile_picture_url}
             alt="User avatar"
             className="object-contain shrink-0 self-stretch my-auto w-12 aspect-square rounded-full"
           />

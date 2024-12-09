@@ -134,7 +134,10 @@ const signUp: React.FC = () => {
             {
                 email_notifications: true,
                 minyan_notifications: true,
-                event_notifications: true
+                event_notifications: true,
+                sound_alerts: false,
+                ai_training_data: false,
+                general_usage_data: false
             };
             let newUser: User = {
                 first_name: user.firstName,
