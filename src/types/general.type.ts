@@ -53,7 +53,7 @@ export interface VideoFile extends FileInfo {
 }
 
 export enum PrayerTime {
-    Shacharit = 'שחרית', 
-    Mincha = 'מנחה',       
-    Arvit = 'ערבית'        
+    Shacharit = 'שחרית',
+    Mincha = 'מנחה',
+    Arvit = 'ערבית'
 }
