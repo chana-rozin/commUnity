@@ -1,6 +1,6 @@
 import { User } from "@/types/user.type";
 
-const sampleUser:User = {
+const sampleUser: User = {
     _id: "645c1ab8e8f1a7a1b5c8d9f1",
     first_name: "ישראל",
     last_name: "כהן",
@@ -22,6 +22,9 @@ const sampleUser:User = {
         email_notifications: true,
         minyan_notifications: false,
         event_notifications: true,
+        sound_alerts: false,
+        ai_training_data: false,
+        general_usage_data: false
     },
     savedPostsIds: ["645c1ab8e8f1a7a1b5c8d9f5", "645c1ab8e8f1a7a1b5c8d9f6"], // Example post IDs
     savedEventsIds: [], // Example event IDs
@@ -29,10 +32,10 @@ const sampleUser:User = {
 
 import http from "@/services/http";
 
-const getSampleUser = async ()=>{
+const getSampleUser = async () => {
     const res = await http.get("/users/674ed9fb04a9dba04cdfaea7");
     return res.data as User;
 }
 
 
-export { sampleUser, getSampleUser};
+export { sampleUser, getSampleUser };

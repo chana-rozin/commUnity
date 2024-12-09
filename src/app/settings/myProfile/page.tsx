@@ -9,7 +9,7 @@ import useUserStore from "@/stores/userStore";
 import { ImageUpload } from "@/components/uploadImage/uploadImage";
 import { User } from "@/types/user.type"
 import { updateUser } from '@/services/users'
-import { toast, ToastContainer } from 'react-toastify'
+import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 const profileFields = [
@@ -69,12 +69,8 @@ const ProfilePage: React.FC = () => {
 
     return (
         <>
-            <ToastContainer
-                toastClassName="bg-indigo-500 text-white"
-                progressClassName="bg-indigo-700"
-            />
-            <div className="flex flex-col items-end self-stretch pt-4 pr-4 pb-24 bg-white rounded-2xl">
-                <div className="flex flex-col px-8 pt-8 w-full max-md:px-5">
+            <div className="flex flex-col items-end self-stretch p-16 bg-white rounded-2xl">
+                <div className="flex flex-col w-full max-md:px-5">
                     <header className="...">
                         <h1>פרטי פרופיל</h1>
                         <p>כאן תוכל לשנות את פרטי הפרופיל שלך</p>

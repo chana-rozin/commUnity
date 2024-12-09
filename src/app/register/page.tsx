@@ -136,7 +136,10 @@ const signUp: React.FC = () => {
             {
                 email_notifications: true,
                 minyan_notifications: true,
-                event_notifications: true
+                event_notifications: true,
+                sound_alerts: false,
+                ai_training_data: false,
+                general_usage_data: false
             };
             let newUser: User = {
                 first_name: user.firstName,
@@ -179,6 +182,7 @@ const signUp: React.FC = () => {
                 <div className="flex flex-col w-[55%] max-md:ml-0 max-md:w-full">
                     <OpeningImage />
                 </div>
+
                 {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} userExists={userExists} setRememberMe={setRememberMe} rememberMe={rememberMe}/> : step === 2 ?
                     <Step2 handleStep={handleStep} /> : step === 3 ? <Step3 handleStep={handleStep} googleImage={googleImage} /> : <Step4 handleStep={handleStep} signUp={signUp}/>}
                 {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode} setVerificationPopUp={setVerificationPopUp}/>}
