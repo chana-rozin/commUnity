@@ -8,6 +8,8 @@ import Step1 from '../../components/register/step1/step1'
 import Step2 from '../../components/register/step2/step2'
 import Step3 from '../../components/register/step3/step3'
 import Step4 from '../../components/register/step4/step4'
+import OpeningImage from '../../components/OpeningImage/OpeningImage'
+
 import { User } from '../../types/user.type'
 import { Preference } from '@/types/general.type';
 
@@ -30,15 +32,19 @@ const signUp: React.FC = () => {
     const [userGiveWrongCode, setUserGiveWrongCode] = useState(false);
     const [signUpBy, setSignUpBy] = useState<string>();
     const [userExists, setUserExists] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
+    const [googleImage, setGoogleImage] = useState<string|null>(null);
     const router = useRouter();
-    
+
     async function loginWithGoogle() {
         try {
+            debugger
             setSignUpBy('google');
             const result = await signInWithPopup(auth, googleProvider);
-            const user = result.user;
+            let user:any = result.user;
             const userExist = await http.post(`/register/${user.email}`)
             setUserExists(false)
+            setGoogleImage(user.photoURL)
             setUser(user);
             console.log("User signed in:", user);
             setStep(2);
@@ -130,7 +136,10 @@ const signUp: React.FC = () => {
             {
                 email_notifications: true,
                 minyan_notifications: true,
-                event_notifications: true
+                event_notifications: true,
+                sound_alerts: false,
+                ai_training_data: false,
+                general_usage_data: false
             };
             let newUser: User = {
                 first_name: user.firstName,
@@ -147,7 +156,7 @@ const signUp: React.FC = () => {
             }
             var result;
             if (signUpBy === "google") {
-                const userWithToken =  { ...newUser, accessToken: user.accessToken }
+                const userWithToken = { ...newUser, accessToken: user.accessToken }
                 result = await http.post('/register/google', userWithToken);
             } else {
                 const userWithPass = { ...newUser, password: user.password }
@@ -157,8 +166,9 @@ const signUp: React.FC = () => {
                 throw new Error('Failed to add user to the database');
             }
             else {
+                debugger
                 newUser._id = result.data.insertedId;
-                useUserStore.getState().setUser(newUser);
+                useUserStore.getState().setUser(newUser,rememberMe);
                 router.push('/home');
             }
         } catch (err) {
@@ -170,39 +180,12 @@ const signUp: React.FC = () => {
         <div className="overflow-hidden py-10 pr-9 pl-16 bg-white max-md:px-5">
             <div className="flex gap-5 max-md:flex-col">
                 <div className="flex flex-col w-[55%] max-md:ml-0 max-md:w-full">
-                    <div className="flex flex-col grow pt-9 w-full bg-violet-200 rounded-[29px] max-md:mt-10 max-md:max-w-full">
-                        <img
-                            loading="lazy"
-                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/14eeaecd4f86cd90fe9fdf0fa65bd9406c9378edb4720d15456e6c9de723554f?placeholderIfAbsent=true&apiKey=7db810be59414fad871df25414a5c08b"
-                            alt=""
-                            className="object-contain self-end mr-20 w-7 aspect-[1.04] fill-violet-950 max-md:mr-2.5"
-                        />
-                        <div className="flex z-10 flex-col pl-9 mt-5 max-md:pl-5 max-md:max-w-full">
-                            <div className="ml-3.5 text-4xl leading-[52px] text-neutral-950 w-[504px] max-md:ml-2.5">
-                                Find a job through <span>your community</span>
-                            </div>
-                            <div className="flex relative flex-col items-end px-20 pt-8 mt-14 min-h-[622px] pb-[519px] max-md:px-5 max-md:pb-24 max-md:mt-10 max-md:mr-0 max-md:max-w-full">
-                                <img
-                                    loading="lazy"
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/10981eef531602d3195110b5fbd05e04c9634e30b640e35b9731f0eccd72859c?placeholderIfAbsent=true&apiKey=7db810be59414fad871df25414a5c08b"
-                                    alt="Community illustration"
-                                    className="object-cover absolute inset-0 size-full"
-                                />
-                                <img
-                                    loading="lazy"
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/91b072e0810434fb0c49002aac4ad24a27c5aa2f78e4a9e07dae616f6469cf22?placeholderIfAbsent=true&apiKey=7db810be59414fad871df25414a5c08b"
-                                    alt=""
-                                    className="object-contain mb-0 aspect-[1.07] fill-violet-950 w-[78px] max-md:mb-2.5"
-                                />
-                            </div>
-                        </div>
-                    </div>
+                    <OpeningImage />
                 </div>
 
-                {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} userExists={userExists}/> : step === 2 ?
-
-                    <Step2 handleStep={handleStep} /> : step === 3 ? <Step3 handleStep={handleStep} /> : <Step4 handleStep={handleStep} signUp={signUp}/>}
-                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode} />}
+                {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} userExists={userExists} setRememberMe={setRememberMe} rememberMe={rememberMe}/> : step === 2 ?
+                    <Step2 handleStep={handleStep} /> : step === 3 ? <Step3 handleStep={handleStep} googleImage={googleImage} /> : <Step4 handleStep={handleStep} signUp={signUp}/>}
+                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode} setVerificationPopUp={setVerificationPopUp}/>}
             </div>
         </div>
     );
