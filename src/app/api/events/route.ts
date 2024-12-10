@@ -17,15 +17,15 @@ export async function GET(request: Request) {
         // Split the communities parameter into an array
         const commArray = communities.split(",");
         // Create a query that checks both 'communitiesIds' or 'neighborhoods' field
-        query.communitiesIds = { $in: commArray };
+        query.AuthorizedIds = { $in: commArray };
     }
 
     if (search) {
-        query.title = { $regex: new RegExp(search, 'i') }; // Case-insensitive search in the "title"
+        query.name = { $regex: new RegExp(search, 'i') }; // Case-insensitive search in the "title"
     }
 
     // Retrieve posts based on the query
-    posts = await getDocumentByQuery("posts", query);
+    posts = await getDocumentByQuery("events", query);
 
     return NextResponse.json(posts); // Return data as JSON
 }
@@ -33,6 +33,7 @@ export async function GET(request: Request) {
 
 // Create a new post
 export async function POST(request: Request) {
+    debugger
     const body = await request.json(); // Parse request body
     if (!body) {
         return NextResponse.json(
@@ -42,11 +43,11 @@ export async function POST(request: Request) {
     }
     delete body._id;
     // Insert into the database
-    const result = await insertDocument("posts", body);
+    const result = await insertDocument("events", body);
 
     if (!result) {
         return NextResponse.json(
-            { message: "Failed to create post" },
+            { message: "Failed to create event" },
             { status: 500 } // Internal Server Error
         );
     }
