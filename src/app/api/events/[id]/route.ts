@@ -13,52 +13,60 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
 
     if (!id) {
         return NextResponse.json(
-            { message: "Post ID is required" },
+            { message: "Event ID is required" },
             { status: 400 } // Bad Request
         );
     }
 
     // Retrieve the post from the database
-    const post = await getDocumentById('posts',id);
-    console.log('post:', post);
+    const event = await getDocumentById('events',id);
+    console.log('event:', event);
     
-    if (!post) {
+    if (!event) {
         return NextResponse.json(
-            { message: "Post not found" },
+            { message: "Event not found" },
             { status: 404 } // Not Found
         );
     }
 
-    return NextResponse.json(post);
+    return NextResponse.json(event);
 }
 
 //Patch a post by ID
 
 export async function PATCH(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+    debugger
     let { id } = await params;
     const body = await request.json(); // Parse request body
-
+    if (!body) {
+        return NextResponse.json(
+            { message: "Missing required fields" },
+            { status: 400 } // Bad Request
+        );
+    }
+    delete body._id;
     if (!id) {
         return NextResponse.json(
-            { message: "Post ID is required" },
+            { message: "Event ID is required" },
             { status: 400 } // Bad Request
         );
     }
 
     // Update the post in the database
-    const result = await patchDocumentById("posts", id, body);
+    const result = await patchDocumentById("events", id, body);
 
     if (!result) {
         return NextResponse.json(
-            { message: "Failed to update post" },
+            { message: "Failed to update event" },
             { status: 500 } // Internal Server Error
         );
     }
 
     return NextResponse.json(
-        { message: "Post updated successfully" }
+        { message: "Event updated successfully" }
     );
 }
+
 
 // Delete a post by ID
 export async function DELETE(request: Request,{ params }: { params: Promise<{ id: string }>}) {
@@ -67,22 +75,22 @@ export async function DELETE(request: Request,{ params }: { params: Promise<{ id
 
     if (!id) {
         return NextResponse.json(
-            { message: "Post ID is required" },
+            { message: "Event ID is required" },
             { status: 400 } // Bad Request
         );
     }
 
     // Delete the post from the database
-    const result = await deleteDocumentById("posts", id);
+    const result = await deleteDocumentById("events", id);
 
     if (!result) {
         return NextResponse.json(
-            { message: "Failed to delete post" },
+            { message: "Failed to delete event" },
             { status: 500 } // Internal Server Error
         );
     }
 
     return NextResponse.json(
-        { message: "Post deleted successfully" }
+        { message: "Event deleted successfully" }
     );
 }

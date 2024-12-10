@@ -65,6 +65,8 @@ export async function POST(request: Request) {
             { status: 400 } // Bad Request
         );
     }
+    delete body._id;
+
     if(!body.lenderId){
         body.lenderId = null;
     }
