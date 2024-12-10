@@ -2,9 +2,9 @@ export interface Event {
     _id: string;
     name: string;
     description: string;
-    date: Date;
+    date: string;
     location: string;
-    createdDate: Date;
+    createdDate: string;
     active: boolean;
     AuthorizedIds: string[]; 
 }
