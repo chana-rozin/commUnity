@@ -36,13 +36,14 @@ export function LoansNotificationsCard() {
           </div>
         </div>
         <button
-          className="self-center px-6 py-2 text-sm font-medium text-indigo-600 bg-violet-50 border border-violet-300 rounded-full"
+          className="self-center px-6 py-2 text-sm font-medium text-indigo-600 bg-violet-50 border border-violet-300 rounded-full whitespace-nowrap"
           onClick={() => {
             window.location.href = "/neighborhood-help";
           }}
         >
           צפה בהכל
         </button>
+
       </div>
       <div className="flex flex-col mt-4 ">
         {loans.map((loan) => (

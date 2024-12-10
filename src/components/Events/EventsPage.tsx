@@ -26,6 +26,7 @@ const EventsPage: React.FC = () => {
     }
   };
 
+  
   useEffect(() => {
     fetchEvents();
   }, []);
@@ -67,7 +68,7 @@ const EventsPage: React.FC = () => {
           filteredEvents.map((event, index) => (
             <EventCard key={index} {...event} />
           ))
-        )}
+      )}
       </div>
     </main>
   );
