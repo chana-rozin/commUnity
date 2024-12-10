@@ -9,6 +9,7 @@ import Logo from '../../components/register/logo'
 import { useRouter } from 'next/navigation';
 import { z, ZodObject } from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { form, formTypesSchema } from "@/schemas/loginFormSchema";
 import { zodResolver } from '@hookform/resolvers/zod';
 import styles from './login.module.css'
 import { MdOutlineVisibility } from "react-icons/md";
@@ -26,6 +27,7 @@ const loginFormSchema= z
     })
 
 type LoginTypesSchema = z.infer<typeof loginFormSchema>;
+
 const googleProvider = new GoogleAuthProvider();
 const formObj = {
     input: z
