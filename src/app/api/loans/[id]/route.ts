@@ -13,23 +13,23 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
 
     if (!id) {
         return NextResponse.json(
-            { message: "Post ID is required" },
+            { message: "Loan ID is required" },
             { status: 400 } // Bad Request
         );
     }
 
     // Retrieve the post from the database
-    const post = await getDocumentById('posts',id);
-    console.log('post:', post);
+    const loan = await getDocumentById('loans',id);
+    console.log('loan:', loan);
     
-    if (!post) {
+    if (!loan) {
         return NextResponse.json(
-            { message: "Post not found" },
+            { message: "Loan not found" },
             { status: 404 } // Not Found
         );
     }
 
-    return NextResponse.json(post);
+    return NextResponse.json(loan);
 }
 
 //Patch a post by ID
@@ -40,25 +40,26 @@ export async function PATCH(request: Request,{ params }: { params: Promise<{ id:
 
     if (!id) {
         return NextResponse.json(
-            { message: "Post ID is required" },
+            { message: "Loan ID is required" },
             { status: 400 } // Bad Request
         );
     }
 
     // Update the post in the database
-    const result = await patchDocumentById("posts", id, body);
+    const result = await patchDocumentById("loans", id, body);
 
     if (!result) {
         return NextResponse.json(
-            { message: "Failed to update post" },
+            { message: "Failed to update loan" },
             { status: 500 } // Internal Server Error
         );
     }
 
     return NextResponse.json(
-        { message: "Post updated successfully" }
+        { message: "Loan updated successfully" }
     );
 }
+
 
 // Delete a post by ID
 export async function DELETE(request: Request,{ params }: { params: Promise<{ id: string }>}) {
@@ -67,22 +68,22 @@ export async function DELETE(request: Request,{ params }: { params: Promise<{ id
 
     if (!id) {
         return NextResponse.json(
-            { message: "Post ID is required" },
+            { message: "Loan ID is required" },
             { status: 400 } // Bad Request
         );
     }
 
     // Delete the post from the database
-    const result = await deleteDocumentById("posts", id);
+    const result = await deleteDocumentById("loans", id);
 
     if (!result) {
         return NextResponse.json(
-            { message: "Failed to delete post" },
+            { message: "Failed to delete loan" },
             { status: 500 } // Internal Server Error
         );
     }
 
     return NextResponse.json(
-        { message: "Post deleted successfully" }
+        { message: "Loan deleted successfully" }
     );
 }

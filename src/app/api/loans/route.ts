@@ -10,24 +10,49 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const communities = searchParams.get("communities");
     const search = searchParams.get("search");
+    const userId = searchParams.get("user_id");
+    const isOpen = searchParams.get("is_open");
+    const active = searchParams.get("active");
     let query: any = {}; // Initialize the query object
-    let posts;
+    let loans;
 
     if (communities) {
         // Split the communities parameter into an array
         const commArray = communities.split(",");
         // Create a query that checks both 'communitiesIds' or 'neighborhoods' field
-        query.communitiesIds = { $in: commArray };
+        query.AuthorizedIds = { $in: commArray };
     }
 
     if (search) {
-        query.title = { $regex: new RegExp(search, 'i') }; // Case-insensitive search in the "title"
+        query.item = { $regex: new RegExp(search, 'i') }; // Case-insensitive search in the "title"
     }
-
+    if (userId) {
+        // Ensure $or exists in the query or add it
+        if (!query.$or) {
+            query.$or = [];
+        }
+        // Add conditions for borrowerID and lenderID
+        query.$or.push(
+            { borrowerId: userId },
+            { lenderId: userId }
+        );
+    }
+    if(isOpen){
+        if(isOpen==='true'){
+            query.lenderId = null;
+        }
+    }
+    if(active){
+        query.active = active==='false'?false:true; // Only fetch active loans
+    }
+    else{
+        query.active = true; // Default to active loans
+    }
+    
     // Retrieve posts based on the query
-    posts = await getDocumentByQuery("posts", query);
+    loans = await getDocumentByQuery("loans", query);
 
-    return NextResponse.json(posts); // Return data as JSON
+    return NextResponse.json(loans); // Return data as JSON
 }
 
 
@@ -41,12 +66,16 @@ export async function POST(request: Request) {
         );
     }
     delete body._id;
+
+    if(!body.lenderId){
+        body.lenderId = null;
+    }
     // Insert into the database
-    const result = await insertDocument("posts", body);
+    const result = await insertDocument("loans", body);
 
     if (!result) {
         return NextResponse.json(
-            { message: "Failed to create post" },
+            { message: "Failed to create loan" },
             { status: 500 } // Internal Server Error
         );
     }

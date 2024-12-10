@@ -9,7 +9,8 @@ import Step2 from '../../components/register/step2/step2'
 import Step3 from '../../components/register/step3/step3'
 import Step4 from '../../components/register/step4/step4'
 import OpeningImage from '../../components/OpeningImage/OpeningImage'
-
+import FormPopUp from '@/components/PopUp/FormPopUp';
+import { z } from "zod";
 import { User } from '../../types/user.type'
 import { Preference } from '@/types/general.type';
 
@@ -21,19 +22,16 @@ import useUserStore from '@/stores/userStore';
 import { useRouter } from 'next/navigation';
 
 
-
 const signUp: React.FC = () => {
-
-
     const [email, setEmail] = useState('');
     const [verificationPopUp, setVerificationPopUp] = useState(false);
     const [step, setStep] = useState(1);
     const [user, setUser] = useState<any>(null);
-    const [userGiveWrongCode, setUserGiveWrongCode] = useState(false);
+    const [userGiveWrongCode, setUserGiveWrongCode] = useState<null | string>(null);
     const [signUpBy, setSignUpBy] = useState<string>();
     const [userExists, setUserExists] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
-    const [googleImage, setGoogleImage] = useState<string|null>(null);
+    const [googleImage, setGoogleImage] = useState<string | null>(null);
     const router = useRouter();
 
     async function loginWithGoogle() {
@@ -41,7 +39,7 @@ const signUp: React.FC = () => {
             debugger
             setSignUpBy('google');
             const result = await signInWithPopup(auth, googleProvider);
-            let user:any = result.user;
+            let user: any = result.user;
             const userExist = await http.post(`/register/${user.email}`)
             setUserExists(false)
             setGoogleImage(user.photoURL)
@@ -86,22 +84,22 @@ const signUp: React.FC = () => {
         }
     }
 
-    async function checkVerificationCode(email: string, code: string) {
+    async function checkVerificationCode(userEmail: string, userCode: string) {
         debugger
         try {
-            const result = await http.post('/verify-email/check', { email: email, code: code })
+            const result = await http.post('/verify-email/check', { email: userEmail, code: userCode })
             if (result.status === 200) {
                 setStep(2);
                 setVerificationPopUp(false);
             } else {
-                setUserGiveWrongCode(true);
+                setUserGiveWrongCode(result.data.message);
             }
             console.log(result);
 
         }
-        catch (error) {
+        catch (error: any) {
             console.error('Error sending verification code:', error);
-            setUserGiveWrongCode(true);
+            setUserGiveWrongCode(error.message);
         }
     }
 
@@ -168,7 +166,7 @@ const signUp: React.FC = () => {
             else {
                 debugger
                 newUser._id = result.data.insertedId;
-                useUserStore.getState().setUser(newUser,rememberMe);
+                useUserStore.getState().setUser(newUser, rememberMe);
                 router.push('/home');
             }
         } catch (err) {
@@ -182,10 +180,9 @@ const signUp: React.FC = () => {
                 <div className="flex flex-col w-[55%] max-md:ml-0 max-md:w-full">
                     <OpeningImage />
                 </div>
-
-                {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} userExists={userExists} setRememberMe={setRememberMe} rememberMe={rememberMe}/> : step === 2 ?
-                    <Step2 handleStep={handleStep} /> : step === 3 ? <Step3 handleStep={handleStep} googleImage={googleImage} /> : <Step4 handleStep={handleStep} signUp={signUp}/>}
-                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode} setVerificationPopUp={setVerificationPopUp}/>}
+                {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} userExists={userExists} setRememberMe={setRememberMe} rememberMe={rememberMe} setEmail={setEmail} /> : step === 2 ?
+                    <Step2 handleStep={handleStep} /> : step === 3 ? <Step3 handleStep={handleStep} googleImage={googleImage} /> : <Step4 handleStep={handleStep} signUp={signUp} />}
+                <FormPopUp onSubmit={checkVerificationCode} inputRole={"קוד אימות"} isResend='לא קיבלת קוד? שלח שוב' resend={sendVerificationCode} inputError={userGiveWrongCode} setInputError={setUserGiveWrongCode} title='נשלח קוד אימות לכתובת המייל' isOpen={verificationPopUp} onClose={() => { setVerificationPopUp(false) }} data={email} formObj={{input: z.string()}} />
             </div>
         </div>
     );

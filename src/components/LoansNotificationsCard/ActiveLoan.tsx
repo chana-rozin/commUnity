@@ -5,15 +5,15 @@ import useUserStore from "@/stores/userStore";
 
 export const ActiveLoan: React.FC<Loan> = ({
   _id,
-  lenderID,
-  borrowerID,
+  lenderId,
+  borrowerId,
   item,
   createdDate,
   LoanDate,
   active,
 }) => {
   const user = useUserStore((state) => state.user);
-  const isLender = user?._id === lenderID;
+  const isLender = user?._id === lenderId;
   const roleText = isLender ? "המשאיל" : "השואל";
 
   return (
@@ -24,7 +24,7 @@ export const ActiveLoan: React.FC<Loan> = ({
           {item}
         </div>
         <div className="text-xs leading-none text-gray-400">
-          {`${roleText}: ${isLender ? borrowerID : lenderID}`}
+          {`${roleText}: ${isLender ? borrowerId : lenderId}`}
         </div>
       </div>
 
