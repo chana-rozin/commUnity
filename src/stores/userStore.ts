@@ -10,16 +10,16 @@ interface UserState {
     clearUser: () => void;
 }
 
-const useUserStore = create<UserState>()(
+const useUserStore =create<UserState>()(
     persist(
         (set) => ({
             user: null,
             loginTime: null,
-            setUser: (user, persist = true) => {
+            setUser: (user, persist:any = true) => {
                 const loginTime = Date.now();
                 set({ user, loginTime });
 
-                if (persist) {
+                if (persist[1]) {
                     localStorage.setItem('user', JSON.stringify(user));
                     localStorage.setItem('loginTime', loginTime.toString());
                 } else {
