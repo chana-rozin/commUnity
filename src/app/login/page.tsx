@@ -7,7 +7,7 @@ import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { auth } from '@/services/firebaseConfig'
 import Logo from '../../components/register/logo'
 import { useRouter } from 'next/navigation';
-import { z } from "zod";
+import { z, ZodObject } from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import styles from './login.module.css'
@@ -16,24 +16,16 @@ import { MdOutlineVisibilityOff } from "react-icons/md";
 import http from '../../services/http'
 import useUserStore from '@/stores/userStore';
 import FormPopUp from '@/components/PopUp/FormPopUp'
-import { Span } from 'next/dist/trace';
 
 
 
-export const form = z
+const loginFormSchema= z
     .object({
         email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
-        password: z
-            .string()
-            .min(8, { message: 'Be at least 8 characters long' })
-            .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
-            .regex(/[0-9]/, { message: 'Contain at least one number.' })
-            .regex(/[^a-zA-Z0-9]/, {
-                message: 'Contain at least one special character.',
-            })
-            .trim()
+        password: z.string().min(8, { message: 'Be at least 8 characters long' }).regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' }).regex(/[0-9]/, { message: 'Contain at least one number.' }).regex(/[^a-zA-Z0-9]/, {message: 'Contain at least one special character.', }).trim()
     })
-type formTypesSchema = z.infer<typeof form>;
+
+type LoginTypesSchema = z.infer<typeof loginFormSchema>;
 const googleProvider = new GoogleAuthProvider();
 const formObj = {
     input: z
@@ -47,7 +39,7 @@ const formObj = {
         .trim()
 }
 
-const signUp: React.FC = () => {
+const Login: React.FC = () => {
     const [userExists, setUserExists] = React.useState(true);
     const [remember, setRemember] = React.useState(false);
     const [verificationPopUp, setVerificationPopUp] = React.useState<boolean>(false);
@@ -62,7 +54,7 @@ const signUp: React.FC = () => {
         handleSubmit,
         watch,
         formState: { errors }
-    } = useForm<formTypesSchema>({ resolver: zodResolver(form) });
+    } = useForm<LoginTypesSchema>({ resolver: zodResolver(loginFormSchema) });
     const [showPassword, setShowPassword] = React.useState(false);
     const emailValue = watch("email");
 
@@ -132,7 +124,7 @@ const signUp: React.FC = () => {
     const handleRememberMeBtn = (event: any) => {
         setRemember(event.target.checked); // Update state based on the checkbox value
     };
-    const onSubmit: SubmitHandler<formTypesSchema> = async (data) => {
+    const onSubmit: SubmitHandler<any> = async (data) => {
         debugger
         loginWithEmail(data.email, data.password);
     }
@@ -293,7 +285,7 @@ const signUp: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <FormPopUp onSubmit={checkVerificationCode} inputRole={"קוד אימות"} isResend='לא קיבלת קוד? שלח שוב' resend={sendVerificationCode} inputError={verifyError} setInputError={setVerifyError} title='נשלח קוד אימות לכתובת המייל' isOpen={verificationPopUp} onClose={() => { setVerificationPopUp(false) }} data={emailValue} formObj={{ input: z.string() }} />
+                <FormPopUp onSubmit={checkVerificationCode} inputRole={"קוד אימות"} isResend='לא קיבלת קוד? שלח שוב' resend={sendVerificationCode} inputError={verifyError} setInputError={setVerifyError} title='נשלח קוד אימות לכתובת המייל' isOpen={verificationPopUp} onClose={() => { setVerificationPopUp(false) }} data={emailValue} formObj={{ input: z.string().trim() }} />
                 <FormPopUp onSubmit={handlePasswordChange} inputRole={"סיסמה חדשה"} isResend={newPassError} resend={sendVerificationCode} inputError={newPassError} setInputError={setNewPassError} title='הכנס סיסמה חדשה' isOpen={newPasswordPopUp} onClose={() => { setNewPasswordPopUp(false) }} data={emailValue} formObj={formObj} />
             </div>
         </div>
@@ -301,4 +293,4 @@ const signUp: React.FC = () => {
 };
 
 
-export default signUp; 
+export default Login; 
