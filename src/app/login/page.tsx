@@ -16,7 +16,7 @@ import { MdOutlineVisibility } from "react-icons/md";
 import { MdOutlineVisibilityOff } from "react-icons/md";
 import http from '../../services/http'
 import useUserStore from '@/stores/userStore';
-import FormPopUp from '@/components/PopUp/FormPopUp'
+import FormPopUp from '@/components/PopUp/AuthPopUp'
 
 
 

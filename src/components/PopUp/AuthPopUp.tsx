@@ -1,5 +1,5 @@
 import React from 'react'
-import Popup from './PopUp';
+import GenericPopup from './GenericPopUp';
 import styles from './PopUp.module.css'
 import { z } from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -42,7 +42,7 @@ const FormPopUp: React.FC<formPopUpProps> = ({ onSubmit, inputRole, isResend, re
         onSubmit(data, inputValue);
     }
     return (
-        <Popup title={title} content={<form onSubmit={handleSubmit(handleSubmitForm)} >
+        <GenericPopup title={title} content={<form onSubmit={handleSubmit(handleSubmitForm)} >
             <input type="text" {...register("input")} value={inputValue} placeholder={inputRole} onChange={handleChange} className={`flex-1 shrink self-stretch my-auto basis-0 text-neutral-500 outline-none ${styles.input}`} />
             {(inputError) && <span>{inputError}</span>}
             {errors.input && <span>{errors.input.message}</span>}
