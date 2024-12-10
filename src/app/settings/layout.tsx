@@ -24,13 +24,13 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
             <div className="flex gap-4 mr-4">
                 <div
                     onClick={() => handleTabToggle("preferences")}
-                    className={`px-4 pb-1 ${currentTab === "preferences" ? selectedTabStyle : ""}`}
+                    className={`px-4 pb-1 cursor-pointer ${currentTab === "preferences" ? selectedTabStyle : ""}`}
                 >
                     כללי
                 </div>
                 <div
                     onClick={() => handleTabToggle("myProfile")}
-                    className={`px-4 pb-1 ${currentTab === "myProfile" ? selectedTabStyle : ""}`}
+                    className={`px-4 pb-1 cursor-pointer ${currentTab === "myProfile" ? selectedTabStyle : ""}`}
                 >
                     הפרופיל שלי
                 </div>

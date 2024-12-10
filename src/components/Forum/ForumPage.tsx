@@ -5,9 +5,14 @@ import { NewPostInput } from './NewPostInput';
 import Link from 'next/link';
 import useUserStore from "@/stores/userStore";
 
-const ForumPage: React.FC = () => {
+interface ForumPageProps {
+  selectedCommunityId?: string;
+}
+
+const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId }) => {
   const {user,setUser} = useUserStore();
-  const { data: posts, isLoading, error } = usePosts(user?.neighborhoodId || "");//TODO: change to the selected community id, not just default
+  const communityId = selectedCommunityId || user?.neighborhoodId;
+  const { data: posts, isLoading, error } = usePosts(communityId || "");
   const likeMutation = useLikePost();
   const saveMutation = useSavePost(user, setUser);
 
@@ -34,7 +39,7 @@ const ForumPage: React.FC = () => {
           <div>No posts to display.</div>
       ) : (
         posts?.map((post) => (
-          <Link key={post._id} href={`/forum/${post._id}`}>
+          <Link key={post._id} href={`/forum/${communityId}/${post._id}`}>
             <PostComp
               creatorId={post.creatorId}
               createdDate={post.createdDate}

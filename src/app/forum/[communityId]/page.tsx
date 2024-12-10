@@ -1,19 +1,17 @@
-"use client"
-import ForumPage from '../../components/Forum/ForumPage';
+'use client';
+import React from 'react';
+import ForumPage from '@/components/Forum/ForumPage';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
 import { LoansNotificationsCard } from '@/components/LoansNotificationsCard/LoansNotificationsCard';
 import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
+import { useParams } from 'next/navigation';
 import useUserStore from '@/stores/userStore';
-import { getSampleUser } from '@/utils/sampleUser';
-import { useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 
-
-const HomePage = () => {
-  const router = useRouter();
+const CommunityForumPage: React.FC = () => {
+  const { communityId } = useParams();
   const { user, setUser } = useUserStore();
-  const categories = [{ name: "ראשי", href: "/home", isActive: true }, { name: "שמורים", href: "/saved", isActive: false }]
 
+  const categories = [{ name: "ראשי", href: "/home", isActive: user?.neighborhoodId==communityId }, { name: "שמורים", href: "/saved", isActive: false }]
 
   return (
     <main>
@@ -21,7 +19,6 @@ const HomePage = () => {
         {/* Right Column - Profile Section */}
         <aside className="flex flex-col min-h-[909px] w-[211px] max-w-full" role="complementary">
           <ProfileAside categories={categories} />
-
         </aside>
 
         {/* Middle Column */}
@@ -55,7 +52,7 @@ const HomePage = () => {
             </div>
           </div>
           {/* Posts Section */}
-          <ForumPage />
+          <ForumPage selectedCommunityId={communityId as string} />
         </div>
         {/* Left Column */}
         <div className="flex flex-col flex-1 shrink basis-0 min-w-[260px]">
@@ -71,6 +68,8 @@ const HomePage = () => {
       </div>
     </main>
   );
+
+
 };
 
-export default HomePage;
+export default CommunityForumPage;
