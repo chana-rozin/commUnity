@@ -26,3 +26,9 @@ export const unSaveEvent = async (userId: string, eventId: string) => {
     throw error;
   }
 };
+
+export const createEvent = async (event: any): Promise<any>=>{
+  const url = `/event`;    
+  const response = await http.post(url, event);
+  return response;
+}

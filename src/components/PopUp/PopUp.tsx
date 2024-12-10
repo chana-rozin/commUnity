@@ -7,6 +7,7 @@ interface PopupItem {
   value?: string; // For input default values or display text
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // Add onChange handler
   onClick?: () => void; // For button actions
+  inputType?: string; // Add optional input type (e.g., "text", "date", "number")
 }
 
 interface PopupProps {
@@ -68,8 +69,9 @@ const Popup: React.FC<PopupProps> = ({ title, items, isOpen, onClose, onSubmit }
                     {item.label}
                   </label>
                   <input
-                    type="text"
-                    defaultValue={item.value}
+                    type={item.inputType || "text"}
+                    value={item.value}
+                    onChange={item.onChange}
                     className="border rounded px-2 py-1 text-sm"
                   />
                 </div>
