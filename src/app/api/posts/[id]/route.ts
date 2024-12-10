@@ -37,7 +37,13 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
 export async function PATCH(request: Request,{ params }: { params: Promise<{ id: string }>}) {
     let { id } = await params;
     const body = await request.json(); // Parse request body
-
+    if (!body) {
+        return NextResponse.json(
+            { message: "Missing required fields" },
+            { status: 400 } // Bad Request
+        );
+    }
+    delete body._id;
     if (!id) {
         return NextResponse.json(
             { message: "Post ID is required" },
