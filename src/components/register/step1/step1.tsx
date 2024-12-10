@@ -8,6 +8,8 @@ import styles from '../register.module.css'
 import { MdOutlineVisibility } from "react-icons/md";
 import { MdOutlineVisibilityOff } from "react-icons/md";
 import Logo from '../logo';
+import { useRouter } from 'next/navigation';
+
 
 
 
@@ -15,9 +17,12 @@ interface props {
     loginWithGoogle: () => void;
     loginWithEmailAndPassword: (email: string, password: string) => void;
     userExists: boolean;
+    setRememberMe: React.Dispatch<React.SetStateAction<boolean>>;
+    rememberMe: boolean;
 }
 
-const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, userExists }) => {
+const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, userExists ,setRememberMe, rememberMe}) => {
+    const router = useRouter();
     const {
         register,
         handleSubmit,
@@ -37,15 +42,17 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
         loginWithEmailAndPassword(data.email, data.password);
     }
     const togglePassword = () => {
-        debugger
         setShowPassword(!showPassword);
+    };
+    const handleRememberMeBtn = (event: any) => {
+        setRememberMe(event.target.checked); // Update state based on the checkbox value
     };
     return (
         <div className={styles.step1Container}>
             <div className="flex flex-col items-start mt-4 w-full max-md:mt-10 max-md:max-w-full">
                 <Logo />
                 <div className="flex overflow-hidden gap-1 justify-center items-center px-4 py-2.5 mt-14 max-w-full text-base tracking-normal text-center bg-neutral-100 min-h-[59px] rounded-[99px] text-neutral-950 w-[430px] max-md:mt-10">
-                    <AuthTab label="היכנס" isActive={false} />
+                    <AuthTab label="היכנס" isActive={false} onClick={()=>router.push('/login')}/>
                     <AuthTab label="הירשם" isActive={true} />
                 </div>
 
@@ -53,7 +60,7 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
                     <h1 className="mt-9 text-3xl font-bold text-right text-neutral-950">
                         ברוכים הבאים ל-CommUnity!
                     </h1>
-                    <p className="self-center mt-1 ml-16 text-base text-right text-neutral-950">
+                    <p className="self-start mt-0 text-base text-right text-neutral-950">
                         בואו נתחיל בצעד הראשון!
                     </p>
 
@@ -96,10 +103,12 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
                         </button>
 
                         <div className="flex gap-2 items-center py-1.5 mt-4">
-                            <input
+                            <input 
+                                onChange={handleRememberMeBtn}
                                 type="checkbox"
                                 id="remember"
                                 className="w-4 h-4 bg-white rounded border border-solid border-stone-300"
+                                checked={rememberMe}
                             />
                             <label htmlFor="remember" className="text-sm leading-none text-right text-neutral-700">
                                 זכור אותי

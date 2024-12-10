@@ -9,6 +9,7 @@ export default function Home() {
     <Head>
       <title>commUnity</title>
     </Head>
+
     <ComingSoon />
   </>
   );
