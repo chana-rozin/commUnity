@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import {
-    updateDocumentById,
     deleteDocumentById,
     getDocumentById,
     patchDocumentById
@@ -35,9 +34,16 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
 //Patch a post by ID
 
 export async function PATCH(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+    debugger
     let { id } = await params;
     const body = await request.json(); // Parse request body
-
+    if (!body) {
+        return NextResponse.json(
+            { message: "Missing required fields" },
+            { status: 400 } // Bad Request
+        );
+    }
+    delete body._id
     if (!id) {
         return NextResponse.json(
             { message: "Loan ID is required" },
