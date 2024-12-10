@@ -16,13 +16,8 @@ export async function GET(request: Request) {
     if (communities) {
         // Split the communities parameter into an array
         const commArray = communities.split(",");
-
         // Create a query that checks both 'communitiesIds' or 'neighborhoods' field
-        query = {
-            $or: [
-                { communitiesIds: { $all: commArray } }
-            ]
-        };
+        query.communitiesIds = { $in: commArray };
     }
 
     if (search) {
