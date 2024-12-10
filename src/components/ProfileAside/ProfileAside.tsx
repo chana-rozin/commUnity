@@ -11,15 +11,15 @@ export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) =>
     const { communityId, neighborhoodId } = useParams();
     const { data: communities = [] } = useCommunities();
     const { data: neighborhood } = useNeighborhood();
-
+    console.log('useParams in ProfileAside:', useParams());
     const links = [
         {
-            href: `neighborhood/${neighborhood?._id}`,
+            href: `/forum/${neighborhood?._id}`,
             text: neighborhood?.name,
             isActive: neighborhoodId === neighborhood?._id,
         },
         ...communities.map((community: Community) => ({
-            href: `community/${community._id}`,
+            href: `/forum/${community._id}`,
             text: community.name,
             isActive: communityId === community._id,
         })),

@@ -2,7 +2,7 @@
 import React from 'react';
 import ForumPage from '@/components/Forum/ForumPage';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
-import {LoansNotificationsCard} from '@/components/LoansNotificationsCard/LoansNotificationsCard';
+import { LoansNotificationsCard } from '@/components/LoansNotificationsCard/LoansNotificationsCard';
 import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
 import { useParams } from 'next/navigation';
 import useUserStore from '@/stores/userStore';
@@ -10,6 +10,8 @@ import useUserStore from '@/stores/userStore';
 const CommunityForumPage: React.FC = () => {
   const { communityId } = useParams();
   const { user, setUser } = useUserStore();
+
+  console.log('useParams in CommunityForumPage:', useParams());
 
   return (
     <main>
@@ -50,13 +52,13 @@ const CommunityForumPage: React.FC = () => {
             </div>
           </div>
           {/* Posts Section */}
-          <ForumPage />
+          <ForumPage selectedCommunityId={communityId as string} />
         </div>
         {/* Left Column */}
         <div className="flex flex-col flex-1 shrink basis-0 min-w-[260px]">
           {/* Loans Section */}
           <div className="flex flex-col p-5  w-full bg-white rounded-2xl">
-            <LoansNotificationsCard/>
+            <LoansNotificationsCard />
           </div>
           {/* Events Section */}
           <div className="flex flex-col p-5 mt-4 w-full bg-white rounded-2xl">
