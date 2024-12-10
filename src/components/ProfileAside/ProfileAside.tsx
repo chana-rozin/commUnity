@@ -6,12 +6,12 @@ import { useParams } from "next/navigation";
 import { Community } from "@/types/community.type";
 import { useCommunities, useNeighborhood } from "@/services/mutations/profileAside";
 
-export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) => {
+export const ProfileAside: React.FC<{ categories: {name: string, href: string, isActive: boolean}[] }> = ({ categories }) => {
     const { user } = useUserStore();
     const { communityId, neighborhoodId } = useParams();
     const { data: communities = [] } = useCommunities();
     const { data: neighborhood } = useNeighborhood();
-    console.log('useParams in ProfileAside:', useParams());
+
     const links = [
         {
             href: `/forum/${neighborhood?._id}`,
@@ -44,8 +44,11 @@ export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) =>
             </div>
 
             <nav className="flex text-center flex-col justify-between items-center mt-8 text-sm leading-none whitespace-nowrap bg-white min-h-[54px]">
-                <Link href="/home" className={`${saved ? "text-gray-400" : "text-indigo-500"}`}>בית</Link>
-                <Link href="/saved" className={`${!saved ? "text-gray-400" : "text-indigo-500"}`} >שמורים</Link>
+                {categories.map((category, index)=>
+                    <Link key={index} href={category.href} className={`${category.isActive? "text-indigo-500" : "text-gray-400"}`}>
+                        {category.name}
+                    </Link>
+                )}
             </nav>
 
             <section className="flex flex-col self-stretch pl-6 mt-8 w-full text-base text-neutral-950">

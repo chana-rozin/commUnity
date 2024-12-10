@@ -11,14 +11,14 @@ const CommunityForumPage: React.FC = () => {
   const { communityId } = useParams();
   const { user, setUser } = useUserStore();
 
-  console.log('useParams in CommunityForumPage:', useParams());
+  const categories = [{ name: "ראשי", href: "/home", isActive: user?.neighborhoodId==communityId }, { name: "שמורים", href: "/saved", isActive: false }]
 
   return (
     <main>
       <div className="flex flex-wrap gap-4 items-start mt-5 w-full">
         {/* Right Column - Profile Section */}
         <aside className="flex flex-col min-h-[909px] w-[211px] max-w-full" role="complementary">
-          <ProfileAside saved={false} />
+          <ProfileAside categories={categories} />
         </aside>
 
         {/* Middle Column */}
