@@ -1,15 +1,14 @@
-"use client"
-import ForumPage from '../../components/Forum/ForumPage';
+'use client';
+import React from 'react';
+import ForumPage from '@/components/Forum/ForumPage';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
 import {LoansNotificationsCard} from '@/components/LoansNotificationsCard/LoansNotificationsCard';
 import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
+import { useParams } from 'next/navigation';
 import useUserStore from '@/stores/userStore';
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 
-
-const HomePage = () => {
-  const router = useRouter();
+const CommunityForumPage: React.FC = () => {
+  const { communityId } = useParams();
   const { user, setUser } = useUserStore();
 
   return (
@@ -67,6 +66,8 @@ const HomePage = () => {
       </div>
     </main>
   );
+
+
 };
 
-export default HomePage;
+export default CommunityForumPage;

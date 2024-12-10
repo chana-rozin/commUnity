@@ -4,7 +4,7 @@ import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6";
 
 export function Footer() {
   return (
-    <footer className="w-full bg-gradient-to-r from-indigo-500 to-purple-500  text-white mt-12 p-6 rounded-xl">
+    <footer className="w-full bg-gradient-to-r from-indigo-500 to-purple-500  text-white mt-6 p-6 rounded-xl">
       <div className="container flex flex-col lg:flex-row justify-between items-center lg:items-start gap-6">
         {/* Logo Section */}
         <div className="flex flex-col items-center lg:items-start">
