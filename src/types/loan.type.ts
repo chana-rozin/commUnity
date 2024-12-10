@@ -1,7 +1,7 @@
 export interface Loan{
     _id: string;
-    lenderID: string;
-    borrowerID: string;
+    lenderId?: string;
+    borrowerId: string;
     item: string;
     createdDate: Date;
     LoanDate: Date;
