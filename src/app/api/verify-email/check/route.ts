@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import {  insertTemporaryDocument, getDocumentByQuery} from "@/services/mongodb";
+import { insertTemporaryDocument, getDocumentByQuery } from "@/services/mongodb";
 import nodemailer from 'nodemailer';
-import {hashVerificationCode} from '@/services/crypto'
+import { hashVerificationCode } from '@/services/crypto'
 
-export async function POST(request: Request){
+export async function POST(request: Request) {
     const body = await request.json(); // Parse request body
     console.log(body);
-    if (!body.code||!body.email) {
+    if (!body.code || !body.email) {
         return NextResponse.json(
             { message: "Invalid Request" },
             { status: 400 }
@@ -15,7 +15,7 @@ export async function POST(request: Request){
 
     const verificationHash = hashVerificationCode(body.code);
     const verification = await getDocumentByQuery("verify-email", { email: body.email, verificationHash });
-    if(verification.length === 0) {
+    if (verification.length === 0) {
         return NextResponse.json(
             { message: "Invalid Verification Code" },
             { status: 401 } // Unauthorized

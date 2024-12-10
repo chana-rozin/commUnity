@@ -134,7 +134,7 @@ const EventsPage: React.FC = () => {
           displayEvents.map((event) => (
             <EventCard key={event._id} {...event} />
           ))
-        )}
+      )}
       </div>
 
       {/* Popup for Adding Event */}

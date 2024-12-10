@@ -1,24 +1,31 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { User } from "@/types/user.type";  // Assuming User type is correctly defined
+import { User } from "@/types/user.type";
 import { CONFIG } from '@/config';
 
 interface UserState {
     user: User | null;
-    loginTime: number | null;  // Add loginTime to state to track session expiration
-    setUser: (user: User) => void;
+    loginTime: number | null; // Track login time for session expiration
+    setUser: (user: User, persist?: boolean) => void;
     clearUser: () => void;
 }
 
-const useUserStore = create<UserState>()(
+const useUserStore =create<UserState>()(
     persist(
         (set) => ({
             user: null,
             loginTime: null,
-            setUser: (user) => {
-                const loginTime = Date.now(); 
+            setUser: (user, persist:any = true) => {
+                const loginTime = Date.now();
                 set({ user, loginTime });
-                localStorage.setItem('loginTime', loginTime.toString());
+
+                if (persist[1]) {
+                    localStorage.setItem('user', JSON.stringify(user));
+                    localStorage.setItem('loginTime', loginTime.toString());
+                } else {
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('loginTime');
+                }
             },
             clearUser: () => {
                 set({ user: null, loginTime: null });
@@ -38,14 +45,13 @@ const useUserStore = create<UserState>()(
                     }
             ),
             onRehydrateStorage: () => (state) => {
-                if (state?.loginTime) {
-                    const currentTime = Date.now();
-                    const elapsedTime = currentTime - state.loginTime;
+                if (!state?.loginTime) return;
 
-                    // Clear user data if the expiration time has passed (using CONFIG for expiration time)
-                    if (elapsedTime > CONFIG.USER_SESSION_EXPIRATION) {
-                        state.clearUser();
-                    }
+                const currentTime = Date.now();
+                const elapsedTime = currentTime - state.loginTime;
+
+                if (elapsedTime > CONFIG.USER_SESSION_EXPIRATION) {
+                    state.clearUser();
                 }
             },
         }
