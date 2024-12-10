@@ -5,8 +5,8 @@ import { Loan } from "@/types/loan.type";
 const loans: Loan[] = [
   {
     _id: "1",
-    lenderID: "user1",
-    borrowerID: "674ed9fb04a9dba04cdfaea7",
+    lenderId: "user1",
+    borrowerId: "674ed9fb04a9dba04cdfaea7",
     item: "2 שקיות חלב",
     createdDate: new Date("2023-12-01"),
     LoanDate: new Date("2023-12-01"),
@@ -15,8 +15,8 @@ const loans: Loan[] = [
   },
   {
     _id: "2",
-    lenderID: "674ed9fb04a9dba04cdfaea7",
-    borrowerID: "user3",
+    lenderId: "674ed9fb04a9dba04cdfaea7",
+    borrowerId: "user3",
     item: "קילו קמח",
     createdDate: new Date("2023-12-03"),
     LoanDate: new Date("2023-12-03"),
