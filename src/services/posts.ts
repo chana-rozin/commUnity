@@ -8,11 +8,16 @@ export const getPosts = async (): Promise<any>=>{
 
 export const getPostById = async (postId: string): Promise<any>=>{
     const url = `/posts/${postId}`; 
-    console.log("Fetching URL:", url);   
     const response = await http.get(url);
-    console.log("Response:",response);
     return response.data;
 }
+
+export const getPostsByCommunityId = async (communityId: string): Promise<any>=>{
+  const url = `/posts?communities=${communityId}`;    
+  const response = await http.get(url);
+  return response.data;
+}
+
 
 export const createPost = async (post: any): Promise<any>=>{
     const url = `/posts`;    

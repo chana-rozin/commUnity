@@ -19,6 +19,7 @@ export interface AuthButtonProps {
 export interface TabProps {
     label: string;
     isActive: boolean;
+    onClick?: () => void
 }
 
 export interface verificationCodePopUpProps{
@@ -28,5 +29,4 @@ export interface verificationCodePopUpProps{
     userGiveWrongCode: boolean;
     setUserGiveWrongCode: React.Dispatch<React.SetStateAction<boolean>>;
     setVerificationPopUp: React.Dispatch<React.SetStateAction<boolean>>;
-    
 }

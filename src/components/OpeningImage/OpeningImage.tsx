@@ -2,7 +2,7 @@ import React from 'react'
 
 function OpeningImage() {
     return (
-        <div className="flex flex-col w-[55%] max-md:ml-0 max-md:w-full">
+        <div className="flex flex-col w-[100%] max-md:ml-0 max-md:w-full">
             <div className="flex flex-col grow pt-9 w-full bg-violet-200 rounded-[29px] max-md:mt-10 max-md:max-w-full">
                 <img
                     loading="lazy"
