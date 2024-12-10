@@ -23,14 +23,19 @@ export function PreferenceSection({ section, onPreferenceChange }: PreferenceSec
                 {section.preferences.map((preference, index) => (
                     <div key={index} className={index > 0 ? "mt-4" : ""}>
                         <div className="flex gap-4 px-3 py-3.5 max-w-full text-sm text-right bg-white rounded-xl min-h-[68px] w-[346px]">
-                            <input
-                                type="checkbox"
-                                name={`preference-${preference.title}`}
-                                value="enabled"
-                                checked={preference.isEnabled}
-                                onChange={e => onPreferenceChange(index, e.target.checked)}
-                                className="appearance-none flex shrink-0 w-4 h-4 bg-white rounded border border-solid border-stone-300 cursor-pointer checked:bg-indigo-500 checked:border-indigo-500 checked:ring-2 checked:ring-white"
-                            />
+                            <label className="relative flex items-center cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    name={`preference-${preference.title}`}
+                                    value="enabled"
+                                    checked={preference.isEnabled}
+                                    onChange={e => onPreferenceChange(index, e.target.checked)}
+                                    className="appearance-none w-4 h-4 bg-white border border-gray-300 rounded checked:bg-indigo-500 checked:border-indigo-500"
+                                />
+                                <span className="absolute inset-0 flex items-center justify-center text-white pointer-events-none">
+                                    {preference.isEnabled && "✔"}
+                                </span>
+                            </label>
                             <div className="flex flex-col min-h-[42px] min-w-[240px]">
                                 <div className="font-semibold tracking-normal leading-none text-slate-800">
                                     {preference.title}
