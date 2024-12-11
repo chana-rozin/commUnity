@@ -44,22 +44,21 @@ const EventCard: React.FC<EventCardProps> = ({ name, description, date, location
         className="mt-auto px-4 py-2 bg-indigo-600 text-white text-xs font-medium rounded-full hover:bg-indigo-500"
         onClick={openPopup}
       >
-        Read More
+        קרא עוד
       </button>
 
       {/* Popup */}
-      <Popup
-        title={name || "Untitled Event"}
-        content={
-          <div>
-            <p><strong>Location:</strong> {location || "Unknown Location"}</p>
-            <p><strong>Date:</strong> {formattedDate}</p>
-            <p><strong>Description:</strong> {description || "No description available."}</p>
-          </div>
-        }
-        isOpen={isPopupOpen}
-        onClose={closePopup}
-      />
+<Popup
+  title={name || "Untitled Event"}
+  items={[
+    { type: "text", value: `Location: ${location || "Unknown Location"}` },
+    { type: "text", value: `Date: ${formattedDate}` },
+    { type: "text", value: `Description: ${description || "No description available."}` },
+  ]}
+  isOpen={isPopupOpen}
+  onClose={closePopup}
+/>
+
     </div>
   );
 };

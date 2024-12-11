@@ -34,8 +34,13 @@ export async function GET(request: Request) {
 // Create a new post
 export async function POST(request: Request) {
     const body = await request.json(); // Parse request body
-    console.log(body);
-
+    if (!body) {
+        return NextResponse.json(
+            { message: "Missing required fields" },
+            { status: 400 } // Bad Request
+        );
+    }
+    delete body._id;
     // Insert into the database
     const result = await insertDocument("posts", body);
 

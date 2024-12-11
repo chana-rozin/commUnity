@@ -39,7 +39,7 @@ const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId }) => {
           <div>No posts to display.</div>
       ) : (
         posts?.map((post) => (
-          <Link key={post._id} href={`/forum/${post._id}`}>
+          <Link key={post._id} href={`/forum/${communityId}/${post._id}`}>
             <PostComp
               creatorId={post.creatorId}
               createdDate={post.createdDate}

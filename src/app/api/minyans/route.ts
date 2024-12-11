@@ -67,7 +67,6 @@ export async function POST(request: Request) {
     }
        // Insert into the database
     const result = await insertDocument("minyans", body);
-
     if (!result) {
         return NextResponse.json(
             { message: "Failed to create minyan" },
@@ -80,4 +79,3 @@ export async function POST(request: Request) {
         { status: 201 } // Created
     );
 }
-

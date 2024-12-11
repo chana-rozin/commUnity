@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getEvents, saveEvent, unSaveEvent } from '@/services/events'; 
 import { Event } from '@/types/event.type';
 import { User } from '@/types/user.type';
+import http from '../http';
 
 export const useEvents = () => {
   return useQuery<Event[]>({
@@ -11,6 +12,24 @@ export const useEvents = () => {
       return Array.isArray(response.data) ? response.data : [];
     },
     retry: 1,
+  });
+};
+
+export const useCreateEvent = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<Event, Error, Partial<Event>>({
+    mutationFn: async (eventData) => {
+      debugger
+      const response = await http.post('/events', eventData);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+    },
+    onError: (error) => {
+      console.error('Failed to create an event:', error);
+    },
   });
 };
 
