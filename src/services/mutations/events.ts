@@ -21,7 +21,7 @@ export const useCreateEvent = () => {
   return useMutation<Event, Error, Partial<Event>>({
     mutationFn: async (eventData) => {
       debugger
-      const response = await http.post('/event', eventData);
+      const response = await http.post('/events', eventData);
       return response.data;
     },
     onSuccess: () => {

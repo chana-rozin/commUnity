@@ -44,7 +44,7 @@ const EventCard: React.FC<EventCardProps> = ({ name, description, date, location
         className="mt-auto px-4 py-2 bg-indigo-600 text-white text-xs font-medium rounded-full hover:bg-indigo-500"
         onClick={openPopup}
       >
-        Read More
+        קרא עוד
       </button>
 
       {/* Popup */}
