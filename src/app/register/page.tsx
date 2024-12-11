@@ -1,26 +1,21 @@
 "use client"
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useState } from 'react'
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { auth } from '@/services/firebaseConfig'
-import http from '../../services/http'
-import Step1 from '../../components/register/step1/step1'
-import Step2 from '../../components/register/step2/step2'
-import Step3 from '../../components/register/step3/step3'
-import Step4 from '../../components/register/step4/step4'
-import OpeningImage from '../../components/OpeningImage/OpeningImage'
+import http from '@/services/http'
+import Step1 from '@/components/register/step1/step1'
+import Step2 from '@/components/register/step2/step2'
+import Step3 from '@/components/register/step3/step3'
+import Step4 from '@/components/register/step4/step4'
+import OpeningImage from '@/components/OpeningImage/OpeningImage'
 import FormPopUp from '@/components/PopUp/AuthPopUp';
 import { z } from "zod";
-import { User } from '../../types/user.type'
+import { User } from '@/types/user.type'
 import { Preference } from '@/types/general.type';
-
-
-
-import VerificationCodePopUp from '../../components/register/verificationCodePopUp'
 const googleProvider = new GoogleAuthProvider();
 import useUserStore from '@/stores/userStore';
 import { useRouter } from 'next/navigation';
-
 
 const signUp: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -175,7 +170,7 @@ const signUp: React.FC = () => {
     }
 
     return (
-        <div className="overflow-hidden py-10 pr-9 pl-16 bg-white max-md:px-5">
+        <div className="overflow-hidden py-10 pr-9 pl-16 bg-white rounded-xl max-md:px-5">
             <div className="flex gap-5 max-md:flex-col">
                 <div className="flex flex-col w-[55%] max-md:ml-0 max-md:w-full">
                     <OpeningImage />

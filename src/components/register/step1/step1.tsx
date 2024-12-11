@@ -22,7 +22,7 @@ interface props {
     setEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, userExists ,setRememberMe, rememberMe, setEmail}) => {
+const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, userExists, setRememberMe, rememberMe, setEmail }) => {
     const router = useRouter();
     const {
         register,
@@ -30,7 +30,7 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
         formState: { errors }
     } = useForm<firstformTypesSchema>({ resolver: zodResolver(firstformTypes) });
     const [showPassword, setShowPassword] = React.useState(false);
-    
+
     const baseStyles = "gap-1 px-4 py-2 text-base font-medium text-center rounded-md w-full";
     const variantStyles = {
         primary: "bg-indigo-600 text-white",
@@ -56,7 +56,7 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
             <div className="flex flex-col items-start mt-4 w-full max-md:mt-10 max-md:max-w-full">
                 <Logo />
                 <div className="flex overflow-hidden gap-1 justify-center items-center px-4 py-2.5 mt-14 max-w-full text-base tracking-normal text-center bg-neutral-100 min-h-[59px] rounded-[99px] text-neutral-950 w-[430px] max-md:mt-10">
-                    <AuthTab label="היכנס" isActive={false} onClick={()=>router.push('/login')}/>
+                    <AuthTab label="היכנס" isActive={false} onClick={() => router.push('/login')} />
                     <AuthTab label="הירשם" isActive={true} />
                 </div>
 
@@ -93,8 +93,8 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
                                     name="password"
                                     className="flex-1 shrink self-stretch my-auto basis-0 text-neutral-500 outline-none"
                                 />
-                                {showPassword ? <MdOutlineVisibility onClick={togglePassword} className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square text-neutral-500" /> :
-                                    <MdOutlineVisibilityOff onClick={togglePassword} className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square text-neutral-500" />}
+                                {showPassword ? <MdOutlineVisibility onClick={togglePassword} className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square text-neutral-500 cursor-pointer" /> :
+                                    <MdOutlineVisibilityOff onClick={togglePassword} className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square text-neutral-500 cursor-pointer" />}
                             </div>
                             {errors.password && <span>{errors.password.message}</span>}
                         </div>
@@ -104,11 +104,11 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
                         <button
                             type="submit"
                             className={`${baseStyles} ${variantStyles['primary']}`}
-                        >בואו נתחיל
+                        >בואו נתחיל!
                         </button>
 
                         <div className="flex gap-2 items-center py-1.5 mt-4">
-                            <input 
+                            <input
                                 onChange={handleRememberMeBtn}
                                 type="checkbox"
                                 id="remember"
@@ -140,7 +140,16 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
                         <span onClick={loginWithGoogle}>הירשם עם גוגל</span>
                     </div>
                 </AuthButton>
-                {userExists && <span>המשתמש כבר קיים... הכנס</span>}
+                {userExists && (
+                    <span className="mt-4 text-sm">
+                        המשתמש כבר קיים...{" "}
+                        <a
+                            href="/login"
+                            className="text-blue-500 underline hover:text-blue-700">
+                            הכנס
+                        </a>
+                    </span>
+                )}
             </div>
         </div>
     )

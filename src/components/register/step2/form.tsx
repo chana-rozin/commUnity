@@ -73,7 +73,7 @@ export const RegistrationForm: React.FC<props> = ({ handleStep }) => {
                 </div>
                 <br />
                 <p>כתובת מגורים</p>
-                <div className="flex flex-row mt-4 w-full max-md:max-w-full">
+                <div className="flex flex-row gap-1 mt-4 w-full max-md:max-w-full">
                     <div className="flex flex-col w-full max-md:max-w-full">
                         <input
                             {...register("city")}
