@@ -9,7 +9,7 @@ import Step2 from '../../components/register/step2/step2'
 import Step3 from '../../components/register/step3/step3'
 import Step4 from '../../components/register/step4/step4'
 import OpeningImage from '../../components/OpeningImage/OpeningImage'
-import FormPopUp from '@/components/PopUp/FormPopUp';
+import FormPopUp from '@/components/PopUp/AuthPopUp';
 import { z } from "zod";
 import { User } from '../../types/user.type'
 import { Preference } from '@/types/general.type';
