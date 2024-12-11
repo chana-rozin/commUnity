@@ -6,7 +6,7 @@ import { useEvents } from "@/services/mutations/events";
 export function EventsNotificationsCard() {
     const { data: events, isLoading, error } = useEvents();
     return (
-        <div className="flex flex-col mt-4 w-full bg-white rounded-2xl">
+        <div className="flex flex-col w-full bg-white rounded-2xl">
             <div className="flex justify-between items-center w-full mb-4">
                 <div className="flex flex-col items-start">
                     <h2 className="text-xl font-semibold text-black">אירועים</h2>
