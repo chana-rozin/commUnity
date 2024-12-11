@@ -3,19 +3,33 @@ import { AuthButton } from './AuthButton';
 import { AuthTab } from './AuthTab';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { firstformTypesSchema, firstformTypes } from './formStep1'
-import { useForm,SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
+import styles from '../register.module.css'
+import { MdOutlineVisibility } from "react-icons/md";
+import { MdOutlineVisibilityOff } from "react-icons/md";
+import Logo from '../logo';
+import { useRouter } from 'next/navigation';
+
+
+
 
 interface props {
     loginWithGoogle: () => void;
     loginWithEmailAndPassword: (email: string, password: string) => void;
+    userExists: boolean;
+    setRememberMe: React.Dispatch<React.SetStateAction<boolean>>;
+    rememberMe: boolean;
+    setEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const step1: React.FC<props>=({loginWithGoogle,loginWithEmailAndPassword})=> {
+const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, userExists ,setRememberMe, rememberMe, setEmail}) => {
+    const router = useRouter();
     const {
         register,
         handleSubmit,
         formState: { errors }
     } = useForm<firstformTypesSchema>({ resolver: zodResolver(firstformTypes) });
+    const [showPassword, setShowPassword] = React.useState(false);
     
     const baseStyles = "gap-1 px-4 py-2 text-base font-medium text-center rounded-md w-full";
     const variantStyles = {
@@ -23,22 +37,26 @@ const step1: React.FC<props>=({loginWithGoogle,loginWithEmailAndPassword})=> {
         secondary: "bg-neutral-100 text-indigo-900"
     };
 
-    const onSubmit: SubmitHandler<firstformTypesSchema> = async (data) =>{
+    const onSubmit: SubmitHandler<firstformTypesSchema> = async (data) => {
         console.log('onSubmit');
         console.log(data);
         loginWithEmailAndPassword(data.email, data.password);
     }
+    const togglePassword = () => {
+        setShowPassword(!showPassword);
+    };
+    const handleRememberMeBtn = (event: any) => {
+        setRememberMe(event.target.checked); // Update state based on the checkbox value
+    };
+    function onChange(event: any) {
+        setEmail(event.target.value);
+    }
     return (
-        <div className="flex flex-col ml-5 w-[45%] max-md:ml-0 max-md:w-full">
+        <div className={styles.step1Container}>
             <div className="flex flex-col items-start mt-4 w-full max-md:mt-10 max-md:max-w-full">
-                <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/26ce690498a69190885e0a6bd0022837d0b3360b9e209e47ee8c6d239e87edab?placeholderIfAbsent=true&apiKey=7db810be59414fad871df25414a5c08b"
-                    alt="Logo"
-                    className="object-contain gap-1 self-end w-full aspect-[5.32] min-h-[44px]"
-                />
+                <Logo />
                 <div className="flex overflow-hidden gap-1 justify-center items-center px-4 py-2.5 mt-14 max-w-full text-base tracking-normal text-center bg-neutral-100 min-h-[59px] rounded-[99px] text-neutral-950 w-[430px] max-md:mt-10">
-                    <AuthTab label="היכנס" isActive={false} />
+                    <AuthTab label="היכנס" isActive={false} onClick={()=>router.push('/login')}/>
                     <AuthTab label="הירשם" isActive={true} />
                 </div>
 
@@ -46,7 +64,7 @@ const step1: React.FC<props>=({loginWithGoogle,loginWithEmailAndPassword})=> {
                     <h1 className="mt-9 text-3xl font-bold text-right text-neutral-950">
                         ברוכים הבאים ל-CommUnity!
                     </h1>
-                    <p className="self-center mt-1 ml-16 text-base text-right text-neutral-950">
+                    <p className="self-start mt-0 text-base text-right text-neutral-950">
                         בואו נתחיל בצעד הראשון!
                     </p>
 
@@ -59,7 +77,8 @@ const step1: React.FC<props>=({loginWithGoogle,loginWithEmailAndPassword})=> {
                                     {...register("email")}
                                     type="email"
                                     id="email"
-                                    name="email" />
+                                    name="email"
+                                    onChange={onChange} />
                             </div>
                             {errors.email && <span>{errors.email.message}</span>}
                         </div>
@@ -69,17 +88,13 @@ const step1: React.FC<props>=({loginWithGoogle,loginWithEmailAndPassword})=> {
                                 <input
                                     placeholder="password"
                                     {...register("password")}
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     id="password"
                                     name="password"
                                     className="flex-1 shrink self-stretch my-auto basis-0 text-neutral-500 outline-none"
                                 />
-                                <img
-                                    loading="lazy"
-                                    alt=""
-                                    className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square"
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/2cf8a64ad474b7246d38d38dbabcd2e4c076d9ebf782d9b64f2dd9f881bb93b5?placeholderIfAbsent=true&apiKey=7db810be59414fad871df25414a5c08b"
-                                />
+                                {showPassword ? <MdOutlineVisibility onClick={togglePassword} className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square text-neutral-500" /> :
+                                    <MdOutlineVisibilityOff onClick={togglePassword} className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square text-neutral-500" />}
                             </div>
                             {errors.password && <span>{errors.password.message}</span>}
                         </div>
@@ -93,10 +108,12 @@ const step1: React.FC<props>=({loginWithGoogle,loginWithEmailAndPassword})=> {
                         </button>
 
                         <div className="flex gap-2 items-center py-1.5 mt-4">
-                            <input
+                            <input 
+                                onChange={handleRememberMeBtn}
                                 type="checkbox"
                                 id="remember"
                                 className="w-4 h-4 bg-white rounded border border-solid border-stone-300"
+                                checked={rememberMe}
                             />
                             <label htmlFor="remember" className="text-sm leading-none text-right text-neutral-700">
                                 זכור אותי
@@ -123,6 +140,7 @@ const step1: React.FC<props>=({loginWithGoogle,loginWithEmailAndPassword})=> {
                         <span onClick={loginWithGoogle}>הירשם עם גוגל</span>
                     </div>
                 </AuthButton>
+                {userExists && <span>המשתמש כבר קיים... הכנס</span>}
             </div>
         </div>
     )

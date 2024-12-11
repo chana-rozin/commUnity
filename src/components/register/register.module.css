@@ -1,0 +1,12 @@
+.step1Container{
+    align-items: center;
+    margin: 0% auto;
+}
+.popUpForm{
+    
+    justify-content: center;
+    text-align: center;
+}
+.verificationInput{
+    display: block;
+}

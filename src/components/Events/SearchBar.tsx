@@ -2,31 +2,24 @@ import React, { useState } from 'react';
 
 interface SearchBarProps {
   searchIcon: string;
-  filterIcon: string;
-  onSearch: (query: string) => void; // Function to handle search queries
-  onFilter?: () => void;            // Optional function to handle filter action
+  onSearch: (query: string) => void;
+  onAddEvent: () => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ searchIcon, filterIcon, onSearch, onFilter }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ searchIcon, onSearch, onAddEvent }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value); // Update local state
-    onSearch(e.target.value);       // Trigger parent's search handler
-  };
-
-  const handleFilterClick = () => {
-    if (onFilter) {
-      onFilter(); // Trigger parent's filter handler
-    }
+    setSearchQuery(e.target.value);
+    onSearch(e.target.value);
   };
 
   return (
-    <div className="flex overflow-hidden flex-wrap gap-10 items-center py-3 pr-3.5 pl-4 max-w-full bg-white rounded-2xl min-h-[65px] w-[731px]">
+    <div className="flex items-center overflow-hidden bg-white rounded-2xl min-h-[65px] w-full max-w-[791px] px-4 py-2.5 gap-4">
       {/* Search Input */}
       <form
-        className="flex grow shrink gap-2 items-center self-stretch px-4 py-2.5 my-auto text-sm tracking-tight leading-none text-gray-400 whitespace-nowrap bg-violet-50 rounded-[60px] w-[214px]"
-        onSubmit={(e) => e.preventDefault()} // Prevent form submission
+        className="flex grow shrink gap-2 items-center self-stretch px-4 py-2.5 text-sm tracking-tight leading-none text-gray-400 whitespace-nowrap bg-violet-50 rounded-[60px] flex-grow"
+        onSubmit={(e) => e.preventDefault()}
       >
         <img
           loading="lazy"
@@ -41,24 +34,18 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchIcon, filterIcon, onSearch,
           id="searchInput"
           type="search"
           placeholder="חפש"
-          value={searchQuery} // Bind input value to state
-          onChange={handleSearchChange} // Update query on change
-          className="self-stretch my-auto w-7 rounded-none bg-transparent border-none focus:outline-none"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="flex-grow self-stretch my-auto rounded-none bg-transparent border-none focus:outline-none"
         />
       </form>
 
-      {/* Filter Button */}
+      {/* Add Event Button */}
       <button
-        className="flex grow shrink gap-2 items-center self-stretch p-2.5 my-auto w-9 bg-violet-50 h-[45px] rounded-[60px]"
-        aria-label="filter"
-        onClick={handleFilterClick} // Trigger filter action
+        onClick={onAddEvent}
+        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-50 text-violet-700 rounded-full hover:bg-violet-100"
       >
-        <img
-          loading="lazy"
-          src={filterIcon}
-          alt="Filter Icon"
-          className="object-contain self-stretch my-auto w-6 aspect-square"
-        />
+        <span className="text-2xl font-bold mr-1">+</span>
       </button>
     </div>
   );

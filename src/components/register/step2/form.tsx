@@ -23,15 +23,30 @@ export const RegistrationForm: React.FC<props> = ({ handleStep }) => {
     const onSubmit: SubmitHandler<formSchema> = async (data) => {
         console.log('onSubmit');
         console.log(data);
-        handleStep(data);
+        const dataToSave = {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            address: {
+                city: data.city,
+                houseNumber: data.houseNumber,
+                street: data.street,
+            },
+            phone: data.phone
+        }
+        handleStep(dataToSave);
     }
 
     return (
         <form className="flex flex-col mt-20 max-w-full text-sm leading-none min-h-[234px] text-neutral-500 w-[430px] max-md:mt-10" onSubmit={handleSubmit(onSubmit)}>
+            <h1 className="mt-9 text-3xl font-bold text-right text-neutral-950">
+                איזה כיף שאת/ה כאן!
+            </h1>
+            <p className="self-start mt-0 text-base text-right text-neutral-950">
+                רק עוד כמה פרטים קטנים ואנחנו שם!
+            </p>
             <div className="flex flex-col w-full max-md:max-w-full">
                 <div className="flex flex-col mt-4 w-full max-md:max-w-full">
                     <div className="flex flex-col w-full max-md:max-w-full">
-                        <label htmlFor={'firstName'} className="sr-only">שם פרטי</label>
                         <input
                             {...register("firstName")}
                             type='text'
@@ -45,7 +60,6 @@ export const RegistrationForm: React.FC<props> = ({ handleStep }) => {
                 </div>
                 <div className="flex flex-col mt-4 w-full max-md:max-w-full">
                     <div className="flex flex-col w-full max-md:max-w-full">
-                        <label htmlFor={'lastName'} className="sr-only">שם משפחה</label>
                         <input
                             {...register("lastName")}
                             type='text'
@@ -57,23 +71,45 @@ export const RegistrationForm: React.FC<props> = ({ handleStep }) => {
                     </div>
                     {errors.lastName && <span>{errors.lastName.message}</span>}
                 </div>
-                <div className="flex flex-col mt-4 w-full max-md:max-w-full">
+                <br />
+                <p>כתובת מגורים</p>
+                <div className="flex flex-row mt-4 w-full max-md:max-w-full">
                     <div className="flex flex-col w-full max-md:max-w-full">
-                        <label htmlFor={'address'} className="sr-only">כתובת מגורים</label>
                         <input
-                            {...register("address")}
+                            {...register("city")}
                             type='text'
-                            id='address'
-                            placeholder='כתובת מגורים'
+                            id='city'
+                            placeholder='עיר'
                             className="overflow-hidden flex-1 shrink gap-1 self-stretch px-3 py-3 w-full bg-white rounded-md border border-solid border-stone-300 min-h-[42px] max-md:max-w-full text-sm leading-none text-neutral-500"
-                            aria-label='כתובת מגורים'
+                            aria-label='עיר'
                         />
+                        {errors.city && <span>{errors.city.message}</span>}
                     </div>
-                    {errors.address && <span>{errors.address.message}</span>}
+                    <div className="flex flex-col w-full max-md:max-w-full">
+                        <input
+                            {...register("street")}
+                            type='text'
+                            id='street'
+                            placeholder='רחוב'
+                            className="overflow-hidden flex-1 shrink gap-1 self-stretch px-3 py-3 w-full bg-white rounded-md border border-solid border-stone-300 min-h-[42px] max-md:max-w-full text-sm leading-none text-neutral-500"
+                            aria-label='רחוב'
+                        />
+                        {errors.street && <span>{errors.street.message}</span>}
+                    </div>
+                    <div className="flex flex-col w-full max-md:max-w-full">
+                        <input
+                            {...register("houseNumber")}
+                            type='text'
+                            id='houseNumber'
+                            placeholder="מס' בית/ בנין"
+                            className="overflow-hidden flex-1 shrink gap-1 self-stretch px-3 py-3 w-full bg-white rounded-md border border-solid border-stone-300 min-h-[42px] max-md:max-w-full text-sm leading-none text-neutral-500"
+                            aria-label="מס' בית/ בנין"
+                        />
+                        {errors.houseNumber && <span>{errors.houseNumber.message}</span>}
+                    </div>
                 </div>
                 <div className="flex flex-col mt-4 w-full max-md:max-w-full">
                     <div className="flex flex-col w-full max-md:max-w-full">
-                        <label htmlFor={'phone'} className="sr-only">מס\' פלאפון</label>
                         <input
                             {...register("phone")}
                             type='tel'
