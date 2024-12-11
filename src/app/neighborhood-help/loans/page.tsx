@@ -4,8 +4,10 @@ import { TabButton } from "@/components/Loans/TabButton";
 import { ActiveLoans } from "@/components/Loans/ActiveLoans";
 import { HelpRequests } from "@/components/Loans/HelpRequests";
 import { LoansHistory } from "@/components/Loans/LoansHistory";
+
 const NeighborhoodLoansPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("activeLoans");
+
   const renderTabContent = () => {
     switch (activeTab) {
       case "helpRequests":
@@ -18,10 +20,11 @@ const NeighborhoodLoansPage: React.FC = () => {
         return null;
     }
   };
+
   return (
     <main className="flex flex-col pl-20 max-w-[862px] max-md:pl-5">
       <nav className="flex items-center self-start pr-4 text-sm font-medium leading-none text-neutral-700" role="tablist">
-      <TabButton
+        <TabButton
           label="בקשות לעזרה"
           isActive={activeTab === "helpRequests"}
           onClick={() => setActiveTab("helpRequests")}
@@ -38,7 +41,6 @@ const NeighborhoodLoansPage: React.FC = () => {
         />
       </nav>
       {renderTabContent()}
-      
     </main>
   );
 };
