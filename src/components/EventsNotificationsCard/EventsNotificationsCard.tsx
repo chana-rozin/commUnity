@@ -2,6 +2,7 @@ import * as React from "react";
 import { EventCard } from "./EventCard";
 import { useEventsByCommunityId } from "@/services/mutations/events";
 import useUserStore from "@/stores/userStore";
+import { NoLoansSection } from "../Loans/NoLoansSection";
 
 
 
@@ -20,15 +21,27 @@ export function EventsNotificationsCard() {
                 <button
                     className="self-center px-6 py-2 text-sm font-medium text-indigo-600 bg-violet-50 border border-violet-300 rounded-full"
                     aria-label="ספר לי עוד על האירועים"
-                    onClick={() => {window.location.href = "/events";}}                
+                    onClick={() => { window.location.href = "/events"; }}
                 >
                     ספר לי עוד
                 </button>
             </div>
             <div className="flex flex-col w-full space-y-4">
-                {events?.map((event, index) => (
+                {isLoading && <p className="text-center text-gray-500">טוען אירועים...</p>}
+                {error && <p className="text-center text-red-500">שגיאה בטעינת הנתונים</p>}
+                {events?.length ? (
+                    events?.map((event, index) => (
                     <EventCard key={event._id} {...event} />
-                ))}
+                ))
+                ) : (
+                    !isLoading && (
+                        <NoLoansSection
+                            title="אין אירועים"
+                            description="כרגע אין אירועים קרובים בקהילה שלך."
+                        />
+                    )
+                )}
+                {}
             </div>
         </div>
     );
