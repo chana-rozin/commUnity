@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getEvents, saveEvent, unSaveEvent } from '@/services/events'; 
+import { getEvents, saveEvent, unSaveEvent, getEventsByCommunityId } from '@/services/events'; 
 import { Event } from '@/types/event.type';
 import { User } from '@/types/user.type';
 import http from '../http';
@@ -11,6 +11,14 @@ export const useEvents = () => {
       const response = await getEvents();
       return Array.isArray(response.data) ? response.data : [];
     },
+    retry: 1,
+  });
+};
+
+export const useEventsByCommunityId = (communityId: string) => {
+  return useQuery<Event[]>({
+    queryKey: ['events', communityId], 
+    queryFn: () => getEventsByCommunityId(communityId), 
     retry: 1,
   });
 };
