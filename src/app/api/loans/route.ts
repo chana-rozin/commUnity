@@ -41,6 +41,9 @@ export async function GET(request: Request) {
         if(isOpen==='true'){
             query.lenderId = null;
         }
+        else{
+            query.lenderId = { $ne: null }; // Fetch loans that are not lent out
+        }
     }
     if(active){
         query.active = active==='false'?false:true; // Only fetch active loans
@@ -51,7 +54,8 @@ export async function GET(request: Request) {
     
     // Retrieve posts based on the query
     loans = await getDocumentByQuery("loans", query);
-
+    console.log(loans);
+    
     return NextResponse.json(loans); // Return data as JSON
 }
 

@@ -1,39 +1,72 @@
 import { NextResponse } from "next/server";
 import {
-    getAllDocuments,
     insertDocument,
-    updateDocumentById,
-    deleteDocumentById
+    getDocumentByQuery
 } from "@/services/mongodb";
 
-// Fetch all Minyanim
+// Fetch all posts
+// Fetch all or filtered posts
 export async function GET(request: Request) {
-    const minyanim = await getAllDocuments("minyanim"); // Retrieve all minyanim
-    return NextResponse.json(minyanim); // Return data as JSON
+    const { searchParams } = new URL(request.url);
+    // const communities = searchParams.get("communities");
+    // const search = searchParams.get("search");
+    // const userId = searchParams.get("user_id");
+    // const isOpen = searchParams.get("is_open");
+    // const active = searchParams.get("active");
+    let query: any = {}; // Initialize the query object
+    // let loans;
+
+    // if (communities) {
+    //     // Split the communities parameter into an array
+    //     const commArray = communities.split(",");
+    //     // Create a query that checks both 'communitiesIds' or 'neighborhoods' field
+    //     query.AuthorizedIds = { $in: commArray };
+    // }
+
+    // if (search) {
+    //     query.item = { $regex: new RegExp(search, 'i') }; // Case-insensitive search in the "title"
+    // }
+    // if (userId) {
+    //     // Ensure $or exists in the query or add it
+    //     if (!query.$or) {
+    //         query.$or = [];
+    //     }
+    //     // Add conditions for borrowerID and lenderID
+    //     query.$or.push(
+    //         { borrowerId: userId },
+    //         { lenderId: userId }
+    //     );
+    // }
+    // if(isOpen){
+    //     if(isOpen==='true'){
+    //         query.lenderId = null;
+    //     }
+    // }
+    // if(active){
+    //     query.active = active==='false'?false:true; // Only fetch active loans
+    // }
+    // else{
+    //     query.active = true; // Default to active loans
+    // }
+    
+    // Retrieve posts based on the query
+    const minyans = await getDocumentByQuery("minyans", query);
+
+    return NextResponse.json(minyans); // Return data as JSON
 }
 
-// Create a new Minyan
+
+// Create a new post
 export async function POST(request: Request) {
     const body = await request.json(); // Parse request body
-
-    // Validate required fields
-    if (
-        !body.category ||
-        !body.location ||
-        !body.time ||
-        !body.numParticipants ||
-        typeof body.fixed !== "boolean" ||
-        !Array.isArray(body.viewingPermissions)
-    ) {
+    if (!body) {
         return NextResponse.json(
-            { message: "Invalid input: All fields are required and must be valid." },
+            { message: "Missing required fields" },
             { status: 400 } // Bad Request
         );
     }
-
-    // Insert into the database
-    const result = await insertDocument("minyanim", body);
-
+       // Insert into the database
+    const result = await insertDocument("minyans", body);
     if (!result) {
         return NextResponse.json(
             { message: "Failed to create minyan" },
@@ -44,60 +77,5 @@ export async function POST(request: Request) {
     return NextResponse.json(
         { ...body, _id: result.insertedId },
         { status: 201 } // Created
-    );
-}
-
-// Update a Minyan by ID
-export async function PUT(request: Request) {
-    const url = new URL(request.url);
-    const id = url.searchParams.get("id"); // Extract minyan ID from query string
-    const body = await request.json(); // Parse request body
-
-    if (!id) {
-        return NextResponse.json(
-            { message: "Minyan ID is required" },
-            { status: 400 } // Bad Request
-        );
-    }
-
-    // Update the minyan in the database
-    const result = await updateDocumentById("minyanim", id, body);
-
-    if (!result) {
-        return NextResponse.json(
-            { message: "Failed to update minyan" },
-            { status: 500 } // Internal Server Error
-        );
-    }
-
-    return NextResponse.json(
-        { message: "Minyan updated successfully" }
-    );
-}
-
-// Delete a Minyan by ID
-export async function DELETE(request: Request) {
-    const url = new URL(request.url);
-    const id = url.searchParams.get("id"); // Extract minyan ID from query string
-
-    if (!id) {
-        return NextResponse.json(
-            { message: "Minyan ID is required" },
-            { status: 400 } // Bad Request
-        );
-    }
-
-    // Delete the minyan from the database
-    const result = await deleteDocumentById("minyanim", id);
-
-    if (!result) {
-        return NextResponse.json(
-            { message: "Failed to delete minyan" },
-            { status: 500 } // Internal Server Error
-        );
-    }
-
-    return NextResponse.json(
-        { message: "Minyan deleted successfully" }
     );
 }

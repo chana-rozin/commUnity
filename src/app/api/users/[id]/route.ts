@@ -42,8 +42,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         if (!id) {
             throw new Error('User ID is required');
         }
-
-
+        if (!body) {
+            return NextResponse.json(
+                { message: "Missing required fields" },
+                { status: 400 } // Bad Request
+            );
+        }
         if (body._id)
             delete body._id; // Delete id from body to avoid conflicts
         // Update the post in the database

@@ -1,7 +1,7 @@
 import http from './http';
 
 export const getEvents = async (): Promise<any> => {
-  const url = `/event`; 
+  const url = `/events`; 
   const response = await http.get(url);
   return response;
 };
@@ -28,7 +28,7 @@ export const unSaveEvent = async (userId: string, eventId: string) => {
 };
 
 export const createEvent = async (event: any): Promise<any>=>{
-  const url = `/event`;    
+  const url = `/events`;    
   const response = await http.post(url, event);
   return response;
 }

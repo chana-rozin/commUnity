@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { Community } from "@/types/community.type";
 import { useCommunities, useNeighborhood } from "@/services/mutations/profileAside";
 
-export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) => {
+export const ProfileAside: React.FC<{ categories: {name: string, href: string, isActive: boolean}[] }> = ({ categories }) => {
     const { user } = useUserStore();
     const { communityId, neighborhoodId } = useParams();
     const { data: communities = [] } = useCommunities();
@@ -14,12 +14,12 @@ export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) =>
 
     const links = [
         {
-            href: `neighborhood/${neighborhood?._id}`,
+            href: `/forum/${neighborhood?._id}`,
             text: neighborhood?.name,
             isActive: neighborhoodId === neighborhood?._id,
         },
         ...communities.map((community: Community) => ({
-            href: `community/${community._id}`,
+            href: `/forum/${community._id}`,
             text: community.name,
             isActive: communityId === community._id,
         })),
@@ -30,9 +30,9 @@ export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) =>
     const { first_name, last_name, address, profile_picture_url } = user;
 
     return (
-        <main className="flex flex-col justify-center items-center w-full bg-white rounded-2xl min-h-[678px]">
+        <main className="flex flex-col justify-center items-center w-full bg-white rounded-2xl py-10">
             <div className="flex flex-col text-center justify-center items-center mt-5 max-w-full w-[131px]">
-                <img loading="lazy" src={profile_picture_url} alt={`Profile picture of ${first_name} ${last_name}`} className="object-contain aspect-square w-[67px] rounded-full"
+                <img loading="lazy" src={profile_picture_url} alt={`Profile picture of ${first_name} ${last_name}`} className="object-contain aspect-square w-[67px] rounded-full object-cover"
                 />
                 <div className="flex flex-col justify-center items-center mt-3.5">
                     <div className="text-base text-neutral-950">{`${first_name} ${last_name}`}</div>
@@ -44,12 +44,15 @@ export const ProfileAside: React.FC<{ saved: boolean }> = ({ saved = false }) =>
             </div>
 
             <nav className="flex text-center flex-col justify-between items-center mt-8 text-sm leading-none whitespace-nowrap bg-white min-h-[54px]">
-                <Link href="/home" className={`${saved ? "text-gray-400" : "text-indigo-500"}`}>בית</Link>
-                <Link href="/saved" className={`${!saved ? "text-gray-400" : "text-indigo-500"}`} >שמורים</Link>
+                {categories.map((category, index)=>
+                    <Link key={index} href={category.href} className={`${category.isActive? "text-indigo-500" : "text-gray-400"}`}>
+                        {category.name}
+                    </Link>
+                )}
             </nav>
 
             <section className="flex flex-col self-stretch pl-6 mt-8 w-full text-base text-neutral-950">
-                {(!neighborhood || !communities) ? <div>Loading...</div>
+                {(!neighborhood || !communities) ? <div className="flex justify-center">Loading...</div>
                     : links.map((item, index) => (
                         <Link key={index} href={item.href} className="flex justify-end gap-2 items-center pb-5 py-2 w-full">
                             <div className={`self-stretch my-auto ${item.isActive ? "text-indigo-500" : ""}`}>
