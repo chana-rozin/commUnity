@@ -32,7 +32,7 @@ export const ProfileAside: React.FC<{ categories: {name: string, href: string, i
     return (
         <main className="flex flex-col justify-center items-center w-full bg-white rounded-2xl py-10">
             <div className="flex flex-col text-center justify-center items-center mt-5 max-w-full w-[131px]">
-                <img loading="lazy" src={profile_picture_url} alt={`Profile picture of ${first_name} ${last_name}`} className="object-contain aspect-square w-[67px] rounded-full"
+                <img loading="lazy" src={profile_picture_url} alt={`Profile picture of ${first_name} ${last_name}`} className="object-contain aspect-square w-[67px] rounded-full object-cover"
                 />
                 <div className="flex flex-col justify-center items-center mt-3.5">
                     <div className="text-base text-neutral-950">{`${first_name} ${last_name}`}</div>
