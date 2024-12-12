@@ -38,7 +38,7 @@ export function LoansNotificationsCard() {
         <button
           className="self-center px-6 py-2 text-sm font-medium text-indigo-600 bg-violet-50 border border-violet-300 rounded-full whitespace-nowrap"
           onClick={() => {
-            window.location.href = "/neighborhood-help";
+            window.location.href = "/neighborhood-help/loans";
           }}
         >
           צפה בהכל

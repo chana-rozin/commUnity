@@ -1,10 +1,13 @@
 import * as React from "react";
 import { EventCard } from "./EventCard";
-import { useEvents } from "@/services/mutations/events";  
+import { useEventsByCommunityId } from "@/services/mutations/events";
+import useUserStore from "@/stores/userStore";
+
 
 
 export function EventsNotificationsCard() {
-    const { data: events, isLoading, error } = useEvents();
+    const user = useUserStore((state) => state.user);
+    const { data: events, isLoading, error } = useEventsByCommunityId(user?.neighborhoodId || "");
     return (
         <div className="flex flex-col w-full bg-white rounded-2xl">
             <div className="flex justify-between items-center w-full mb-4">
