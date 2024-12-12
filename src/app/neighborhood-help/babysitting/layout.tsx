@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react'
 import { usePathname } from "next/navigation";
-import TabsController from './components/TabsController';
+import TabsController from '../../../components/TabsController/TabsController';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
 import { Babysitting } from '@/services/models';
 
