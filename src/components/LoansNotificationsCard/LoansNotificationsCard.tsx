@@ -1,38 +1,24 @@
 import * as React from "react";
 import { ActiveLoan } from "./ActiveLoan";
-import { Loan } from "@/types/loan.type";
-
-const loans: Loan[] = [
-  {
-    _id: "1",
-    lenderId: "user1",
-    borrowerId: "674ed9fb04a9dba04cdfaea7",
-    item: "2 שקיות חלב",
-    createdDate: new Date("2023-12-01"),
-    LoanDate: new Date("2023-12-01"),
-    active: true,
-    AuthorizedIds: [],
-  },
-  {
-    _id: "2",
-    lenderId: "674ed9fb04a9dba04cdfaea7",
-    borrowerId: "user3",
-    item: "קילו קמח",
-    createdDate: new Date("2023-12-03"),
-    LoanDate: new Date("2023-12-03"),
-    active: true,
-    AuthorizedIds: [],
-  },
-];
+import { useActiveLoansByUser } from '@/services/mutations/loans';
+import useUserStore from '@/stores/userStore';
+import { NoLoansSection } from "../Loans/NoLoansSection"; 
 
 export function LoansNotificationsCard() {
+  const user = useUserStore((state) => state.user);
+  const { data: activeLoans, isLoading, error } = useActiveLoansByUser(user?._id || '');
+  
+  const borrowedItems = activeLoans?.filter(loan => loan.borrowerId === user?._id) || [];
+  const lentItems = activeLoans?.filter(loan => loan.lenderId === user?._id) || [];
+  
+
   return (
     <div className="flex flex-col mt-4 w-full bg-white rounded-2xl">
       <div className="flex justify-between items-center w-full mb-4">
         <div className="flex flex-col items-start">
           <h2 className="text-xl font-semibold text-black">השאלות פעילות</h2>
           <div className="text-xs text-neutral-500">
-            {`${loans.length || 0} מושאל • ${loans.length || 0} שאול`}
+            {`${lentItems.length || 0} מושאל • ${borrowedItems.length || 0} שאול`}
           </div>
         </div>
         <button
@@ -45,13 +31,21 @@ export function LoansNotificationsCard() {
         </button>
 
       </div>
-      <div className="flex flex-col mt-4 ">
-        {loans.map((loan) => (
-          <ActiveLoan
-            key={loan._id}
-            {...loan}
-          />
-        ))}
+      <div className="flex flex-col mt-4">
+        {isLoading && <p className="text-center text-gray-500">טוען השאלות...</p>}
+        {error && <p className="text-center text-red-500">שגיאה בטעינת הנתונים</p>}
+        {activeLoans?.length ? (
+          activeLoans?.map((loan) => (
+            <ActiveLoan key={loan._id} {...loan} />
+          ))
+        ) : (
+          !isLoading && (
+            <NoLoansSection
+              title="אין השאלות פעילות"
+              description="כרגע אין לך פריטים מושאלים או שאולים."
+            />
+          )
+        )}
       </div>
     </div>
   );

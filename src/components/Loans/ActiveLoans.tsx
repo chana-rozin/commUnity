@@ -46,7 +46,7 @@ export const ActiveLoans: React.FC = ({}) => {
       ) : (
         <NoLoansSection 
           title="אין הלוואות פעילות" 
-          description="כרגע אין פריטים שאלת מאחרים" 
+          description="כרגע אין פריטים ששאלת מאחרים" 
         />
       )}
 
