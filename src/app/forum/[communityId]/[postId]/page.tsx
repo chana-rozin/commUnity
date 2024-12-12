@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import OpenPostSection from '@/components/Forum/OpenPostSection';
 import { getPostById } from '@/services/posts';
 import { Post } from '@/types/post.type';
-import { useParams } from 'next/navigation'
+import { useParams } from 'next/navigation';
 import { useLikePost, useSavePost } from '@/services/mutations/forum';
 import useUserStore from "@/stores/userStore";
 
