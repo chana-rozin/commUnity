@@ -3,11 +3,14 @@
 import React from "react";
 import { RequestCard } from "../components/RequestCard";
 import { useBabysittingRequests, useCreateBabysittingRequest } from "@/services/mutations/babysitting";
+import useUserStore from "@/stores/userStore";
 
 function BabysittingPage() {
-    const { data: babysittingRequests, isLoading, error } = useBabysittingRequests();
+    const { user } = useUserStore();
+    const { data: babysittingRequests, isLoading, error } = useBabysittingRequests([user!.neighborhoodId, ...user!.communitiesIds]);
     const createRequestMutation = useCreateBabysittingRequest();
 
+    console.log("babysittingRequests: ", babysittingRequests);
     const handleAddRequest = () => {
         const newRequest = {
             id: Date.now().toString(), // Example unique ID

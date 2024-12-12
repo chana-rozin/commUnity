@@ -2,12 +2,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getBabysitting, getAuthorizedBabysittingRequestsByCommunitiesId, createBabysitting } from "@/services/babysitting";
 import { Babysitting } from "@/types/babysitting.type";
 
-export const useBabysittingRequests = () => {
+export const useBabysittingRequests = (authorizedIds: string[]) => {
     return useQuery<Babysitting[]>({
-        queryKey: ["babysittingRequests"],
-        queryFn: async ({ queryKey }) => {
-            const [_, authorizedIds] = queryKey;
-            return getAuthorizedBabysittingRequestsByCommunitiesId(authorizedIds as string[]);
+        queryKey: ["babysittingRequests", authorizedIds],
+        queryFn: async () => {
+            return getAuthorizedBabysittingRequestsByCommunitiesId(authorizedIds);
         },
         retry: 1,
     });
