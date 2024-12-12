@@ -22,7 +22,7 @@ const NeighborhoodLoansPage: React.FC = () => {
   };
 
   return (
-    <main className="flex flex-col pl-20 max-w-[862px] max-md:pl-5">
+    <div className="flex flex-col w-full max-w-[750px] max-md:pl-5">
       <nav className="flex items-center self-start pr-4 text-sm font-medium leading-none text-neutral-700" role="tablist">
         <TabButton
           label="בקשות לעזרה"
@@ -41,7 +41,7 @@ const NeighborhoodLoansPage: React.FC = () => {
         />
       </nav>
       {renderTabContent()}
-    </main>
+    </div>
   );
 };
 

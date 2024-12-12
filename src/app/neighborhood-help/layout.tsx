@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import { usePathname } from "next/navigation";
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
-import {LoansNotificationsCard} from '@/components/LoansNotificationsCard/LoansNotificationsCard';
 import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
 
 export default function NeighborhoodHelpLayout({ children }: { children: React.ReactNode }) {
