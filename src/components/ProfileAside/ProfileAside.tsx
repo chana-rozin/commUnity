@@ -30,9 +30,9 @@ export const ProfileAside: React.FC<{ categories: {name: string, href: string, i
     const { first_name, last_name, address, profile_picture_url } = user;
 
     return (
-        <main className="flex flex-col justify-center items-center w-full bg-white rounded-2xl min-h-[678px]">
+        <main className="flex flex-col justify-center items-center w-full bg-white rounded-2xl py-10">
             <div className="flex flex-col text-center justify-center items-center mt-5 max-w-full w-[131px]">
-                <img loading="lazy" src={profile_picture_url} alt={`Profile picture of ${first_name} ${last_name}`} className="object-contain aspect-square w-[67px] rounded-full"
+                <img loading="lazy" src={profile_picture_url} alt={`Profile picture of ${first_name} ${last_name}`} className="object-contain aspect-square w-[67px] rounded-full object-cover"
                 />
                 <div className="flex flex-col justify-center items-center mt-3.5">
                     <div className="text-base text-neutral-950">{`${first_name} ${last_name}`}</div>
@@ -52,7 +52,7 @@ export const ProfileAside: React.FC<{ categories: {name: string, href: string, i
             </nav>
 
             <section className="flex flex-col self-stretch pl-6 mt-8 w-full text-base text-neutral-950">
-                {(!neighborhood || !communities) ? <div>Loading...</div>
+                {(!neighborhood || !communities) ? <div className="flex justify-center">Loading...</div>
                     : links.map((item, index) => (
                         <Link key={index} href={item.href} className="flex justify-end gap-2 items-center pb-5 py-2 w-full">
                             <div className={`self-stretch my-auto ${item.isActive ? "text-indigo-500" : ""}`}>

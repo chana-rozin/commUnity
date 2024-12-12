@@ -7,7 +7,6 @@ import {
 // Fetch all posts
 // Fetch all or filtered posts
 export async function GET(request: Request) {
-    debugger
     const { searchParams } = new URL(request.url);
     const communities = searchParams.get("communities");
     const search = searchParams.get("search");
