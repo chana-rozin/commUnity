@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import {
-    getAllDocuments,
     insertDocument,
     getDocumentByQuery
 } from "@/services/mongodb";
@@ -9,10 +8,19 @@ import {
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const communities = searchParams.get("communities")?.split(",");
+    console.log("communities: ", communities);
     const search = searchParams.get("search");
     const active = searchParams.get("active");
     let query: any = {};
+    
     const today = new Date();
+    const endOfDay = new Date(today); // Clone `today`
+    endOfDay.setHours(23, 59, 59, 999); // End of day
+
+    const startOfDay = new Date(today); // Clone `today`
+    startOfDay.setHours(0, 0, 0, 0); // Start of day
+
+    const currentTime = `${today.getHours()}:${today.getMinutes()}`;
 
     if (communities) {
         query.AuthorizedIds = { $in: communities };
@@ -24,13 +32,15 @@ export async function GET(request: Request) {
 
     if (active !== "false") {
         query.$or = [
-            { date: { $gt: new Date(today.setHours(23, 59, 59, 999)) } },
+            { date: { $gt: endOfDay } },
             {
-                date: { $eq: new Date(today.setHours(0, 0, 0, 0)) },
-                "time.end": { $gte: `${today.getHours()}:${today.getMinutes()}` },
+                date: { $eq: startOfDay },
+                "time.end": { $gte: currentTime },
             },
         ];
     }
+
+    console.log("query: ", query);
 
     const result = await getDocumentByQuery("babysittings", query);
     console.log(result);
