@@ -6,9 +6,10 @@ export const profileSchema = z.object({
     email: z.string().email("כתובת אימייל לא תקינה"),
     phone_number: z.string().regex(/^[0-9+\-\s]+$/, "מספר טלפון לא תקין"),
     address: z.object({
-        street: z.string().min(5, "רחוב חייב להכיל לפחות 5 תווים"),
+        street: z.string().min(2, "רחוב חייב להכיל לפחות 2 תווים"),
         city: z.string().min(2, "עיר חייבת להכיל לפחות 2 תווים"),
-        houseNumber:  z.string().min(1, "מספר בית חייב להכיל לפחות 1 תו")
+        houseNumber:  z.string().min(1, "מספר בית חייב להכיל לפחות 1 תו"),
+        neighborhood: z.string().min(2, "שכונה חייבת להכיל לפחות 2 תווים")
     }),
     profile_picture_url: z.string()
 });
