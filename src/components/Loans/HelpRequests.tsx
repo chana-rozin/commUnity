@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { FaHeart, FaPlus } from "react-icons/fa";
 import { ItemCard } from "./ItemCard";
 import { useOpenLoansByCommunity, useLendItem, useCreateLoan } from "@/services/mutations/loans";
+import { getTimeDifference } from "@/utils/dates";
 import useUserStore from "@/stores/userStore";
 import { Loan } from "@/types/loan.type";
 import { AddForm } from "../Forms/AddForm";
@@ -35,12 +36,15 @@ export const HelpRequests: React.FC = () => {
 
   return (
     <section className="relative">
+      {/* Button for opening AddForm */}
       <button
         onClick={() => setAddFormOpen(true)}
-        className="absolute top-2 right-2 bg-indigo-600 text-white p-3 rounded-full shadow-lg"
+        className="absolute top-5 left-5 bg-indigo-600 text-white p-3 rounded-full shadow-lg"
       >
         <FaPlus />
       </button>
+
+      {/* AddForm */}
       {isAddFormOpen && (
         <AddForm
           schema={loanSchema}
@@ -58,25 +62,27 @@ export const HelpRequests: React.FC = () => {
           onClose={() => setAddFormOpen(false)}
         />
       )}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
-        {helpRequests?.map((request: Loan) => (
-          <ItemCard
-            key={request._id}
-            title={request.item}
-            daysAgo={Math.ceil((new Date().getTime() - new Date(request.createdDate).getTime()) / (1000 * 3600 * 24))}
-            userName={request.borrowerId}
-            address=""
-            isBorrowed={false}
-            buttonContent="מעוניין לעזור"
-            ButtonIcon={FaHeart}
-            onButtonClick={() =>
-              lendItemMutation.mutate({
-                loanId: request._id,
-                user: user,
-              })
-            }
-          />
-        ))}
+      <div className="flex overflow-hidden flex-wrap gap-5 justify-start content-start items-center px-4 py-6 w-full bg-indigo-100 rounded-2xl min-h-[669px] max-md:max-w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {helpRequests?.map((request: Loan) => (
+            <ItemCard
+              key={request._id}
+              title={request.item}
+              daysAgo={getTimeDifference(request.createdDate)}
+              userName={request.borrowerId}
+              address=""
+              isBorrowed={false}
+              buttonContent="מעוניין לעזור"
+              ButtonIcon={FaHeart}
+              onButtonClick={() =>
+                lendItemMutation.mutate({
+                  loanId: request._id,
+                  user: user,
+                })
+              }
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
