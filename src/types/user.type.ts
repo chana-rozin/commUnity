@@ -13,6 +13,7 @@ export interface User {
     preferences: Preference;
     savedPostsIds: string[];
     savedEventsIds: string[];
+
 }
 /*
 משתמש:
