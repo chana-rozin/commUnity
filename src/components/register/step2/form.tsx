@@ -1,13 +1,22 @@
-import * as React from 'react';
-import { InputField } from './input';
+import React, { useEffect } from 'react';
+import { useState } from 'react';
 import { RegistrationFormData } from './types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { formSchema, formTypes } from './formSchema'
+import SearchableSelectWithAPI from '@/components/map/map'
+import { Location, Address } from '@/types/general.type';
 interface props {
     handleStep: (data: object) => void;
 }
 export const RegistrationForm: React.FC<props> = ({ handleStep }) => {
+    const [address, setAddress] = useState<any>(null);
+    useEffect(()=>{
+        if(address){
+            setAddressError(null)
+        }
+    },[address])
+    const [addressError, setAddressError] = useState<string|null>(null);
     const formFields: Array<{ id: keyof RegistrationFormData; placeholder: string }> = [
         { id: 'firstName', placeholder: 'שם פרטי' },
         { id: 'lastName', placeholder: 'שם משפחה' },
@@ -21,18 +30,30 @@ export const RegistrationForm: React.FC<props> = ({ handleStep }) => {
     } = useForm<formSchema>({ resolver: zodResolver(formTypes) });
 
     const onSubmit: SubmitHandler<formSchema> = async (data) => {
+        if(!address){
+            setAddressError('נא להכניס כתובת מגורים');
+            return;
+        }
+        const location:Location = {
+            type: "Point",
+            coordinates: [parseFloat(address.value.lon), parseFloat( address.value.lat)]
+        }
         console.log('onSubmit');
         console.log(data);
         const dataToSave = {
             firstName: data.firstName,
             lastName: data.lastName,
             address: {
-                city: data.city,
-                houseNumber: data.houseNumber,
-                street: data.street,
-            },
+                country: address.value.address.country,
+                city: address.value.address.city,
+                houseNumber: address.value.address.house_number,
+                street: address.value.address.road,
+                neighborhood: address.value.address.suburb},
+            location : location,
             phone: data.phone
         }
+        console.log(dataToSave);
+        
         handleStep(dataToSave);
     }
 
@@ -71,56 +92,26 @@ export const RegistrationForm: React.FC<props> = ({ handleStep }) => {
                     </div>
                     {errors.lastName && <span>{errors.lastName.message}</span>}
                 </div>
-                <br />
-                <p>כתובת מגורים</p>
-                <div className="flex flex-row mt-4 w-full max-md:max-w-full">
-                    <div className="flex flex-col w-full max-md:max-w-full">
-                        <input
-                            {...register("city")}
-                            type='text'
-                            id='city'
-                            placeholder='עיר'
-                            className="overflow-hidden flex-1 shrink gap-1 self-stretch px-3 py-3 w-full bg-white rounded-md border border-solid border-stone-300 min-h-[42px] max-md:max-w-full text-sm leading-none text-neutral-500"
-                            aria-label='עיר'
-                        />
-                        {errors.city && <span>{errors.city.message}</span>}
-                    </div>
-                    <div className="flex flex-col w-full max-md:max-w-full">
-                        <input
-                            {...register("street")}
-                            type='text'
-                            id='street'
-                            placeholder='רחוב'
-                            className="overflow-hidden flex-1 shrink gap-1 self-stretch px-3 py-3 w-full bg-white rounded-md border border-solid border-stone-300 min-h-[42px] max-md:max-w-full text-sm leading-none text-neutral-500"
-                            aria-label='רחוב'
-                        />
-                        {errors.street && <span>{errors.street.message}</span>}
-                    </div>
-                    <div className="flex flex-col w-full max-md:max-w-full">
-                        <input
-                            {...register("houseNumber")}
-                            type='text'
-                            id='houseNumber'
-                            placeholder="מס' בית/ בנין"
-                            className="overflow-hidden flex-1 shrink gap-1 self-stretch px-3 py-3 w-full bg-white rounded-md border border-solid border-stone-300 min-h-[42px] max-md:max-w-full text-sm leading-none text-neutral-500"
-                            aria-label="מס' בית/ בנין"
-                        />
-                        {errors.houseNumber && <span>{errors.houseNumber.message}</span>}
-                    </div>
-                </div>
                 <div className="flex flex-col mt-4 w-full max-md:max-w-full">
                     <div className="flex flex-col w-full max-md:max-w-full">
                         <input
                             {...register("phone")}
                             type='tel'
                             id='phone'
-                            placeholder="מס\' פלאפון"
+                            placeholder="מספר פלאפון"
                             className="overflow-hidden flex-1 shrink gap-1 self-stretch px-3 py-3 w-full bg-white rounded-md border border-solid border-stone-300 min-h-[42px] max-md:max-w-full text-sm leading-none text-neutral-500"
-                            aria-label="מס\' פלאפון"
+                            aria-label="מספר פלאפון"
                         />
                     </div>
                     {errors.phone && <span>{errors.phone.message}</span>}
                 </div>
+                <div className="flex flex-row mt-4 w-full max-md:max-w-full">
+                    <div className="flex flex-col w-full max-md:max-w-full">
+                        <SearchableSelectWithAPI setAddress={setAddress} inputPlaceholder={"כתובת מגורים"}/>
+                        {addressError && <span>{addressError}</span>}
+                    </div>
+                </div>
+
             </div>
             <button
                 type="submit"

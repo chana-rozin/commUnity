@@ -1,4 +1,5 @@
 export interface Address {
+    neighborhood: string,
     street: string;
     city: string;
     houseNumber: string;
@@ -13,6 +14,10 @@ export interface Preference {
     general_usage_data: boolean;
 }
 
+export interface Location {
+    type: string;
+    coordinates: [number, number];
+}
 
 export interface Comment {
     _id: string;
