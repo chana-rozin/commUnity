@@ -6,7 +6,6 @@ import { hashVerificationCode } from '@/services/crypto'
 
 // Create a new post
 export async function POST(request: Request) {
-    debugger
     const body = await request.json(); // Parse request body
     const { password , email} = body;
     if(!password) {
