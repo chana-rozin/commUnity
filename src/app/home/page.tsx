@@ -4,7 +4,6 @@ import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
 import { LoansNotificationsCard } from '@/components/LoansNotificationsCard/LoansNotificationsCard';
 import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
 import useUserStore from '@/stores/userStore';
-import { getSampleUser } from '@/utils/sampleUser';
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 

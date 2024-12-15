@@ -4,7 +4,7 @@ export interface Loan{
     borrowerId: string;
     item: string;
     createdDate: Date;
-    LoanDate: Date;
+    LoanDate: Date | null;
     active: boolean;
     AuthorizedIds: string[];
 }
