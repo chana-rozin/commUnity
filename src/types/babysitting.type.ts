@@ -9,6 +9,7 @@ export interface Babysitting{
     address: Address;
     childrenNumber: number;
     ageRange: string;
+    notes: string;
     AuthorizedIds: string[];
 }
 
