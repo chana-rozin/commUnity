@@ -30,7 +30,7 @@ export const ActiveLoans: React.FC = ({}) => {
           <div key={item._id} className="flex flex-wrap grow shrink gap-1.5 items-start self-stretch my-auto h-60 w-[184px]">
             <ItemCard 
               title={item.item}
-              daysAgo={Math.ceil((new Date().getTime() - new Date(item.LoanDate).getTime()) / (1000 * 3600 * 24))}
+              daysAgo={Math.ceil((new Date().getTime() - new Date(item.LoanDate || "").getTime()) / (1000 * 3600 * 24))}
               userName={item.lenderId || ''}
               address=""
               isBorrowed={true}
@@ -62,7 +62,7 @@ export const ActiveLoans: React.FC = ({}) => {
           <div key={item._id} className="flex flex-wrap grow shrink gap-1.5 items-start self-stretch my-auto h-60 w-[184px]">
             <ItemCard 
               title={item.item}
-              daysAgo={Math.ceil((new Date().getTime() - new Date(item.LoanDate).getTime()) / (1000 * 3600 * 24))}
+              daysAgo={Math.ceil((new Date().getTime() - new Date(item.LoanDate || "").getTime()) / (1000 * 3600 * 24))}
               userName={item.borrowerId}
               address=""
               isBorrowed={false}
