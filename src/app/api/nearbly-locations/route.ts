@@ -1,89 +1,64 @@
 import { NextResponse } from "next/server";
-import {
-    insertDocument,
-    getDocumentByQuery,
-} from "@/services/mongodb";
+import { getDocumentByQuery, createMinyan } from "@/services/mongodb";
 
-// Fetch events within a radius
+
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
-    const lat = searchParams.get("lat");
-    const lng = searchParams.get("lng");
-    const radius = searchParams.get("radius");
+    const lat = parseFloat(searchParams.get("lat") || "0");
+    const lon = parseFloat(searchParams.get("lon") || "0");
+    const radius = parseInt(searchParams.get("radius") || "300");
 
-    if (!lat || !lng || !radius) {
+    if (!lat || !lon || !radius) {
         return NextResponse.json(
-            { message: "Missing required fields: lat, lng, radius" },
+            { error: "Missing latitude, longitude, or radius" },
             { status: 400 }
         );
     }
 
+    // MongoDB Query for Nearby Events
     const query = {
         location: {
-            $near: {
-                $geometry: {
-                    type: "Point",
-                    coordinates: [parseFloat(lng), parseFloat(lat)], // [longitude, latitude]
-                },
-                $maxDistance: parseInt(radius), // Radius in meters
+            $geoWithin: {
+                $centerSphere: [[lon, lat], radius / 6378137], // Convert meters to radians
             },
         },
     };
 
-    try {
-        const events = await getDocumentByQuery("events", query);
-        return NextResponse.json(events); // Return events as JSON
-    } catch (error) {
-        console.error("Error fetching events:", error);
-        return NextResponse.json(
-            { message: "Failed to fetch events", error },
-            { status: 500 }
-        );
-    }
+    const events = await getDocumentByQuery("events", query);
+    return NextResponse.json(events);
 }
 
-// Add a new event
+
+
 export async function POST(request: Request) {
-    const body = await request.json(); // Parse request body
-
-    if (!body || !body.name || !body.location) {
-        return NextResponse.json(
-            { message: "Missing required fields: name, location" },
-            { status: 400 } // Bad Request
-        );
-    }
-
-    // Ensure location follows GeoJSON format
-    if (
-        !body.location.type ||
-        body.location.type !== "Point" ||
-        !Array.isArray(body.location.coordinates) ||
-        body.location.coordinates.length !== 2
-    ) {
-        return NextResponse.json(
-            { message: "Invalid location format. Expected GeoJSON Point" },
-            { status: 400 }
-        );
-    }
-
     try {
-        const result = await insertDocument("events", body);
+        const body = await request.json();
 
-        if (!result) {
+        const { name, description, location } = body;
+
+        // Validate input
+        if (!name || !Array.isArray(location) || location.length !== 2) {
             return NextResponse.json(
-                { message: "Failed to create event" },
-                { status: 500 } // Internal Server Error
+                { error: "'name' and 'location' (as [lat, lon]) are required." },
+                { status: 400 }
             );
         }
 
+        // Create event
+        const event = await createMinyan({
+            name,
+            description,
+            location,
+        });
+
         return NextResponse.json(
-            { ...body, _id: result.insertedId },
-            { status: 201 } // Created
+            { message: "Event created successfully", event },
+            { status: 201 }
         );
     } catch (error) {
-        console.error("Error inserting event:", error);
+        console.error("Error in POST /api/events:", error);
         return NextResponse.json(
-            { message: "Failed to create event", error },
+            { error: "Failed to create event" },
             { status: 500 }
         );
     }
