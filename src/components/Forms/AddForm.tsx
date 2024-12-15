@@ -57,7 +57,7 @@ export function AddForm<T extends ZodType>({ schema, onSubmit, initialValues = {
                         <input
                             id={field}
                             type={inputType}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
                             {...controllerField}
                         />
                     )}
@@ -77,7 +77,7 @@ export function AddForm<T extends ZodType>({ schema, onSubmit, initialValues = {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
-            <div className="relative bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6">
+            <div className="relative bg-white rounded-2xl shadow-lg w-11/12 max-w-md p-6">
                 {/* Close Button */}
                 <button
                     onClick={onClose}
