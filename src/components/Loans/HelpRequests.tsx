@@ -39,7 +39,7 @@ export const HelpRequests: React.FC = () => {
       {/* Button for opening AddForm */}
       <button
         onClick={() => setAddFormOpen(true)}
-        className="absolute top-5 left-5 bg-indigo-600 text-white p-3 rounded-full shadow-lg"
+        className="absolute top-7 left-5 bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-500"
       >
         <FaPlus />
       </button>

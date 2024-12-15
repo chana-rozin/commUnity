@@ -57,7 +57,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
         <div className="flex gap-3 mt-8 items-center self-stretch w-full text-base font-medium leading-none text-neutral-100">
           <button
             onClick={onButtonClick}
-            className="flex gap-3 items-center p-3 bg-indigo-600 rounded-[50px]"
+            className="flex gap-3 items-center p-3 bg-indigo-600 rounded-[50px] hover:bg-indigo-500"
           >
             <span className="self-stretch my-auto">{buttonContent}</span>
             <ButtonIcon className="w-5 h-5" />
