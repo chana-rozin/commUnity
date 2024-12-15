@@ -4,7 +4,7 @@ import { RegistrationFormData } from './types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { formSchema, formTypes } from './formSchema'
-import SearchableSelectWithAPI from '@/app/map/page'
+import SearchableSelectWithAPI from '@/components/map/map'
 import { Location, Address } from '@/types/general.type';
 interface props {
     handleStep: (data: object) => void;
