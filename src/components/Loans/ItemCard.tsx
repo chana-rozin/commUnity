@@ -3,7 +3,7 @@ import { IconType } from 'react-icons';
 
 export interface ItemCardProps {
   title: string;
-  daysAgo: number;
+  daysAgo: string;
   userName: string;
   address: string;
   isBorrowed: boolean;
@@ -34,7 +34,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
           alt=""
           className="object-contain shrink-0 self-stretch my-auto w-3 aspect-square"
         />
-        <div className="self-stretch my-auto">לפני {daysAgo} ימים</div>
+        <div className="self-stretch my-auto">לפני {daysAgo}</div>
       </div>
       <div className="flex gap-4 items-start mt-2 w-full max-w-xs">
         <div className="flex gap-4 items-start w-80 min-w-[240px]">
