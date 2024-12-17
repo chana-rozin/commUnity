@@ -1,93 +1,60 @@
 import { NextResponse } from "next/server";
-import { 
-  getAllDocuments, 
-  insertDocument, 
-  updateDocumentById, 
-  deleteDocumentById 
-} from "@/services/mongodb"; // Database functions from your services folder
+import {
+    insertDocument,
+    getDocumentByQuery
+} from "@/services/mongodb";
 
-// Fetch all neighborhoods
+// Fetch all posts
+// Fetch all or filtered posts
 export async function GET(request: Request) {
-    const data = await getAllDocuments("neighborhood"); // Retrieve all neighborhoods from the "neighborhoods" collection
-    return NextResponse.json(data); // Return the data as JSON
+    const { searchParams } = new URL(request.url);
+    const communities = searchParams.get("communities");
+    const search = searchParams.get("search");
+    let query: any = {}; // Initialize the query object
+    let posts;
+
+    if (communities) {
+        // Split the communities parameter into an array
+        const commArray = communities.split(",");
+        // Create a query that checks both 'communitiesIds' or 'neighborhoods' field
+        query.AuthorizedIds = { $in: commArray };
+    }
+
+    if (search) {
+        query.name = { $regex: new RegExp(search, 'i') }; // Case-insensitive search in the "title"
+    }
+
+    // Retrieve posts based on the query
+    posts = await getDocumentByQuery("events", query);
+
+    return NextResponse.json(posts); // Return data as JSON
 }
 
-// Create a new neighborhood
-export async function POST(request: Request) {
-    const body = await request.json(); // Parse the request body
 
-    // Validate required fields
-    if (!body.name || !body.city || !Array.isArray(body.streets) || !Array.isArray(body.residents)) {
+// Create a new post
+export async function POST(request: Request) {
+    debugger
+    const body = await request.json(); // Parse request body
+    if (!body) {
         return NextResponse.json(
-            { message: "Invalid input: name, city, streets, and residents are required." },
+            { message: "Missing required fields" },
             { status: 400 } // Bad Request
         );
     }
-
-    const result = await insertDocument("neighborhood", body); // Insert a new neighborhood into the database
+    delete body._id;
+    // Insert into the database
+    const result = await insertDocument("events", body);
 
     if (!result) {
         return NextResponse.json(
-            { message: "Failed to create neighborhood" },
+            { message: "Failed to create event" },
             { status: 500 } // Internal Server Error
         );
     }
 
     return NextResponse.json(
-        { ...body, _id: result.insertedId }, 
+        { ...body, _id: result.insertedId },
         { status: 201 } // Created
     );
 }
 
-// Update a neighborhood by ID
-export async function PUT(request: Request) {
-    const url = new URL(request.url);
-    const id = url.searchParams.get("id"); // Get the neighborhood ID from query parameters
-    const body = await request.json(); // Parse the request body
-
-    if (!id) {
-        return NextResponse.json(
-            { message: "Neighborhood ID is required" },
-            { status: 400 } // Bad Request
-        );
-    }
-
-    const result = await updateDocumentById("neighborhood", id, body); // Update the neighborhood in the database
-
-    if (!result) {
-        return NextResponse.json(
-            { message: "Failed to update neighborhood" },
-            { status: 500 } // Internal Server Error
-        );
-    }
-
-    return NextResponse.json(
-        { message: "Neighborhood updated successfully" }
-    );
-}
-
-// Delete a neighborhood by ID
-export async function DELETE(request: Request) {
-    const url = new URL(request.url);
-    const id = url.searchParams.get("id"); // Get the neighborhood ID from query parameters
-
-    if (!id) {
-        return NextResponse.json(
-            { message: "Neighborhood ID is required" },
-            { status: 400 } // Bad Request
-        );
-    }
-
-    const result = await deleteDocumentById("neighborhood", id); // Delete the neighborhood in the database
-
-    if (!result) {
-        return NextResponse.json(
-            { message: "Failed to delete neighborhood" },
-            { status: 500 } // Internal Server Error
-        );
-    }
-
-    return NextResponse.json(
-        { message: "Neighborhood deleted successfully" }
-    );
-}

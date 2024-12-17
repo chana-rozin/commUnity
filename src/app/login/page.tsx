@@ -112,7 +112,7 @@ const Login: React.FC = () => {
                 return;
             }
             else {
-                console.error("Error login in:", error);
+                setUserExists(false);
             }
         }
     }

@@ -17,9 +17,10 @@ const profileFields = [
     { name: "last_name", label: "שם משפחה", iconSrc: "...", disabled: false },
     { name: "email", label: "כתובת דוא\"ל", iconSrc: "...", disabled: true },
     { name: "phone_number", label: "מס' פלאפון", iconSrc: "...", disabled: false },
-    { name: "address.street", label: "רחוב", iconSrc: "...", disabled: false },
-    { name: "address.houseNumber", label: "מספר בית", iconSrc: "...", disabled: false },
-    { name: "address.city", label: "עיר", iconSrc: "...", disabled: false },
+    { name: "address.street", label: "רחוב", iconSrc: "...", disabled: true },
+    { name: "address.houseNumber", label: "מספר בית", iconSrc: "...", disabled: true },
+    { name: "address.neighborhood", label: "שכונה", iconSrc: "...", disabled: true },
+    { name: "address.city", label: "עיר", iconSrc: "...", disabled: true },
 ] as const;
 
 const ProfilePage: React.FC = () => {
@@ -33,7 +34,8 @@ const ProfilePage: React.FC = () => {
         address: {
             street: "...",
             city: "...",
-            houseNumber: "..."
+            houseNumber: "...",
+            neighborhood: "..."
         },
         profile_picture_url: "..."
     };
