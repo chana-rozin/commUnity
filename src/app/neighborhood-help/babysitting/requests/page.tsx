@@ -5,10 +5,12 @@ import { RequestCard } from "../components/RequestCard";
 import { useBabysittingRequests, useCreateBabysittingRequest } from "@/services/mutations/babysitting";
 import useUserStore from "@/stores/userStore";
 import { FaPlus } from "react-icons/fa";
-import { AddForm } from "@/components/Forms/AddForm";
+import AddBabysittingRequest from "./AddForm";
 import { Babysitting } from "@/types/babysitting.type";
 import babysittingSchema from "./babysittingSchema";
 import { NoLoansSection } from "@/components/Loans/NoLoansSection"
+import { useCommunities, useNeighborhood } from "@/services/mutations/profileAside";
+import { Community } from "@/types/community.type";
 
 function BabysittingPage() {
     const { user } = useUserStore();
@@ -17,6 +19,9 @@ function BabysittingPage() {
         ...user!.communitiesIds
     ]);
     const createRequestMutation = useCreateBabysittingRequest();
+    const { data: communities = [] } = useCommunities();
+    const { data: neighborhood } = useNeighborhood();
+    const communitiesCluster = neighborhood&&communities?[{id: neighborhood._id, name: neighborhood.name},...communities.map((el:Community)=>({id:el._id, name:el.name}))]:[];
 
     const [isAddFormOpen, setAddFormOpen] = useState(false);
 
@@ -48,35 +53,21 @@ function BabysittingPage() {
             </button>
             {/* AddForm */}
             {isAddFormOpen && (
-                <AddForm
-                    schema={babysittingSchema}
-                    initialValues={{
-                        date: new Date(),
-                        time: { start: "00:00", end: "00:00" },
-                        address: {
-                            neighborhood: user!.address.neighborhood,
-                            street: user!.address.street,
-                            city: user!.address.city,
-                            houseNumber: user!.address.houseNumber,
-                        },
-                        childrenNumber: 1,
-                        ageRange: "",
-                        notes: "",
-                        AuthorizedIds: [],
-                    }}
-                    hiddenFields={{ requester: { id: user!._id!, name: `${user!.first_name} ${user?.last_name}` } }}
-                    onSubmit={handleCreateBabysitting}
-                    title="הוספת בקשת בייביסיטר"
-                    isOpen={true}
-                    onClose={() => setAddFormOpen(false)}
-                />
+                <AddBabysittingRequest
+                isOpen={isAddFormOpen}
+                communities={communitiesCluster}
+                onSubmit={handleCreateBabysitting}
+                onClose={()=>setAddFormOpen(false)}
+            />
             )}
 
             {/* Main Content */}
-            {babysittingRequests?.length || 0 > 0 ?
+            {isLoading? <div>טוען בקשות בייביסיטר</div>:
+            error? <div>שגיאה בטעינת בקשות בייביסיטר</div>:
+            babysittingRequests?.length || 0 > 0 ?
                 <main className="flex w-full flex-wrap gap-5 justify-center content-start items-start self-start px-4 bg-indigo-100 rounded-2xl min-h-[669px]">
                     {babysittingRequests?.map((request) => (
-                    <RequestCard key={request._id} request={request} />
+                        <RequestCard key={request._id} request={request} />
                     ))}
                 </main>
                 : <section className="">
