@@ -21,15 +21,17 @@ export async function GET(request: Request) {
         query.communitiesIds = { $in: commArray };
     }
 
+
     if (search) {
         query.title = { $regex: new RegExp(search, 'i') }; // Case-insensitive search in the "title"
     }
-    // let populate = {
-    //     path: "creatorId",
-    //     select: "_id name profile_picture_url"
-    // }
+
+    const populate = [
+        { path: 'creator', select: 'first_name last_name profile_picture_url' }, 
+        { path: 'comments.creator', select: 'first_name last_name profile_picture_url' } 
+    ];
     // Retrieve posts based on the query
-    posts = await getAllDocuments("post", query);
+    posts = await getAllDocuments("post", query, populate);
 
     return NextResponse.json(posts); // Return data as JSON
 }
@@ -46,13 +48,13 @@ export async function POST(request: Request) {
     }
     delete body._id;
     delete body.createdDate;
-    if(!body.creatorId){
+    if(!body.creator){
         return NextResponse.json(
             { message: "Creator ID is required" },
             { status: 400 } // Bad Request
         )
     }
-    body.creatorId = foreignKey(body.creatorId);
+    body.creator = foreignKey(body.creator);
     if(body.communitiesIds.length === 0|| !body.communitiesIds){
         return NextResponse.json(
             { message: "At least one community ID is required" },

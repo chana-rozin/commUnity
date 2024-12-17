@@ -3,7 +3,7 @@ import {
     deleteDocumentById,
     getDocumentById,
     updateDocumentById
-} from "@/services/mongoDB/mongodbV1";
+} from "@/services/mongoDB/mongodb";
 
 //Get a post by ID
 

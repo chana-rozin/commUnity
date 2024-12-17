@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { 
-  getAllDocuments, 
-  insertDocument, 
-  updateDocumentById, 
-  deleteDocumentById 
-} from "@/services/mongoDB/mongodbV1";
+import {
+    getAllDocuments,
+    insertDocument,
+    updateDocumentById,
+    deleteDocumentById
+} from "@/services/mongoDB/mongodb";
 
 // Fetch all responses
 export async function GET(request: Request) {

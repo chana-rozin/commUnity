@@ -16,7 +16,7 @@ export interface Preference {
 
 export interface Comment {
     _id: string;
-    creatorId: string;
+    creator: Creator;
     content: string;
     createdDate: Date;
     likedBy: string[];
@@ -31,8 +31,9 @@ export interface Notifications {
 
 export interface Creator{
     _id: string;
-    profile_picture_url: string;
-    name: string;
+    profile_picture_url?: string;
+    first_name?: string;
+    last_name?: string;
 }
 /*
 תגובה:

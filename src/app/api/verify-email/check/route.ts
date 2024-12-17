@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { insertTemporaryDocument, getDocumentByQuery } from "@/services/mongoDB/mongodbV1";
-import nodemailer from 'nodemailer';
+import {  getAllDocuments } from "@/services/mongoDB/mongodb";
 import { hashVerificationCode } from '@/services/crypto'
 
 export async function POST(request: Request) {
@@ -14,7 +13,7 @@ export async function POST(request: Request) {
     }
 
     const verificationHash = hashVerificationCode(body.code);
-    const verification = await getDocumentByQuery("verify-email", { email: body.email, verificationHash });
+    const verification = await getAllDocuments("verify_email", { email: body.email, verificationHash });
     if (verification.length === 0) {
         return NextResponse.json(
             { message: "Invalid Verification Code" },

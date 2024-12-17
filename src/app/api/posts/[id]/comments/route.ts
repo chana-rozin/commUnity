@@ -17,7 +17,7 @@ export async function POST(request: Request,{ params }: { params: Promise<{ id: 
         );
     }
     let comment = body;
-    comment.creatorId = foreignKey(comment.creatorId);
+    comment.creator = foreignKey(comment.creator);
     let post = postToUpdate;
     post.comments.push(comment);
     if (!id) {

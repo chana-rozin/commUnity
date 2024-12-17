@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDocumentByQuery, patchDocumentById } from "@/services/mongoDB/mongodbV1";
+import { getAllDocuments, updateDocumentById } from "@/services/mongoDB/mongodb";
 import { hashVerificationCode } from '@/services/crypto'
 
 export async function POST(request: Request) {
@@ -14,15 +14,16 @@ export async function POST(request: Request) {
     const hashPassword = await hashVerificationCode(password);
     const query:any={}
     query.email = email;
-    const passwordToChange:any = await getDocumentByQuery('password',query );
+    const passwordToChange:any = await getAllDocuments('password',query );
     if(passwordToChange.length ===0){
         return NextResponse.json(
             { message: "Invalid email or password" },
             { status: 401 } // Unauthorized
         );
     }
+    const pass:any = {password:hashPassword}
     // Insert into the database
-    const result = await patchDocumentById("password", passwordToChange[0]._id.toString(), {password:hashPassword});
+    const result = await updateDocumentById("password", passwordToChange[0]._id.toString(),pass );
 
     if (!result) {
         return NextResponse.json(

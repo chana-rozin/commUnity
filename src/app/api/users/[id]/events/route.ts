@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { patchDocumentById, getDocumentById } from "@/services/mongoDB/mongodbV1";
+import { updateDocumentById, getDocumentById } from "@/services/mongoDB/mongodb";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
     debugger
@@ -22,7 +22,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         user.savedEventsIds.push(body);
 
         // Update the post in the database
-        const result = await patchDocumentById("user", id, user);
+        const result = await updateDocumentById("user", id, user);
 
         if (!result) {
             throw new Error('Update failed');
@@ -67,7 +67,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         user.savedEventsIds = savedEventsIds;
 
         // Update the post in the database
-        const result = await patchDocumentById("user", id, user);
+        const result = await updateDocumentById("user", id, user);
 
         if (!result) {
             return NextResponse.json(

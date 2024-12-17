@@ -1,7 +1,7 @@
 import { Comment, Creator } from './general.type'
 export interface Post{
     _id: string;
-    creatorId: string | Creator;
+    creator: Creator;
     communitiesIds: string[];
     createdDate: Date;
     title: string;

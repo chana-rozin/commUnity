@@ -100,12 +100,4 @@ export async function getDocumentByQuery(collection: string, query: object) {
     return documents;
 }
 
-// export async function getPostById(collection: string, id: string) {
-//     const db = client.db('community');
-//     const document = await db.collection(collection).findOne({ _id: new ObjectId(id) }).populate({
-//         path: 'userId', // Reference to the "author" field in Post
-//         select: 'name profileImage', // Specify fields to include
-//     });
-//     return document;
-// }
 connectDatabase();

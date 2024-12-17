@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import mongoose, { Document, Model } from 'mongoose';
+import mongoose, { Document, Model, Schema } from 'mongoose';
 import { user, ad, babysitting, post, neighborhood, minyan, loan, event, community, VerifyEmail, password } from './models'; // Import the predefined models
 
 const modelMap: { [key: string]: Model<any> } = {
@@ -60,7 +60,6 @@ async function ensureDBConnection(): Promise<void> {
 }
 
 export async function insertDocument<T extends Document>(modelName: string, data: Partial<T>): Promise<any> {
-    debugger
     await ensureDBConnection();
     const model = getModel(modelName);
 
@@ -74,7 +73,7 @@ export async function insertDocument<T extends Document>(modelName: string, data
     }
 }
 
-export async function getAllDocuments(modelName: string, query: Object = {}, populateFields?: string | string[]): Promise<any[]> {
+export async function getAllDocuments(modelName: string, query: Object = {}, populateFields?: { path: string, select: string } | { path: string, select: string }[]): Promise<any[]> {
     await ensureDBConnection();
     const model = getModel(modelName);
 
@@ -92,7 +91,7 @@ export async function getAllDocuments(modelName: string, query: Object = {}, pop
 export async function getDocumentById<T extends Document>(
     modelName: string,
     id: string,
-    populateFields?: string | string[]
+    populateFields?: { path: string, select: string } | { path: string, select: string }[]
 ): Promise<any | null> {
     await ensureDBConnection();
     const model = getModel(modelName);
@@ -104,7 +103,7 @@ export async function getDocumentById<T extends Document>(
         if (populateFields) {
             queryBuilder.populate(populateFields);
         }
-        const res = await queryBuilder.exec();
+        const res = await queryBuilder.exec()
         return res;
     } catch (error: any) {
         throw new Error(`Get by ID failed: ${error.message}`);
@@ -143,44 +142,6 @@ export async function deleteDocumentById<T extends Document>(
         return await model.findByIdAndDelete(id).exec();
     } catch (error: any) {
         throw new Error(`Delete failed: ${error.message}`);
-    }
-}
-
-interface TemporaryDocument extends mongoose.Document {
-    createdAt: Date;
-    [key: string]: any;
-}
-
-export async function insertTemporaryDocument(
-    collectionName: string,
-    document: object,
-    expireAfterSeconds: number = 300
-): Promise<mongoose.Types.ObjectId> {
-    try {
-        // Define schema with TTL index
-        const schema = new mongoose.Schema<TemporaryDocument>(
-            {
-                createdAt: { type: Date, default: Date.now, index: { expireAfterSeconds } },
-                ...Object.keys(document).reduce((fields, key) => {
-                    fields[key] = { type: mongoose.Schema.Types.Mixed };
-                    return fields;
-                }, {} as Record<string, any>),
-            },
-            { collection: collectionName }
-        );
-
-        // Create or retrieve the model for the collection
-        const model = mongoose.models[collectionName] || mongoose.model<TemporaryDocument>(collectionName, schema);
-
-        // Insert the document
-        const newDocument = new model(document);
-        const savedDocument = await newDocument.save();
-
-        console.log(`Document inserted with ID: ${savedDocument._id}`);
-        return savedDocument._id;
-    } catch (error) {
-        console.error('Error inserting temporary document:', error);
-        throw error;
     }
 }
 

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDocumentByQuery } from "@/services/mongoDB/mongodbV1";
+import { getAllDocuments } from "@/services/mongoDB/mongodb";
 import { generateToken } from '@/services/tokens';
 import { auth } from '@/services/firebaseAdmin';
 
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     const query = {
         email: email
     }
-    const userExists = await getDocumentByQuery('user', query);
+    const userExists = await getAllDocuments('user', query);
     if (userExists.length > 0) {
         const user = userExists[0];
         const token = generateToken(user._id.toString(), user.communitiesIds, user.neighborhoodId);

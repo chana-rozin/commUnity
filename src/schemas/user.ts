@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     neighborhoodId: { type: Schema.Types.ObjectId, ref: 'neighborhood' },
     communitiesIds: [{ type: Schema.Types.ObjectId, ref: 'community' }],
     savedPostsIds: [{ type: Schema.Types.ObjectId, ref: 'post' }],
-    savedEventsIds: [{ type: Schema.Types.ObjectId, ref: 'events' }],
+    savedEventsIds: [{ type: Schema.Types.ObjectId, ref: 'event' }],
     preferences: {
         type: {
             email_notifications: { type: Boolean, default: false },
@@ -27,18 +27,20 @@ const userSchema = new mongoose.Schema({
             event_notifications: { type: Boolean, default: false },
         },
     },
-    notification: {
+    notification: [{
         type: {
             message: { type: String, required: true },
             receiverId: { type: Schema.Types.ObjectId, required: true },
             sendeId: { type: Schema.Types.ObjectId, required: true },
             urgencyLevel: {
-                type: String,
+                type: Number,
                 enum: Object.values(UrgencyLevel),  // Use enum values dynamically
-                required: true
+                required: true,
+                default: UrgencyLevel.Low
             }
-        }
-    }
+        },
+        required: true
+    }]
 });
 
 export default userSchema;

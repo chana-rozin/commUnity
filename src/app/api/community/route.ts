@@ -4,7 +4,7 @@ import {
   insertDocument, 
   updateDocumentById, 
   deleteDocumentById 
-} from "@/services/mongoDB/mongodbV1";
+} from "@/services/mongoDB/mongodb";
 
 // Fetch all communities
 export async function GET(request: Request) {

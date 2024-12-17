@@ -1,14 +1,15 @@
 import * as React from 'react';
 import {formatDate} from '@/utils/dates';
+import { Creator } from '@/types/general.type';
 
 export interface CommentProps {
-  creatorId: string;
+  creator: Creator;
   content: string;
   createdDate: Date | string;
   previousDate?: Date | string; 
 }
 
-export const CommentComp: React.FC<CommentProps> = ({ creatorId, createdDate, content, previousDate,}) => {
+export const CommentComp: React.FC<CommentProps> = ({ creator, createdDate, content, previousDate,}) => {
   //-------TEMPORARY--------------------
   // Replace with a function to get the hebrew date and format it
   // Conversion function to ensure we always have a Date object
@@ -57,7 +58,7 @@ export const CommentComp: React.FC<CommentProps> = ({ creatorId, createdDate, co
           {/* Name and Time */}
           <div className="flex items-center gap-2">
             <div className="overflow-hidden pr-1 text-base font-medium text-right text-neutral-800">
-              {creatorId}
+              {creator.first_name? `${creator.first_name} ${creator.last_name}` : creator._id}
             </div>
             <div className="text-xs leading-none text-center text-neutral-500">
               {`${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`}

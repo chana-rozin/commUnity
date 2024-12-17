@@ -3,12 +3,13 @@ import {
     updateDocumentById,
     deleteDocumentById,
     getDocumentById,
-    
+
 } from "@/services/mongoDB/mongodb";
 
 //Get a post by ID
 
-export async function GET(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    debugger
     let { id } = await params;
 
     if (!id) {
@@ -17,11 +18,14 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
             { status: 400 } // Bad Request
         );
     }
-
+    const populate = [
+        { path: 'creator', select: 'first_name last_name profile_picture_url' }, // Populate creator for post
+        { path: 'comments.creator', select: 'first_name last_name profile_picture_url' } // Populate creator for comments
+    ];
     // Retrieve the post from the database
-    const post = await getDocumentById('post',id);
+    const post = await getDocumentById('post', id, populate);
     console.log('post:', post);
-    
+
     if (!post) {
         return NextResponse.json(
             { message: "Post not found" },
@@ -34,7 +38,7 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
 
 //Patch a post by ID
 
-export async function PATCH(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
     let { id } = await params;
     const body = await request.json(); // Parse request body
     if (!body) {
@@ -67,7 +71,7 @@ export async function PATCH(request: Request,{ params }: { params: Promise<{ id:
 }
 
 // Delete a post by ID
-export async function DELETE(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     let { id } = await params;
 
 
