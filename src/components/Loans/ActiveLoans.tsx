@@ -4,6 +4,8 @@ import { ItemCard } from './ItemCard';
 import { NoLoansSection } from "./NoLoansSection";
 import { useActiveLoansByUser, useReturnLoan } from '@/services/mutations/loans';
 import useUserStore from '@/stores/userStore'; 
+import { getTimeDifference } from "@/utils/dates";
+
 
 export const ActiveLoans: React.FC = ({}) => {
   const user = useUserStore((state) => state.user);
@@ -30,7 +32,7 @@ export const ActiveLoans: React.FC = ({}) => {
           <div key={item._id} className="flex flex-wrap grow shrink gap-1.5 items-start self-stretch my-auto h-60 w-[184px]">
             <ItemCard 
               title={item.item}
-              daysAgo={Math.ceil((new Date().getTime() - new Date(item.LoanDate).getTime()) / (1000 * 3600 * 24))}
+              daysAgo={getTimeDifference(item.LoanDate || new Date())}
               userName={item.lenderId || ''}
               address=""
               isBorrowed={true}
@@ -62,7 +64,7 @@ export const ActiveLoans: React.FC = ({}) => {
           <div key={item._id} className="flex flex-wrap grow shrink gap-1.5 items-start self-stretch my-auto h-60 w-[184px]">
             <ItemCard 
               title={item.item}
-              daysAgo={Math.ceil((new Date().getTime() - new Date(item.LoanDate).getTime()) / (1000 * 3600 * 24))}
+              daysAgo={getTimeDifference(item.LoanDate || new Date())}
               userName={item.borrowerId}
               address=""
               isBorrowed={false}

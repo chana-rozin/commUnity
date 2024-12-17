@@ -1,10 +1,11 @@
-import { Address, Preference, Notifications } from './general.type'
+import { Address, Preference, Notifications, Location} from './general.type'
 export interface User {
     _id?: string;
     first_name: string;
     last_name: string;
     email: string;
     address: Address;
+    location: Location;
     phone_number: string;
     age?: number;
     profile_picture_url: string;

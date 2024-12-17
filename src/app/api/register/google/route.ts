@@ -5,9 +5,10 @@ import { auth } from '@/services/firebaseAdmin';
 
 // Create a new post
 export async function POST(request: Request) {
+    debugger
     try {
         const body = await request.json(); // Parse request body
-        const { accessToken, email, communitiesIds, neighborhoodId } = body;
+        const { accessToken, email, communitiesIds } = body;
 
         // Verify the token with Firebase
         const decodedToken = await auth.verifyIdToken(accessToken);
@@ -35,11 +36,36 @@ export async function POST(request: Request) {
                 { status: 500 }
             );
         }
+        if (neighborhood.length === 0) {
+            const getNeighborhood = await getDocumentById("neighborhoods", body.neighborhoodId);
+            if (!getNeighborhood) {
+                return NextResponse.json(
+                    { message: "Failed to find user's neighborhood" },
+                    { status: 500 }
+                );
+            }
+            neighborhood.push(getNeighborhood);
+        }
+        console.log(neighborhood[0]);
+
+        let updateNeighborhood: any = neighborhood[0];
+        if (!(updateNeighborhood.streets.includes(body.address.street))) {
+            updateNeighborhood.streets.push(body.address.street);
+        }
+        updateNeighborhood.membersId.push(result.insertedId.toString())
+        const updateNeighborhoodResult = await patchDocumentById("neighborhoods", neighborhood[0]._id.toString(), updateNeighborhood);
+        if(!updateNeighborhoodResult){
+            return NextResponse.json(
+                { message: "Failed to update user's neighborhood" },
+                { status: 500 }
+            );
+        }
+        // Insert into the database
+
 
         const id = result.insertedId.toString();
-
         // Generate token
-        const token = generateToken(id, communitiesIds, neighborhoodId);
+        const token = generateToken(id, communitiesIds, body.neighborhoodId);
 
         // Respond with token in httpOnly cookie
         const response = NextResponse.json(

@@ -20,6 +20,8 @@ export async function GET(request: Request) {
 
 // Create a new post
 export async function POST(request: Request) {
+    
+    debugger
     const body = await request.json(); // Parse request body
     console.log(body);
     delete body._id;

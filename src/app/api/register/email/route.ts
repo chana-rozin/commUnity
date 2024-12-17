@@ -38,9 +38,34 @@ export async function POST(request: Request) {
         if (!result) {
             return NextResponse.json(
                 { message: "Failed to create user" },
-                { status: 500 } // Internal Server Error
+                { status: 500 }
             );
         }
+        if (neighborhood.length === 0) {
+            const getNeighborhood = await getDocumentById("neighborhoods", body.neighborhoodId);
+            if (!getNeighborhood) {
+                return NextResponse.json(
+                    { message: "Failed to find user's neighborhood" },
+                    { status: 500 }
+                );
+            }
+            neighborhood.push(getNeighborhood);
+        }
+        console.log(neighborhood[0]);
+
+        let updateNeighborhood: any = neighborhood[0];
+        if (!(updateNeighborhood.streets.includes(body.address.street))) {
+            updateNeighborhood.streets.push(body.address.street);
+        }
+        updateNeighborhood.membersId.push(result.insertedId.toString())
+        const updateNeighborhoodResult = await patchDocumentById("neighborhoods", neighborhood[0]._id.toString(), updateNeighborhood);
+        if(!updateNeighborhoodResult){
+            return NextResponse.json(
+                { message: "Failed to update user's neighborhood" },
+                { status: 500 }
+            );
+        }
+
         const id = result.insertedId.toString();
         //Generate token
         const token = generateToken(id, communitiesIds, neighborhoodId);

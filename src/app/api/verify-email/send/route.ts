@@ -7,11 +7,21 @@ export async function POST(request: Request) {
     debugger
     const body = await request.json(); // Parse request body
     console.log(body);
-    if (!body.email) {
+    const { email, verify} = body;
+    if (!email) {
         return NextResponse.json(
             { message: "Invalid Request" },
             { status: 400 }
         );
+    }
+    if(verify){
+        const emailExists = await getDocumentByQuery("users", {email: email});
+        if(!emailExists){
+            return NextResponse.json(
+                { message: "Email does not exist" },
+                { status: 404 } // Not Found
+            );
+        }
     }
     const verificationCode = Math.floor(1000 + Math.random() * 9000).toString();
     const verificationHash = hashVerificationCode(verificationCode);

@@ -100,4 +100,39 @@ export async function getDocumentByQuery(collection: string, query: object) {
     return documents;
 }
 
+export async function ensureGeospatialIndex(collection: string) {
+    const db = client.db("community");
+    await db.collection(collection).createIndex(
+        { location: "2dsphere" },
+        { name: "location_2dsphere" }
+    );
+    console.log(`Geospatial index ensured on collection: ${collection}`);
+}
+
+export async function createMinyan(minyan: {
+    name: string;
+    description?: string;
+    location: any; // [latitude, longitude]
+}) {
+    try {
+        const db = client.db("community");
+
+        // Ensure geospatial index on location field
+        await ensureGeospatialIndex("minyans");
+
+        // Insert the event
+        const newMinyan = {
+            ...minyan,
+            createdAt: new Date(),
+        };
+
+        const result = await db.collection("minyans").insertOne(newMinyan);
+        console.log(`Minyan created with ID: ${result.insertedId}`);
+        return { ...newMinyan, _id: result.insertedId };
+    } catch (error) {
+        console.error("Error creating minyan:", error);
+        throw error;
+    }
+}
+
 connectDatabase();
