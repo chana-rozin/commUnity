@@ -63,8 +63,12 @@ export const remindBorrower = async (loanId: string,item: string, lenderId: stri
     //       item
     //     }
     //   });
-    console.log(`תזכורת: הפריט ${item} טרם הוחזר למלווה`);
-    
+
+    await http.post('/pusher/send', {
+        channel: `user-${borrowerId}`,
+        event: "loan-reminder",
+        message:  `⚠️ תזכורת: הפריט ${item} טרם הוחזר למלווה`,
+      });    
     } catch (error) {
       console.error('Failed to send reminder', error);
       throw error;
