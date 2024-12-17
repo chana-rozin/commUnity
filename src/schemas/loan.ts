@@ -4,14 +4,15 @@ const { Schema } = mongoose;
 
 const loanSchema = new Schema({
     lenderId: { type: Schema.Types.ObjectId, ref: 'user', default: null }, // Allow ObjectId or null
-    borrowerId: { type: Schema.Types.ObjectId, ref: 'user' },
-    item: { type: String },
-    createdDate: { type: Date },
+    borrowerId: { type: Schema.Types.ObjectId, ref: 'user' , required: true },
+    item: { type: String, required: true },
+    createdDate: { type: Date, required: true, default: Date.now },
     LoanDate: { type: Date },
-    active: { type: Boolean },
+    active: { type: Boolean, required: true },
     AuthorizedIds: [{
         type: Schema.Types.ObjectId,
-        refPath: 'authorizedType',  // This field will determine the collection
+        refPath: 'authorizedType', 
+        required: true
     }],
     authorizedType: {
         type: String,

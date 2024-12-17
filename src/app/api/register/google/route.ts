@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { insertDocument } from "@/services/mongodb";
+import { insertDocument, foreignKey } from "@/services/mongoDB/mongodb";
 import { generateToken } from '@/services/tokens';
 import { auth } from '@/services/firebaseAdmin';
 
@@ -14,8 +14,21 @@ export async function POST(request: Request) {
         console.log('Decoded token:', decodedToken);
 
         delete body.accessToken;
+        delete body._id;
+        if (!body.neighborhoodId) {
+            return NextResponse.json(
+                { message: "Missing neighborhoodId" },
+                { status: 400 } // Bad Request
+            );
+        }
+        body.neighborhoodId = foreignKey(body.neighborhoodId);
+        if (!body.communitiesIds || body.communitiesIds.length > 0) {
+            body.communitiesIds.forEach((id: string, index: number, array: string[]) => {
+                array[index] = foreignKey(id); // Update each element
+            });
+        }
         // Insert into the database
-        const result = await insertDocument("users", body);
+        const result = await insertDocument("user", body);
         if (!result) {
             return NextResponse.json(
                 { message: "Failed to create user" },
@@ -24,7 +37,7 @@ export async function POST(request: Request) {
         }
 
         const id = result.insertedId.toString();
-        
+
         // Generate token
         const token = generateToken(id, communitiesIds, neighborhoodId);
 

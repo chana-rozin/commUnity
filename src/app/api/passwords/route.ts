@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDocumentByQuery, patchDocumentById } from "@/services/mongodb";
+import { getDocumentByQuery, patchDocumentById } from "@/services/mongoDB/mongodbV1";
 import { hashVerificationCode } from '@/services/crypto'
 
 export async function POST(request: Request) {

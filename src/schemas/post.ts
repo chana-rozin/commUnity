@@ -1,13 +1,14 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
+import commentSchema from './comment'
 const postSchema = new Schema({
-    creatorId: { type: Schema.Types.ObjectId, ref: 'user' },
-    communitiesIds: { type: [Schema.Types.ObjectId], ref: 'community' },
-    createdDate: { type: Date },
-    title: { type: String},
-    content: { type: String },
+    creatorId: { type: Schema.Types.ObjectId, ref: 'user', required: true },
+    communitiesIds: { type: [Schema.Types.ObjectId], ref: 'community', required: true},
+    createdDate: { type: Date, default: Date.now },
+    title: { type: String, required: true },
+    content: { type: String, required: true },
     images: [{type: String}],
-    comments: [{ type: String }],
+    comments: [commentSchema],
     likedBy: [{ type: Schema.Types.ObjectId, ref: 'user' }],
 })
 

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDocumentById} from "@/services/mongodb";
+import { getDocumentById} from "@/services/mongoDB/mongodbV1";
 
 export async function GET(request: Request, { params }: {params: Promise<{ id: string }>}){
     try{

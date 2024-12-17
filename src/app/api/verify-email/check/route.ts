@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { insertTemporaryDocument, getDocumentByQuery } from "@/services/mongodb";
+import { insertTemporaryDocument, getDocumentByQuery } from "@/services/mongoDB/mongodbV1";
 import nodemailer from 'nodemailer';
 import { hashVerificationCode } from '@/services/crypto'
 

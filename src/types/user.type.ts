@@ -1,4 +1,4 @@
-import { Address, Preference } from './general.type'
+import { Address, Preference, Notifications } from './general.type'
 export interface User {
     _id?: string;
     first_name: string;
@@ -13,6 +13,7 @@ export interface User {
     preferences: Preference;
     savedPostsIds: string[];
     savedEventsIds: string[];
+    notifications: Notifications[];
 }
 /*
 משתמש:

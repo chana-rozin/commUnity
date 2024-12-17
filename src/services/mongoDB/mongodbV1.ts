@@ -1,10 +1,10 @@
-import { MongoClient, ObjectId, Filter  } from "mongodb";
+import { MongoClient, ObjectId, Filter } from "mongodb";
 import mongoose from "mongoose";
 
 let client: MongoClient;
 
 export async function connectDatabase() {
-    
+
     console.log("Starting database connection");
     if (!client) {
         const dbConnectionString = process.env.DB_CONNECTION;
@@ -29,7 +29,7 @@ export async function insertDocument(collection: string, document: object) {
     const db = client.db('community');
     const result = await db.collection(collection).insertOne(document);
     console.log(result);
-    
+
     return result;
 }
 
@@ -41,7 +41,7 @@ export async function getAllDocuments(collection: string) {
 
 export async function getDocumentById(collection: string, id: string) {
     const db = client.db('community');
-    const document = await db.collection(collection).findOne({ _id: new ObjectId(id) });
+    const document = await db.collection(collection).findOne({ _id: new ObjectId(id) })
     return document;
 }
 
@@ -73,7 +73,7 @@ export async function deleteDocumentById(collection: string, id: string) {
 export async function insertTemporaryDocument(collection: string, document: object, expireAfterSeconds: number = 300) {
     try {
         const db = client.db('community');
-        
+
         // Ensure TTL index is created
         await db.collection(collection).createIndex(
             { createdAt: 1 },
@@ -94,9 +94,18 @@ export async function insertTemporaryDocument(collection: string, document: obje
     }
 }
 
-export async function getDocumentByQuery(collection: string, query: object){
+export async function getDocumentByQuery(collection: string, query: object) {
     const db = client.db('community');
     const documents = await db.collection(collection).find(query).toArray();
     return documents;
 }
+
+// export async function getPostById(collection: string, id: string) {
+//     const db = client.db('community');
+//     const document = await db.collection(collection).findOne({ _id: new ObjectId(id) }).populate({
+//         path: 'userId', // Reference to the "author" field in Post
+//         select: 'name profileImage', // Specify fields to include
+//     });
+//     return document;
+// }
 connectDatabase();

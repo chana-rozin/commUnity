@@ -1,22 +1,25 @@
 import { NextResponse } from "next/server";
 import {
-    patchDocumentById,
-    getDocumentById
-} from "@/services/mongodb";
+    updateDocumentById,
+    getDocumentById,
+    foreignKey
+} from "@/services/mongoDB/mongodb";
 export async function POST(request: Request,{ params }: { params: Promise<{ id: string }>}) {
     console.log('post comment');
     
     let { id } = await params;
     const body = await request.json(); // Parse request body
-    let postToUpdate = await getDocumentById("posts",id)
+    let postToUpdate = await getDocumentById("post",id)
     if(!postToUpdate){
         return NextResponse.json(
             { message: "Failed to found post" },
             { status: 404 } // Internal Server Error
         );
     }
+    let comment = body;
+    comment.creatorId = foreignKey(comment.creatorId);
     let post = postToUpdate;
-    post.comments.push(body);
+    post.comments.push(comment);
     if (!id) {
         return NextResponse.json(
             { message: "Post ID is required" },
@@ -25,7 +28,7 @@ export async function POST(request: Request,{ params }: { params: Promise<{ id: 
     }
 
     // Update the post in the database
-    const result = await patchDocumentById("posts", id, post);
+    const result = await updateDocumentById("post", id, post);
 
     if (!result) {
         return NextResponse.json(

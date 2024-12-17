@@ -4,7 +4,7 @@ import {
   insertDocument, 
   updateDocumentById, 
   deleteDocumentById 
-} from "@/services/mongodb";
+} from "@/services/mongoDB/mongodbV1";
 
 // Fetch all responses
 export async function GET(request: Request) {

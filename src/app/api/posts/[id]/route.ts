@@ -3,8 +3,8 @@ import {
     updateDocumentById,
     deleteDocumentById,
     getDocumentById,
-    patchDocumentById
-} from "@/services/mongodb";
+    
+} from "@/services/mongoDB/mongodb";
 
 //Get a post by ID
 
@@ -19,7 +19,7 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
     }
 
     // Retrieve the post from the database
-    const post = await getDocumentById('posts',id);
+    const post = await getDocumentById('post',id);
     console.log('post:', post);
     
     if (!post) {
@@ -52,7 +52,7 @@ export async function PATCH(request: Request,{ params }: { params: Promise<{ id:
     }
 
     // Update the post in the database
-    const result = await patchDocumentById("posts", id, body);
+    const result = await updateDocumentById("post", id, body);
 
     if (!result) {
         return NextResponse.json(
@@ -79,7 +79,7 @@ export async function DELETE(request: Request,{ params }: { params: Promise<{ id
     }
 
     // Delete the post from the database
-    const result = await deleteDocumentById("posts", id);
+    const result = await deleteDocumentById("post", id);
 
     if (!result) {
         return NextResponse.json(

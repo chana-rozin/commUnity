@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import {
     insertDocument,
-    getDocumentByQuery
-} from "@/services/mongodb";
+    getAllDocuments,
+    foreignKey
+} from "@/services/mongoDB/mongodb";
 
 // Fetch all posts
 // Fetch all or filtered posts
@@ -23,9 +24,12 @@ export async function GET(request: Request) {
     if (search) {
         query.title = { $regex: new RegExp(search, 'i') }; // Case-insensitive search in the "title"
     }
-
+    // let populate = {
+    //     path: "creatorId",
+    //     select: "_id name profile_picture_url"
+    // }
     // Retrieve posts based on the query
-    posts = await getDocumentByQuery("posts", query);
+    posts = await getAllDocuments("post", query);
 
     return NextResponse.json(posts); // Return data as JSON
 }
@@ -41,8 +45,25 @@ export async function POST(request: Request) {
         );
     }
     delete body._id;
+    delete body.createdDate;
+    if(!body.creatorId){
+        return NextResponse.json(
+            { message: "Creator ID is required" },
+            { status: 400 } // Bad Request
+        )
+    }
+    body.creatorId = foreignKey(body.creatorId);
+    if(body.communitiesIds.length === 0|| !body.communitiesIds){
+        return NextResponse.json(
+            { message: "At least one community ID is required" },
+            { status: 400 } // Bad Request
+        )
+    }
+    body.communitiesIds.forEach((id:string, index:number, array:string[]) => {
+        array[index] = foreignKey(id); // Update each element
+    });
     // Insert into the database
-    const result = await insertDocument("posts", body);
+    const result = await insertDocument("post", body);
 
     if (!result) {
         return NextResponse.json(

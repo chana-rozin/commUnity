@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { insertDocument } from "@/services/mongodb";
+import { insertDocument, foreignKey } from "@/services/mongoDB/mongodb";
 import { hashVerificationCode } from '@/services/crypto'
 import { generateToken } from '@/services/tokens'
 
@@ -10,7 +10,8 @@ export async function POST(request: Request) {
         console.log(body);
         const { password, email, communitiesIds, neighborhoodId } = body;
         const hashPassword = await hashVerificationCode(password);
-        const savePasswordAtDb = await insertDocument("password", { password: hashPassword, email: email });
+        const passwordToSave:any =  { password: hashPassword, email: email };
+        const savePasswordAtDb = await insertDocument("password", passwordToSave);
         if (!savePasswordAtDb) {
             return NextResponse.json(
                 { message: "Failed to save password at database" },
@@ -19,7 +20,20 @@ export async function POST(request: Request) {
         }
         delete body.password;
         // Insert into the database
-        const result = await insertDocument("users", body);
+        delete body._id;
+        if (!body.neighborhoodId) {
+            return NextResponse.json(
+                { message: "Missing neighborhoodId" },
+                { status: 400 } // Bad Request
+            );
+        }
+        body.neighborhoodId = foreignKey(body.neighborhoodId);
+        if (!body.communitiesIds || body.communitiesIds.length > 0) {
+            body.communitiesIds.forEach((id: string, index: number, array: string[]) => {
+                array[index] = foreignKey(id); // Update each element
+            });
+        }
+        const result = await insertDocument("user", body);
 
         if (!result) {
             return NextResponse.json(

@@ -1,17 +1,17 @@
 import mongoose, { Model } from 'mongoose';
 
 // Import your models
-import { User } from './models';
-import { Ad } from './models';
-import { Babysitting } from './models';
-import { Community } from './models';
-import { Event } from './models';
-import { Loan } from './models';
-import { Minyan } from './models';
-import { Neighborhood } from './models';
-import { Post } from './models';
+import { user } from './models';
+import { ad } from './models';
+import { babysitting } from './models';
+import { community } from './models';
+import { event } from './models';
+import { loan } from './models';
+import { minyan } from './models';
+import { neighborhood } from './models';
+import { post } from './models';
 import { VerifyEmail } from './models';
-import { Password } from './models';
+import { password } from './models';
 
 interface ModelDefinition {
     name: string;
@@ -19,17 +19,17 @@ interface ModelDefinition {
 }
 
 const models: ModelDefinition[] = [
-    { name: 'users', model: User },
-    { name: 'ads', model: Ad },
-    { name: 'babysittings', model: Babysitting },
-    { name: 'communities', model: Community },
-    { name: 'events', model: Event },
-    { name: 'loans', model: Loan },
-    { name: 'minyans', model: Minyan },
-    { name: 'neighborhoods', model: Neighborhood },
-    { name: 'posts', model: Post },
+    { name: 'users', model: user },
+    { name: 'ads', model: ad },
+    { name: 'babysittings', model: babysitting },
+    { name: 'communities', model: community },
+    { name: 'events', model: event },
+    { name: 'loans', model: loan },
+    { name: 'minyans', model: minyan },
+    { name: 'neighborhoods', model: neighborhood },
+    { name: 'posts', model: post },
     { name:"verify-email", model: VerifyEmail },
-    { name:"password", model: Password }
+    { name:"password", model: password }
 ];
 
 
