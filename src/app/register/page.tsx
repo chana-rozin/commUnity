@@ -150,7 +150,8 @@ const signUp: React.FC = () => {
                 communitiesIds: [],
                 preferences: preferences,
                 savedPostsIds: [],
-                savedEventsIds: []
+                savedEventsIds: [],
+                notifications: []
             }
             var result;
             if (signUpBy === "google") {

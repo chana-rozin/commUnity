@@ -2,8 +2,6 @@
 import React, { useState } from 'react'
 import { usePathname } from "next/navigation";
 import TabsController from '../../../components/TabsController/TabsController';
-import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
-import { Babysitting } from '@/services/mongoDB/models';
 
 export default function BabysittingLayout({ children }: { children: React.ReactNode }) {
 
