@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import {
     insertDocument,
     getAllDocuments,
-    foreignKey
+    foreignKey,
 } from "@/services/mongoDB/mongodb";
 
 // Fetch all posts
@@ -27,8 +27,8 @@ export async function GET(request: Request) {
     }
 
     const populate = [
-        { path: 'creator', select: 'first_name last_name profile_picture_url' }, 
-        { path: 'comments.creator', select: 'first_name last_name profile_picture_url' } 
+        { path: 'creator', select: 'first_name last_name profile_picture_url' },
+        { path: 'comments.creator', select: 'first_name last_name profile_picture_url' }
     ];
     // Retrieve posts based on the query
     posts = await getAllDocuments("post", query, populate);
@@ -39,44 +39,53 @@ export async function GET(request: Request) {
 
 // Create a new post
 export async function POST(request: Request) {
-    const body = await request.json(); // Parse request body
-    if (!body) {
+    try {
+        const body = await request.json(); // Parse request body
+        if (!body) {
+            return NextResponse.json(
+                { message: "Missing required fields" },
+                { status: 400 } // Bad Request
+            );
+        }
+        delete body._id;
+        delete body.createdDate;
+        if (!body.creator) {
+            return NextResponse.json(
+                { message: "Creator ID is required" },
+                { status: 400 } // Bad Request
+            )
+        }
+        body.creator = foreignKey(body.creator);
+        if (body.communitiesIds.length === 0 || !body.communitiesIds) {
+            return NextResponse.json(
+                { message: "At least one community ID is required" },
+                { status: 400 } // Bad Request
+            )
+        }
+        body.communitiesIds.forEach((id: string, index: number, array: string[]) => {
+            array[index] = foreignKey(id); // Update each element
+        });
+        // Insert into the database
+        const result = await insertDocument("post", body);
+
+        if (!result) {
+            return NextResponse.json(
+                { message: "Failed to create post" },
+                { status: 500 } // Internal Server Error
+            );
+        }
+
         return NextResponse.json(
-            { message: "Missing required fields" },
-            { status: 400 } // Bad Request
+            { ...result._doc },
+            { status: 201 } // Created
         );
     }
-    delete body._id;
-    delete body.createdDate;
-    if(!body.creator){
-        return NextResponse.json(
-            { message: "Creator ID is required" },
-            { status: 400 } // Bad Request
-        )
-    }
-    body.creator = foreignKey(body.creator);
-    if(body.communitiesIds.length === 0|| !body.communitiesIds){
-        return NextResponse.json(
-            { message: "At least one community ID is required" },
-            { status: 400 } // Bad Request
-        )
-    }
-    body.communitiesIds.forEach((id:string, index:number, array:string[]) => {
-        array[index] = foreignKey(id); // Update each element
-    });
-    // Insert into the database
-    const result = await insertDocument("post", body);
-
-    if (!result) {
+    catch (error) {
+        console.error(error);
         return NextResponse.json(
             { message: "Failed to create post" },
             { status: 500 } // Internal Server Error
         );
     }
-
-    return NextResponse.json(
-        { ...body, _id: result.insertedId },
-        { status: 201 } // Created
-    );
 }
 

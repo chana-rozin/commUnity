@@ -1,15 +1,12 @@
 import { NextResponse } from "next/server";
 import {
     updateDocumentById,
-    deleteDocumentById,
-    getDocumentById,
-
+    getDocumentById
 } from "@/services/mongoDB/mongodb";
 
 //Get a post by ID
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
-    debugger
     let { id } = await params;
 
     if (!id) {
@@ -39,6 +36,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 //Patch a post by ID
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    debugger
     let { id } = await params;
     const body = await request.json(); // Parse request body
     if (!body) {
@@ -48,6 +46,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         );
     }
     delete body._id;
+    delete body.creator;
+    delete body.createdDate;
     if (!id) {
         return NextResponse.json(
             { message: "Post ID is required" },
@@ -70,29 +70,4 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     );
 }
 
-// Delete a post by ID
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
-    let { id } = await params;
 
-
-    if (!id) {
-        return NextResponse.json(
-            { message: "Post ID is required" },
-            { status: 400 } // Bad Request
-        );
-    }
-
-    // Delete the post from the database
-    const result = await deleteDocumentById("post", id);
-
-    if (!result) {
-        return NextResponse.json(
-            { message: "Failed to delete post" },
-            { status: 500 } // Internal Server Error
-        );
-    }
-
-    return NextResponse.json(
-        { message: "Post deleted successfully" }
-    );
-}

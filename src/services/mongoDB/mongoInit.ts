@@ -28,7 +28,7 @@ const models: ModelDefinition[] = [
     { name: 'minyans', model: minyan },
     { name: 'neighborhoods', model: neighborhood },
     { name: 'posts', model: post },
-    { name:"verify_email", model: VerifyEmail },
+    { name:"verify_emails", model: VerifyEmail },
     { name:"passwords", model: password }
 ];
 
