@@ -4,7 +4,7 @@ import { FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 const ContactPage = () => {
     return (
         <main className="min-h-screen bg-transparent py-6">
-            <div className="container mx-auto max-w-6xl bg-white rounded-2xl overflow-hidden">
+            <div className="container mx-auto max-w-6xl bg-white rounded-2xl shadow-2xl overflow-hidden">
                 {/* Header Section */}
                 <header className="relative bg-gradient-to-r from-indigo-600 to-purple-700 text-white py-16 px-8 text-center overflow-hidden">
                     <div
