@@ -1,14 +1,30 @@
 "use client";
-import React from "react";
+import React, {useState, useRef, useEffect} from "react";
 import Link from "next/link";
 import { BsGear } from "react-icons/bs";
 import { BsCalendar4 } from "react-icons/bs";
 import { usePathname } from "next/navigation";
 import useUserStore from "@/stores/userStore";
+import MenuPopup from "./MenuePopup";
 
 export function Navbar() {
+
+  const [isOpen, setIsOpen] = useState(false);
+  const popupRef = useRef<HTMLDivElement>(null);
+  
   const user = useUserStore((state) => state.user);
   const pathname = usePathname();
+
+  // Close the popup when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const navItems = [
     { text: "בית", href: "/home" },
@@ -16,6 +32,8 @@ export function Navbar() {
     { text: "סיוע שכונתי", href: "/neighborhood-help/loans" },
     { text: "מניינים", href: "/minyans" },
   ];
+
+  const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
     <nav className="sticky top-0 z-50 flex justify-between items-center px-8 py-2 w-full bg-white shadow-lg rounded-full">
@@ -59,14 +77,15 @@ export function Navbar() {
             title="Calendar"
           />
         </Link>
-        <Link href="/settings/myProfile">
+        <div ref={popupRef} onClick={toggleMenu}>
           <img
             loading="lazy"
             src={user?.profile_picture_url}
             alt="User Profile"
             className="w-10 h-10 rounded-full object-cover"
           />
-        </Link>
+        </div>
+        {isOpen && <MenuPopup popupRef={popupRef} />}
       </div>
     </nav>
   );
