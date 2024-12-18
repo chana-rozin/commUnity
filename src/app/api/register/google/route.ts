@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         }
         let neighborhood: any = await getAllDocuments("neighborhood", query);
         if (neighborhood.length > 0) {
-            body.neighborhoodId = neighborhood[0]._id.toString();
+            body.neighborhoodId = neighborhood[0]._id;
         }
         else {
             const newNeighborhood:any = {
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
                     { status: 500 }
                 );
             }
-            body.neighborhoodId = foreignKey(addNeighborhoodResult.insertedId)
+            body.neighborhoodId = addNeighborhoodResult._id;
         }
         const result = await insertDocument("user", body);
         if (!result) {
@@ -49,14 +49,14 @@ export async function POST(request: Request) {
             );
         }
         if (neighborhood.length === 0) {
-            const getNeighborhood = await getAllDocuments("neighborhood", query );
-            if (getNeighborhood.length === 0) {
+            const getNeighborhood = await getDocumentById("neighborhood", body.neighborhoodId);
+            if (!getNeighborhood) {
                 return NextResponse.json(
                     { message: "Failed to find user's neighborhood" },
                     { status: 500 }
                 );
             }
-            neighborhood.push(getNeighborhood[0]);
+            neighborhood.push(getNeighborhood);
         }
         console.log(neighborhood[0]);
 
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
         if (!(updateNeighborhood.streets.includes(body.address.street))) {
             updateNeighborhood.streets.push(body.address.street);
         }
-        updateNeighborhood.membersId.push(result.insertedId)
+        updateNeighborhood.membersId.push(result._id);
         const updateNeighborhoodResult = await updateDocumentById("neighborhood", neighborhood[0]._id.toString(), updateNeighborhood);
         if(!updateNeighborhoodResult){
             return NextResponse.json(

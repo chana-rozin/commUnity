@@ -4,7 +4,6 @@ import {hashVerificationCode} from '@/services/crypto'
 import sendEmail from '@/services/sendEmail'
 
 export async function POST(request: Request) {
-    debugger
     const body = await request.json(); // Parse request body
     console.log(body);
     const { email, verify} = body;
@@ -15,7 +14,7 @@ export async function POST(request: Request) {
         );
     }
     if(verify){
-        const emailExists = await getDocumentByQuery("users", {email: email});
+        const emailExists = await getAllDocuments("users", {email: email});
         if(!emailExists){
             return NextResponse.json(
                 { message: "Email does not exist" },

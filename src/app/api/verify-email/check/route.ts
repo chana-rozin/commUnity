@@ -3,6 +3,7 @@ import {  getAllDocuments } from "@/services/mongoDB/mongodb";
 import { hashVerificationCode } from '@/services/crypto'
 
 export async function POST(request: Request) {
+    debugger
     const body = await request.json(); // Parse request body
     console.log(body);
     if (!body.code || !body.email) {
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
     }
 
     const verificationHash = hashVerificationCode(body.code);
-    const verification = await getAllDocuments("verify_email", { email: body.email, verificationHash });
+    const verification = await getAllDocuments("VerifyEmail", { email: body.email, verificationHash });
     if (verification.length === 0) {
         return NextResponse.json(
             { message: "Invalid Verification Code" },
