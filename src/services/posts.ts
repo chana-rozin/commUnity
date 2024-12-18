@@ -25,9 +25,9 @@ export const createPost = async (post: any): Promise<any>=>{
     return response;
 }
 
-export const likePost = async (postId: string, creatorId: string) => {
+export const likePost = async (postId: string, creator: string) => {
     try {
-      const response = await http.post(`/posts/${postId}/likes`, creatorId );
+      const response = await http.post(`/posts/${postId}/likes`, creator );
       return response;
     } catch (error) {
       console.error("Error liking post:", error);
@@ -35,9 +35,9 @@ export const likePost = async (postId: string, creatorId: string) => {
     }
 };
 
-export const unLikePost = async (postId: string, creatorId: string) => {
+export const unLikePost = async (postId: string, creator: string) => {
     try {
-      const response = await http.delete(`/posts/${postId}/likes`, {data: creatorId,} );
+      const response = await http.delete(`/posts/${postId}/likes`, {data: creator} );
       return response;
     } catch (error) {
       console.error("Error liking post:", error);

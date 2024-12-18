@@ -3,8 +3,7 @@ import {
     updateDocumentById,
     deleteDocumentById,
     getDocumentById,
-    patchDocumentById
-} from "@/services/mongodb";
+} from "@/services/mongoDB/mongodb";
 
 //Get a post by ID
 
@@ -19,7 +18,7 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
     }
 
     // Retrieve the post from the database
-    const event = await getDocumentById('events',id);
+    const event = await getDocumentById('event',id);
     console.log('event:', event);
     
     if (!event) {
@@ -53,7 +52,7 @@ export async function PATCH(request: Request,{ params }: { params: Promise<{ id:
     }
 
     // Update the post in the database
-    const result = await patchDocumentById("events", id, body);
+    const result = await updateDocumentById("event", id, body);
 
     if (!result) {
         return NextResponse.json(
@@ -81,7 +80,7 @@ export async function DELETE(request: Request,{ params }: { params: Promise<{ id
     }
 
     // Delete the post from the database
-    const result = await deleteDocumentById("events", id);
+    const result = await deleteDocumentById("event", id);
 
     if (!result) {
         return NextResponse.json(

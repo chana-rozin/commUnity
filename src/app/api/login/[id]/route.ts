@@ -10,10 +10,10 @@ export async function POST(request: Request,{ params }: { params: Promise<{ id: 
         email: id
     }
     const userExists = await getAllDocuments('user', query);
-    if (userExists.length > 0) {
+    if (userExists.length === 0) {
         return NextResponse.json(
-            { message: "Email already exists" },
-            { status: 409 } // Conflict
+            { message: "Email not exists" },//not alowwed
+            { status: 400}
         );
     }
     return NextResponse.json(
