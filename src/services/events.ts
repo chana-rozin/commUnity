@@ -6,6 +6,11 @@ export const getEvents = async (): Promise<any> => {
   return response;
 };
 
+export const getEventsByCommunityId = async ( communityId: string): Promise<any> => {
+  const url = `/events?communities=${communityId}`; 
+  const response = await http.get(url);
+  return response.data;
+};
 
 export const saveEvent = async (userId: string, eventId: string) => {
   try {

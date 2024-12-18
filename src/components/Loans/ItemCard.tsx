@@ -3,7 +3,7 @@ import { IconType } from 'react-icons';
 
 export interface ItemCardProps {
   title: string;
-  daysAgo: number;
+  daysAgo: string;
   userName: string;
   address: string;
   isBorrowed: boolean;
@@ -34,7 +34,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
           alt=""
           className="object-contain shrink-0 self-stretch my-auto w-3 aspect-square"
         />
-        <div className="self-stretch my-auto">לפני {daysAgo} ימים</div>
+        <div className="self-stretch my-auto">לפני {daysAgo}</div>
       </div>
       <div className="flex gap-4 items-start mt-2 w-full max-w-xs">
         <div className="flex gap-4 items-start w-80 min-w-[240px]">
@@ -44,7 +44,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
             </div>
             <div className="flex flex-col mr-2">
               <div className="text-base font-semibold text-neutral-950">
-                {userName}
+                {userName ? userName : "עוד לא נמצא:("}
               </div>
               <div className="text-xs font-medium leading-none text-neutral-500">
                 {address}
@@ -57,7 +57,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
         <div className="flex gap-3 mt-8 items-center self-stretch w-full text-base font-medium leading-none text-neutral-100">
           <button
             onClick={onButtonClick}
-            className="flex gap-3 items-center p-3 bg-indigo-600 rounded-[50px]"
+            className="flex gap-3 items-center p-3 bg-indigo-600 rounded-[50px] hover:bg-indigo-500"
           >
             <span className="self-stretch my-auto">{buttonContent}</span>
             <ButtonIcon className="w-5 h-5" />

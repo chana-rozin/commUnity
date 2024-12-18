@@ -39,7 +39,7 @@ export const ActiveLoan: React.FC<Loan> = ({
           className="object-contain shrink-0 w-3 aspect-square"
         />
         <div className="text-xs text-neutral-950 whitespace-nowrap">
-          {getTimeDifference(LoanDate)}
+        {LoanDate ? getTimeDifference(new Date(LoanDate)) : "תאריך לא זמין"}
         </div>
       </div>
     </div>
