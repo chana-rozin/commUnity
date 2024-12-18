@@ -2,8 +2,8 @@
 export const formatDate = (date: Date | string) => {
     const validDate = typeof date === "string" ? new Date(date) : date;
     if (isNaN(validDate.getTime())) {
-        console.error("Invalid date:", date);
-        return "Invalid date"; 
+        //console.error("Invalid date:", date);
+        return "תאריך לא זמין"; 
     }
     return `${validDate.getDate()}/${validDate.getMonth() + 1}/${validDate.getFullYear()}`;
 };
@@ -13,8 +13,8 @@ export const formatDate = (date: Date | string) => {
 export const getTimeDifference = (pastDate: Date): string => {
     const validDate = typeof pastDate === "string" ? new Date(pastDate) : pastDate;
     if (isNaN(validDate.getTime())) {
-        console.error("Invalid date:", pastDate);
-        return "Invalid date"; 
+        //console.error("Invalid date:", date);
+        return "תאריך לא זמין"; 
     }
     const now = new Date();
     const diffMs = now.getTime() - validDate.getTime();

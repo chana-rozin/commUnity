@@ -36,7 +36,7 @@ export const ActiveLoans: React.FC = ({}) => {
               userName={item.lenderId || ''}
               address=""
               isBorrowed={true}
-              buttonContent="החזרתי!"
+              buttonContent={item.lenderId ? "החזרתי!" : "בטל" }
               ButtonIcon={FaArrowLeft}
               onButtonClick={() => returnLoanMutation.mutate({
                 loanId: item._id,
