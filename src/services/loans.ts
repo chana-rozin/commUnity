@@ -40,7 +40,7 @@ export const createLoan = async (loan: any): Promise<any> => {
 
 export const lendItem = async (loanId: string, lenderId: string): Promise<Loan> => {
     const url = `/loans/${loanId}`;
-    const response = await http.patch(url, { lenderId });
+    const response = await http.patch(url, { lenderId: lenderId,  LoanDate: new Date()});
     return response.data;
 };
 
@@ -50,7 +50,27 @@ export const returnLoan = async (loanId: string): Promise<Loan> => {
     return response.data;
 };
 
-//   export const remindLender = async (loanId: string): Promise<void> => {
-//     const url = `/loans/${loanId}/remind`;
-//     await http.patch(url);
-//   };
+export const remindBorrower = async (loanId: string,item: string, lenderId: string, borrowerId:string) => {
+    try {      
+      // TODO: Send notification to borrower
+    //   await sendNotification({
+    //     userId: borrowerId,
+    //     message: `תזכורת: הפריט ${item} טרם הוחזר למלווה`,
+    //     type: 'reminder',
+    //     metadata: {
+    //       loanId,
+    //       lenderId,
+    //       item
+    //     }
+    //   });
+
+    await http.post('/pusher/send', {
+        channel: `user-${borrowerId}`,
+        event: "loan-reminder",
+        message:  `⚠️ תזכורת: הפריט ${item} טרם הוחזר למלווה`,
+      });    
+    } catch (error) {
+      console.error('Failed to send reminder', error);
+      throw error;
+    }
+  };

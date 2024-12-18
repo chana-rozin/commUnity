@@ -15,6 +15,7 @@ export interface User {
     savedPostsIds: string[];
     savedEventsIds: string[];
     notifications: Notifications[];
+
 }
 /*
 משתמש:

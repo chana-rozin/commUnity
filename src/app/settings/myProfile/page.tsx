@@ -11,16 +11,21 @@ import { User } from "@/types/user.type"
 import { updateUser } from '@/services/users'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import { MdOutlineAlternateEmail, MdOutlinePhone, MdNumbers, MdPerson } from "react-icons/md";
+import { SiOpenstreetmap } from "react-icons/si";
+import { BiBuildingHouse } from "react-icons/bi";
+import { FaTreeCity } from "react-icons/fa6";
+
 
 const profileFields = [
-    { name: "first_name", label: "שם פרטי", iconSrc: "...", disabled: false },
-    { name: "last_name", label: "שם משפחה", iconSrc: "...", disabled: false },
-    { name: "email", label: "כתובת דוא\"ל", iconSrc: "...", disabled: true },
-    { name: "phone_number", label: "מס' פלאפון", iconSrc: "...", disabled: false },
-    { name: "address.street", label: "רחוב", iconSrc: "...", disabled: true },
-    { name: "address.houseNumber", label: "מספר בית", iconSrc: "...", disabled: true },
-    { name: "address.neighborhood", label: "שכונה", iconSrc: "...", disabled: true },
-    { name: "address.city", label: "עיר", iconSrc: "...", disabled: true },
+    { name: "first_name", label: "שם פרטי", IconSrc: MdPerson, disabled: false },
+    { name: "last_name", label: "שם משפחה", IconSrc: MdPerson, disabled: false },
+    { name: "email", label: "כתובת דוא\"ל", IconSrc: MdOutlineAlternateEmail, disabled: true },
+    { name: "phone_number", label: "מס' פלאפון", IconSrc: MdOutlinePhone, disabled: false },
+    { name: "address.street", label: "רחוב", IconSrc: SiOpenstreetmap, disabled: true },
+    { name: "address.houseNumber", label: "מספר בית", IconSrc: MdNumbers, disabled: true },
+    { name: "address.neighborhood", label: "שכונה", IconSrc: BiBuildingHouse, disabled: true },
+    { name: "address.city", label: "עיר", IconSrc: FaTreeCity, disabled: true },
 ] as const;
 
 const ProfilePage: React.FC = () => {
