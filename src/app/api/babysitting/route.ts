@@ -30,15 +30,16 @@ export async function GET(request: Request) {
         query["requester.name"] = { $regex: new RegExp(search, "i") };
     }
 
-    if (active !== "false") {
-        query.$or = [
-            { date: { $gt: endOfDay } },
-            {
-                date: { $eq: startOfDay },
-                "time.end": { $gte: currentTime },
-            },
-        ];
-    }
+    // if (active !== "false") {
+    //     query.$or = [
+    //         { date: { $gt: endOfDay } }, // Future date condition
+    //         { 
+    //             date: { $eq: startOfDay }, // Today date condition
+    //             "time.end": { $gte: currentTime }, // Check if time is later than current time
+    //         },
+    //     ];
+    // }
+    
 
     console.log("query: ", query);
 

@@ -6,7 +6,10 @@ const babysittingSchema = z.object({
         id: z.string(),
         name: z.string()
     }),
-    date: z.date(),
+    date: z
+        .string() // Input is a string from `<input type="date">`
+        .transform((value) => new Date(value)) // Convert to Date object
+        .refine((date) => !isNaN(date.getTime()), "Invalid date"), // Check if valid Date
     time: z.object({
         start: z.string(), // Format like "HH:mm"
         end: z.string() // Format like "HH:mm"
@@ -17,7 +20,10 @@ const babysittingSchema = z.object({
         city: z.string(),
         houseNumber: z.string()
     }),
-    childrenNumber: z.number().min(1, "Must have at least one child"),
+    childrenNumber: z
+    .string() // Input is a string from `<input type="number">`
+    .transform((value) => parseInt(value, 10)) // Convert to a number
+    .refine((value) => !isNaN(value) && value > 0, "Must be a valid positive number"),
     ageRange: z.string(),
     notes: z.string().optional(), // Optional for additional comments
     AuthorizedIds: z.array(z.string()).optional() // Optional for authorized users

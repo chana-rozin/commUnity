@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RequestCard } from "../components/RequestCard";
 import { useBabysittingRequests, useCreateBabysittingRequest } from "@/services/mutations/babysitting";
 import useUserStore from "@/stores/userStore";
@@ -11,6 +11,8 @@ import babysittingSchema from "./babysittingSchema";
 import { NoLoansSection } from "@/components/Loans/NoLoansSection"
 import { useCommunities, useNeighborhood } from "@/services/mutations/profileAside";
 import { Community } from "@/types/community.type";
+import { getNeighborhood } from "@/services/neighborhoods";
+import { Neighborhood } from "@/types/neighborhood.types";
 
 function BabysittingPage() {
     const { user } = useUserStore();
@@ -20,8 +22,10 @@ function BabysittingPage() {
     ]);
     const createRequestMutation = useCreateBabysittingRequest();
     const { data: communities = [] } = useCommunities();
-    const { data: neighborhood } = useNeighborhood();
-    const communitiesCluster = neighborhood&&communities?[{id: neighborhood._id, name: neighborhood.name},...communities.map((el:Community)=>({id:el._id, name:el.name}))]:[];
+    // const { data: neighborhood } = useNeighborhood();
+    const [neighborhood, setNeighborhood] = useState<Neighborhood | undefined>(
+        {_id:"675ea7b6efee01e0de5b7785",city:"ירושלים",name:"גבעת שאול",streets:["קורדובירו"],membersId:["675ea7b6efee01e0de5b7786","675ea86e8104c02175c59189"]});
+    const communitiesCluster = communities?[{id: neighborhood!._id, name: neighborhood!.name},...communities.map((el:Community)=>({id:el._id, name:el.name}))]:[];
 
     const [isAddFormOpen, setAddFormOpen] = useState(false);
 
