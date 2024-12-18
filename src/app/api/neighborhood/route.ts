@@ -14,8 +14,8 @@
 import { NextResponse } from "next/server";
 import {
     insertDocument,
-    getDocumentByQuery
-} from "@/services/mongodb";
+    getAllDocuments
+} from "@/services/mongoDB/mongodb";
 
 // Fetch all posts
 // Fetch all or filtered posts
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     }
 
     // Retrieve posts based on the query
-    posts = await getDocumentByQuery("events", query);
+    posts = await getAllDocuments("events", query);
 
     return NextResponse.json(posts); // Return data as JSON
 }
