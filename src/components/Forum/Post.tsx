@@ -3,9 +3,10 @@ import { useState } from "react";
 import { getTimeDifference } from "@/utils/dates";
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { TiStarOutline, TiStarFullOutline } from "react-icons/ti";
+import { Creator } from "@/types/general.type"
 
 export interface PostProps {
-  creatorId: string;
+  creator: Creator;
   createdDate: Date | string;
   content: string;
   images: string[];
@@ -17,7 +18,7 @@ export interface PostProps {
   onSave?: () => void;
 }
 
-export const PostComp: React.FC<PostProps> = ({ creatorId, likesCount: initialLikesCount, createdDate, content,
+export const PostComp: React.FC<PostProps> = ({ creator, likesCount: initialLikesCount, createdDate, content,
   commentCount, liked, saved, images, onLike, onSave,
 }) => {
   const [isSaved, setIsSaved] = useState(saved);
@@ -74,7 +75,7 @@ export const PostComp: React.FC<PostProps> = ({ creatorId, likesCount: initialLi
           <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/68b95c1707a8445652f77e217614fe7ec26ad8b08cd2f80fdc0fcd5190bb58e2" alt="User avatar" className="w-10 h-10 rounded-full" />
         </div>
         <div className="flex flex-col items-start">
-          <div className="text-sm font-semibold text-neutral-950">{creatorId}</div>
+          <div className="text-sm font-semibold text-neutral-950">{creator.first_name?`${creator.first_name} ${creator.last_name}`:creator._id}</div>
           <div className="text-xs text-neutral-500">
             {`${getTimeDifference(date)} • ${commentCount} תגובות`}
           </div>

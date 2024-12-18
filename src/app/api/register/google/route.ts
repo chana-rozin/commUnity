@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { insertDocument, getDocumentByQuery, patchDocumentById, getDocumentById } from "@/services/mongodb";
+import { insertDocument, getAllDocuments, updateDocumentById, getDocumentById, foreignKey } from "@/services/mongoDB/mongodb";
 import { generateToken } from '@/services/tokens';
 import { auth } from '@/services/firebaseAdmin';
 
@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     try {
         const body = await request.json(); // Parse request body
         const { accessToken, email, communitiesIds } = body;
-
+        body.communitiesIds=[];
         // Verify the token with Firebase
         const decodedToken = await auth.verifyIdToken(accessToken);
         console.log('Decoded token:', decodedToken);
@@ -20,27 +20,28 @@ export async function POST(request: Request) {
             city: body.address.city,
             name: body.address.neighborhood
         }
-        let neighborhood: any = await getDocumentByQuery("neighborhoods", query);
+        let neighborhood: any = await getAllDocuments("neighborhood", query);
         if (neighborhood.length > 0) {
-            body.neighborhoodId = neighborhood[0]._id.toString();
+            body.neighborhoodId = neighborhood[0]._id;
         }
         else {
-            const newNeighborhood = {
+            const newNeighborhood:any = {
+                country: body.address.country,
                 city: body.address.city,
                 name: body.address.neighborhood,
                 streets: [],
                 membersId: []
             }
-            const addNeighborhoodResult = await insertDocument("neighborhoods", newNeighborhood);
+            const addNeighborhoodResult = await insertDocument("neighborhood", newNeighborhood);
             if (!addNeighborhoodResult) {
                 return NextResponse.json(
                     { message: "Failed to add user's neighborhood" },
                     { status: 500 }
                 );
             }
-            body.neighborhoodId = addNeighborhoodResult.insertedId.toString();
+            body.neighborhoodId = addNeighborhoodResult._id;
         }
-        const result = await insertDocument("users", body);
+        const result = await insertDocument("user", body);
         if (!result) {
             return NextResponse.json(
                 { message: "Failed to create user" },
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
             );
         }
         if (neighborhood.length === 0) {
-            const getNeighborhood = await getDocumentById("neighborhoods", body.neighborhoodId);
+            const getNeighborhood = await getDocumentById("neighborhood", body.neighborhoodId);
             if (!getNeighborhood) {
                 return NextResponse.json(
                     { message: "Failed to find user's neighborhood" },
@@ -63,8 +64,8 @@ export async function POST(request: Request) {
         if (!(updateNeighborhood.streets.includes(body.address.street))) {
             updateNeighborhood.streets.push(body.address.street);
         }
-        updateNeighborhood.membersId.push(result.insertedId.toString())
-        const updateNeighborhoodResult = await patchDocumentById("neighborhoods", neighborhood[0]._id.toString(), updateNeighborhood);
+        updateNeighborhood.membersId.push(result._id);
+        const updateNeighborhoodResult = await updateDocumentById("neighborhood", neighborhood[0]._id.toString(), updateNeighborhood);
         if(!updateNeighborhoodResult){
             return NextResponse.json(
                 { message: "Failed to update user's neighborhood" },
@@ -74,7 +75,7 @@ export async function POST(request: Request) {
         // Insert into the database
 
 
-        const id = result.insertedId.toString();
+        const id = result._id.toString();
         // Generate token
         const token = generateToken(id, communitiesIds, body.neighborhoodId);
 

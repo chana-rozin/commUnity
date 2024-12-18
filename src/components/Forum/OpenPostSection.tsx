@@ -15,7 +15,7 @@ interface OpenPostSectionProps extends Post {
   onSave: (postId: string) => void;
 }
 
-const OpenPostSection: React.FC<OpenPostSectionProps> = ({_id, creatorId, createdDate, liked,
+const OpenPostSection: React.FC<OpenPostSectionProps> = ({_id, creator, createdDate, liked,
   saved, content, comments, images, likedBy, onLike, onSave,
 }) => {
   const [allComments, setAllComments] = useState<Comment[]>(comments);
@@ -45,7 +45,7 @@ const OpenPostSection: React.FC<OpenPostSectionProps> = ({_id, creatorId, create
     <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
         <div className="mb-4">
           <PostComp
-            creatorId={creatorId}
+            creator={creator}
             createdDate={createdDate}
             content={content}
             images={images}
@@ -62,7 +62,7 @@ const OpenPostSection: React.FC<OpenPostSectionProps> = ({_id, creatorId, create
               {allComments.map((comment, index) => (
                   <CommentComp
                     key={comment._id}
-                    creatorId={comment.creatorId}
+                    creator={comment.creator}
                     createdDate={comment.createdDate}
                     content={comment.content}
                     previousDate={index > 0 ? allComments[index - 1].createdDate : undefined}

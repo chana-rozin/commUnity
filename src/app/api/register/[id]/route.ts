@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDocumentByQuery } from "@/services/mongodb";
+import { getAllDocuments } from "@/services/mongoDB/mongodb";
 
 
 // Create a new post
@@ -9,7 +9,7 @@ export async function POST(request: Request,{ params }: { params: Promise<{ id: 
     const query = {
         email: id
     }
-    const userExists = await getDocumentByQuery('users', query);
+    const userExists = await getAllDocuments('user', query);
     if (userExists.length > 0) {
         return NextResponse.json(
             { message: "Email already exists" },

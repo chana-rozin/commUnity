@@ -21,7 +21,9 @@ export const NewPostInput: React.FC = () => {
       console.error("Cannot submit an empty post");
       return;
     }
-
+    if(!user||!user?._id){
+      throw new Error ("Please enter a user");
+    }
     const postData: Partial<Post> = {
       content: text,
       title: text.slice(0, 50),
@@ -29,7 +31,9 @@ export const NewPostInput: React.FC = () => {
       images,
       comments: [],
       likedBy: [],
-      creatorId: user?._id,
+      creator: {
+        _id: user._id
+      },
       communitiesIds: [user?.neighborhoodId || ""] 
     };
 
