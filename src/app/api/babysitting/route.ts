@@ -44,7 +44,7 @@ export async function GET(request: Request) {
 
     console.log("query: ", query);
 
-    const result = await getAllDocuments("Babysitting", query);
+    const result = await getAllDocuments("babysitting", query);
     console.log(result);
     return NextResponse.json(result); // Return data as JSON
 }

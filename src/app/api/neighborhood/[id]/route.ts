@@ -5,7 +5,7 @@ export async function GET(request: Request, { params }: {params: Promise<{ id: s
     try{
     const { id } = await params;
     console.log("get neighborhood: ", id);
-    const neighborhood = await getDocumentById("neighborhoods",id);
+    const neighborhood = await getDocumentById("neighborhood",id);
     if(!neighborhood)
         throw new Error;
     return NextResponse.json(neighborhood);
