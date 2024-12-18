@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDocumentByQuery } from "@/services/mongodb";
+import { getAllDocuments } from "@/services/mongoDB/mongodb";
 import { ObjectId } from 'mongodb'
 import { verifyToken } from "@/services/tokens";
 import { cookies } from "next/headers";
@@ -27,7 +27,7 @@ export async function GET(request: Request) {
         console.log("User ID:", decoded.role.id);
         console.log("Authorized Communities:", decoded.role.communitiesIds);
         console.log("Neighborhood ID:", decoded.role.neighborhoodId);
-        const communities = await getDocumentByQuery("communities", query);
+        const communities = await getAllDocuments("community", query);
         return NextResponse.json(communities)
     } catch (err) {
         return NextResponse.json({ message: 'Error fetching data' }, { status: 500 });

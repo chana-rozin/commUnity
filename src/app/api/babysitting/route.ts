@@ -2,20 +2,67 @@ import { NextResponse } from "next/server";
 import {
     getAllDocuments,
     insertDocument,
-} from "@/services/mongodb";
+    foreignKey
+} from "@/services/mongoDB/mongodb";
 
 // Fetch all babysitter requests
 export async function GET(request: Request) {
-    const requests = await getAllDocuments("babysittings"); // Retrieve all babysitter requests
-    return NextResponse.json(requests); // Return data as JSON
+    const { searchParams } = new URL(request.url);
+    const communities = searchParams.get("communities")?.split(",");
+    const search = searchParams.get("search");
+    const active = searchParams.get("active");
+    let query: any = {};
+    const today = new Date();
+
+    if (communities) {
+        query.AuthorizedIds = { $in: communities };
+    }
+
+    if (search) {
+        query["requester.name"] = { $regex: new RegExp(search, "i") };
+    }
+
+    if (active !== "false") {
+        query.$or = [
+            { date: { $gt: new Date(today.setHours(23, 59, 59, 999)) } },
+            {
+                date: { $eq: new Date(today.setHours(0, 0, 0, 0)) },
+                "time.end": { $gte: `${today.getHours()}:${today.getMinutes()}` },
+            },
+        ];
+    }
+
+    const result = await getAllDocuments("Babysitting", query);
+    console.log(result);
+    return NextResponse.json(result); // Return data as JSON
 }
 
 // Create a new babysitter request
 export async function POST(request: Request) {
     const body = await request.json(); // Parse request body
+    delete body._id;
+    if(!body.requesterId){
+        return NextResponse.json(
+            { message: "Missing required field: requesterId" },
+            { status: 400 } // Bad Request
+        );
+    }
+    body.requesterId = foreignKey(body.requesterId);
+    if(body.babysitterId){
+        body.babysitterId = foreignKey(body.babysitterId);
+    }
+    if(!body.AuthorizedIds||body.AuthorizedIds.length===0){
+        return NextResponse.json(
+            { message: "Missing required field: AuthorizedIds" },
+            { status: 400 } // Bad Request
+        );
+    }
+    body.AuthorizedIds.forEach((id:string, index:number, array:string[]) => {
+        array[index] = foreignKey(id); // Update each element
+    });
 
     // Insert into the database
-    const result = await insertDocument("babysittings", body);
+    const result = await insertDocument("Babysitting", body);
 
     if (!result) {
         return NextResponse.json(
@@ -25,7 +72,10 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-        { ...body, _id: result.insertedId },
+        { ...body, _id: result._id.toString() },
         { status: 201 } // Created
     );
 }
+
+
+

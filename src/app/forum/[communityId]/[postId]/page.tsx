@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import OpenPostSection from '@/components/Forum/OpenPostSection';
 import { getPostById } from '@/services/posts';
 import { Post } from '@/types/post.type';
-import { useParams } from 'next/navigation'
+import { useParams } from 'next/navigation';
 import { useLikePost, useSavePost } from '@/services/mutations/forum';
 import useUserStore from "@/stores/userStore";
 
@@ -59,7 +59,7 @@ const PostPage: React.FC = () => {
     <div className="flex flex-col mt-4 min-w-[240px] w-[775px] max-md:max-w-full">
       <OpenPostSection
         _id={post._id}
-        creatorId={post.creatorId}
+        creator={post.creator}
         createdDate={post.createdDate}
         title={post.title}
         content={post.content}

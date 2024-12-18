@@ -2,8 +2,8 @@ export interface Ad{
     _id: string;
     name: string;
     description: string;
-    createdDate: Date;
-    expirationDate: Date;
+    createdDate: string;
+    expirationDate: string;
     AuthorizedIds: string[];
 }
 
