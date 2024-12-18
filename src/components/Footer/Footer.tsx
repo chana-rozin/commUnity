@@ -24,7 +24,6 @@ export function Footer() {
           <a href="/home" className="hover:text-indigo-300">בית</a>
           <a href="/about" className="hover:text-indigo-300">אודות</a>
           <a href="/contact" className="hover:text-indigo-300">צור קשר</a>
-          <a href="/faq" className="hover:text-indigo-300">שאלות נפוצות</a>
         </nav>
 
         {/* Contact Info */}
