@@ -6,7 +6,7 @@ const commentSchema = new Schema({
     creator: { type: Schema.Types.ObjectId, ref: 'user', required: true },
     content: { type: String, required: true },
     createdDate: { type: Date, required: true },
-    likedBy: [{ type: String }]
+    likedBy: [{  type: Schema.Types.ObjectId }]
 });
 
 export default commentSchema;

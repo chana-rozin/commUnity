@@ -1,5 +1,10 @@
 import connectToDB from "@/services/mongoDB/mongoInit";
+import { NextResponse } from "next/server";
 export async function GET(){
     connectToDB();
-    return { statusCode: 200, body: "Connected to MongoDB" };
+    return NextResponse.json(
+        {
+            message: "OK",
+        }
+    )
 }

@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
         houseNumber: { type: String, required: true },
     },
     phone_number: { type: String, required: true },
-    age: { type: Number, required: true },
+    age: { type: Number },
     profile_picture_url: { type: String, required: true },
     neighborhoodId: { type: Schema.Types.ObjectId, ref: 'neighborhood' },
     communitiesIds: [{ type: Schema.Types.ObjectId, ref: 'community' }],
@@ -43,7 +43,6 @@ const userSchema = new mongoose.Schema({
                 default: UrgencyLevel.Low
             }
         },
-        required: true
     }]
 });
 
