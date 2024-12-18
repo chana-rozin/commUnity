@@ -44,7 +44,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
             </div>
             <div className="flex flex-col mr-2">
               <div className="text-base font-semibold text-neutral-950">
-                {userName}
+                {userName ? userName : "עוד לא נמצא:("}
               </div>
               <div className="text-xs font-medium leading-none text-neutral-500">
                 {address}

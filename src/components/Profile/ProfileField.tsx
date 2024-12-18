@@ -1,5 +1,6 @@
 import { UseFormRegister } from "react-hook-form";
 import { ProfileFormData } from "@/types/profileComponent.type";
+import { IconType } from 'react-icons';
 
 type NestedKeys<T> = T extends object
     ? { [K in keyof T]: `${K & string}` | `${K & string}.${NestedKeys<T[K]>}` }[keyof T]
@@ -8,7 +9,7 @@ type NestedKeys<T> = T extends object
 interface ProfileFieldProps {
     name: NestedKeys<ProfileFormData>; // This now allows nested keys like "address.street"
     label: string;
-    iconSrc: string;
+    IconSrc: IconType;
     register: UseFormRegister<ProfileFormData>;
     error?: string;
     disabled?: boolean;
@@ -16,13 +17,13 @@ interface ProfileFieldProps {
 
 export const ProfileField: React.FC<ProfileFieldProps> = ({
     label,
-    iconSrc,
+    IconSrc,
     name,
     error,
     register,
     disabled=false,
 }) => {
-    const inputId = `profile-${name}`;
+    const inputId = `profile-${name.replace(/\./g, '-')}`;
 
     return (
         <div className="flex flex-col">
@@ -38,12 +39,7 @@ export const ProfileField: React.FC<ProfileFieldProps> = ({
                     {...register(name)} // Make sure the full path (e.g., "address.street") is passed to register
                     disabled ={disabled}
                 />
-                <img
-                    src={iconSrc}
-                    alt=""
-                    className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square"
-                    aria-hidden="true"
-                />
+                <IconSrc className="w-4 h-4"/>
             </div>
             {error && (
                 <span role="alert" className="mt-1 text-xs text-red-500">
