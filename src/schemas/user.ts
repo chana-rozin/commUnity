@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
             event_notifications: { type: Boolean, default: false },
         },
     },
-    notification: [{
+    notifications: [{
         type: {
             _id: { type: String, required: true },
             message: { type: String, required: true },
