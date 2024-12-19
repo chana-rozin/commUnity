@@ -42,7 +42,7 @@ export interface SenderInNotification{
 }
 export interface SubjectInNotification{
     _id: string;
-    name?: string;
+    type: SubjectInNotificationType;
 }
 
 export interface Creator{
@@ -89,4 +89,9 @@ export enum NotificationType {
     Warning="אזהרה",
     Request="בקשה",
     Alert="התראה",
+}
+export enum SubjectInNotificationType { 
+    babysitting = 'ביביסיטר',
+    loan= 'השאלה',
+    event='אירוע'
 }

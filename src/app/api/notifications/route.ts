@@ -26,7 +26,10 @@ export async function POST(request: Request) {
             sender: foreignKey(body.sender._id),
             urgencyLevel: body.urgencyLevel,
             type: body.type,
-            subject: foreignKey(body.subject._id)
+            subject: {
+                _id: foreignKey(body.subject._id),
+                type: body.subject.type
+            }
         }
         updatedReceiver.notifications.push(notification);
         const query:any = {
