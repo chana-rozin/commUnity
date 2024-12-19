@@ -39,6 +39,7 @@ export async function GET(request: Request) {
 
 // Create a new post
 export async function POST(request: Request) {
+    debugger
     try {
         const body = await request.json(); // Parse request body
         if (!body) {
@@ -55,7 +56,10 @@ export async function POST(request: Request) {
                 { status: 400 } // Bad Request
             )
         }
-        body.creator = foreignKey(body.creator);
+        if( body.comments){
+            body.comments = body.comments.map((comment: any)=>comment.creator = foreignKey(comment.creator._id))
+        }
+        body.creator = foreignKey(body.creator._id);
         if (body.communitiesIds.length === 0 || !body.communitiesIds) {
             return NextResponse.json(
                 { message: "At least one community ID is required" },
