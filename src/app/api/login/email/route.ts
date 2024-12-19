@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
-import { getDocumentByQuery } from "@/services/mongodb";
 import { generateToken } from '@/services/tokens';
 import { hashVerificationCode } from '@/services/crypto'
+import { getAllDocuments } from "@/services/mongoDB/mongodb";
 
 
 // Create a new post
 export async function POST(request: Request) {
-    debugger
     const body = await request.json(); // Parse request body
     const { password , email} = body;
     if(!password) {
@@ -26,7 +25,7 @@ export async function POST(request: Request) {
         email: email,
         password: hashPassword
     }
-    const currentPass = await getDocumentByQuery('password', getPass);
+    const currentPass = await getAllDocuments('password', getPass);
     if(currentPass.length===0){
         return NextResponse.json(
             { message: "Invalid password" },
@@ -37,10 +36,14 @@ export async function POST(request: Request) {
     const query = {
         email: email
     }
-    const userExists = await getDocumentByQuery('users', query);
+    const populate = [
+        { path: 'neighborhood', select: 'name' },
+        { path: 'communities', select: 'name' }
+    ];
+    const userExists = await getAllDocuments('user', query, populate);
     if (userExists.length > 0) {
         const user = userExists[0];
-        const token = generateToken(user._id.toString(), user.communitiesIds, user.neighborhoodId);
+        const token = generateToken(user._id.toString(), user.communities, user.neighborhood._id);
 
         const response = NextResponse.json(
             { user: user },

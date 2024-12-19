@@ -59,7 +59,7 @@ const PostPage: React.FC = () => {
     <div className="flex flex-col mt-4 min-w-[240px] w-[775px] max-md:max-w-full">
       <OpenPostSection
         _id={post._id}
-        creatorId={post.creatorId}
+        creator={post.creator}
         createdDate={post.createdDate}
         title={post.title}
         content={post.content}

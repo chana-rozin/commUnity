@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FaRegBell, FaArrowLeft } from 'react-icons/fa';
 import { ItemCard } from './ItemCard'; 
 import { NoLoansSection } from "./NoLoansSection";
-import { useActiveLoansByUser, useReturnLoan } from '@/services/mutations/loans';
+import { useActiveLoansByUser, useReturnLoan, useRemindBorrower } from '@/services/mutations/loans';
 import useUserStore from '@/stores/userStore'; 
 import { getTimeDifference } from "@/utils/dates";
 
@@ -11,7 +11,7 @@ export const ActiveLoans: React.FC = ({}) => {
   const user = useUserStore((state) => state.user);
   const { data: activeLoans, isLoading, error } = useActiveLoansByUser(user?._id || '');
   const returnLoanMutation = useReturnLoan();
-  
+  const remindBorrowerMutation = useRemindBorrower(); 
   const borrowedItems = activeLoans?.filter(loan => loan.borrowerId === user?._id) || [];
   const lentItems = activeLoans?.filter(loan => loan.lenderId === user?._id) || [];
   
@@ -36,7 +36,7 @@ export const ActiveLoans: React.FC = ({}) => {
               userName={item.lenderId || ''}
               address=""
               isBorrowed={true}
-              buttonContent="החזרתי!"
+              buttonContent={item.lenderId ? "החזרתי!" : "בטל" }
               ButtonIcon={FaArrowLeft}
               onButtonClick={() => returnLoanMutation.mutate({
                 loanId: item._id,
@@ -70,8 +70,13 @@ export const ActiveLoans: React.FC = ({}) => {
               isBorrowed={false}
               buttonContent="שלח תזכורת"
               ButtonIcon={FaRegBell}
-              onButtonClick={() => console.log("שלחתי תזכורת")}//TODO: implement logic
-            />
+              onButtonClick={() => remindBorrowerMutation.mutate({ 
+                loanId: item._id,
+                lenderId: item.lenderId || '',
+                borrowerId: item.borrowerId,
+                item: item.item
+              })}
+              />
           </div>
         ))
       ) : (

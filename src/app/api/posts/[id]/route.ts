@@ -1,14 +1,12 @@
 import { NextResponse } from "next/server";
 import {
     updateDocumentById,
-    deleteDocumentById,
-    getDocumentById,
-    patchDocumentById
-} from "@/services/mongodb";
+    getDocumentById
+} from "@/services/mongoDB/mongodb";
 
 //Get a post by ID
 
-export async function GET(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     let { id } = await params;
 
     if (!id) {
@@ -17,11 +15,14 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
             { status: 400 } // Bad Request
         );
     }
-
+    const populate = [
+        { path: 'creator', select: 'first_name last_name profile_picture_url' }, // Populate creator for post
+        { path: 'comments.creator', select: 'first_name last_name profile_picture_url' } // Populate creator for comments
+    ];
     // Retrieve the post from the database
-    const post = await getDocumentById('posts',id);
+    const post = await getDocumentById('post', id, populate);
     console.log('post:', post);
-    
+
     if (!post) {
         return NextResponse.json(
             { message: "Post not found" },
@@ -34,7 +35,8 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
 
 //Patch a post by ID
 
-export async function PATCH(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    debugger
     let { id } = await params;
     const body = await request.json(); // Parse request body
     if (!body) {
@@ -44,15 +46,19 @@ export async function PATCH(request: Request,{ params }: { params: Promise<{ id:
         );
     }
     delete body._id;
+    delete body.creator;
+    delete body.createdDate;
+    delete body.comments;
+    delete body.likedBy;
     if (!id) {
         return NextResponse.json(
             { message: "Post ID is required" },
             { status: 400 } // Bad Request
         );
     }
-
+    
     // Update the post in the database
-    const result = await patchDocumentById("posts", id, body);
+    const result = await updateDocumentById("post", id, body);
 
     if (!result) {
         return NextResponse.json(
@@ -66,29 +72,4 @@ export async function PATCH(request: Request,{ params }: { params: Promise<{ id:
     );
 }
 
-// Delete a post by ID
-export async function DELETE(request: Request,{ params }: { params: Promise<{ id: string }>}) {
-    let { id } = await params;
 
-
-    if (!id) {
-        return NextResponse.json(
-            { message: "Post ID is required" },
-            { status: 400 } // Bad Request
-        );
-    }
-
-    // Delete the post from the database
-    const result = await deleteDocumentById("posts", id);
-
-    if (!result) {
-        return NextResponse.json(
-            { message: "Failed to delete post" },
-            { status: 500 } // Internal Server Error
-        );
-    }
-
-    return NextResponse.json(
-        { message: "Post deleted successfully" }
-    );
-}

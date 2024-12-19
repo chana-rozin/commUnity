@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import {  insertTemporaryDocument, getDocumentByQuery} from "@/services/mongodb";
+import {  insertDocument, getAllDocuments} from "@/services/mongoDB/mongodb";
 import {hashVerificationCode} from '@/services/crypto'
 import sendEmail from '@/services/sendEmail'
 
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
         );
     }
     if(verify){
-        const emailExists = await getDocumentByQuery("users", {email: email});
+        const emailExists = await getAllDocuments("users", {email: email});
         if(!emailExists){
             return NextResponse.json(
                 { message: "Email does not exist" },
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     const verificationCode = Math.floor(1000 + Math.random() * 9000).toString();
     const verificationHash = hashVerificationCode(verificationCode);
 
-    const newVerification  = {
+    const newVerification:any  = {
         email: body.email,
         verificationHash
     }
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     sendEmail(body.email, 'קוד אימות עבור commUnity', `קוד האימות שלך הוא: ${verificationCode}`);
     
     // Insert into the database
-    const result = await insertTemporaryDocument("verify-email", newVerification, 300);
+    const result = await insertDocument("VerifyEmail", newVerification);
     if (!result) {
         return NextResponse.json(
             { message: "Failed to save verifications" },
@@ -60,7 +60,7 @@ export async function GET(request: Request){
     }
 
     const verificationHash = hashVerificationCode(body.code);
-    const verification = await getDocumentByQuery("verify-email", { email: body.email, verificationHash });
+    const verification = await getAllDocuments("verify-email", { email: body.email, verificationHash });
     if(verification.length === 0) {
         return NextResponse.json(
             { message: "Invalid Verification Code" },

@@ -21,7 +21,9 @@ export const NewPostInput: React.FC = () => {
       console.error("Cannot submit an empty post");
       return;
     }
-
+    if(!user||!user?._id){
+      throw new Error ("Please enter a user");
+    }
     const postData: Partial<Post> = {
       content: text,
       title: text.slice(0, 50),
@@ -29,8 +31,10 @@ export const NewPostInput: React.FC = () => {
       images,
       comments: [],
       likedBy: [],
-      creatorId: user?._id,
-      communitiesIds: [user?.neighborhoodId || ""] 
+      creator: {
+        _id: user._id
+      },
+      communitiesIds: [user?.neighborhood._id || ""] 
     };
 
 
@@ -63,7 +67,7 @@ export const NewPostInput: React.FC = () => {
             loading="lazy"
             src={user?.profile_picture_url}
             alt="User avatar"
-            className="object-contain shrink-0 self-stretch my-auto w-12 aspect-square rounded-full"
+            className="object-contain shrink-0 self-stretch my-auto w-12 aspect-square rounded-full object-cover"
           />
           <textarea
             value={text}

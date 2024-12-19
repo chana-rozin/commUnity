@@ -11,7 +11,7 @@ interface ForumPageProps {
 
 const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId }) => {
   const {user,setUser} = useUserStore();
-  const communityId = selectedCommunityId || user?.neighborhoodId;
+  const communityId = selectedCommunityId || user?.neighborhood._id;
   const { data: posts, isLoading, error } = usePosts(communityId || "");
   const likeMutation = useLikePost();
   const saveMutation = useSavePost(user, setUser);
@@ -41,7 +41,7 @@ const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId }) => {
         posts?.map((post) => (
           <Link key={post._id} href={`/forum/${communityId}/${post._id}`}>
             <PostComp
-              creatorId={post.creatorId}
+              creator={post.creator}
               createdDate={post.createdDate}
               content={post.content}
               images={post.images}
