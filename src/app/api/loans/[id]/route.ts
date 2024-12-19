@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import {
     deleteDocumentById,
     getDocumentById,
-    updateDocumentById
+    updateDocumentById,
+    foreignKey
 } from "@/services/mongoDB/mongodb";
 
 //Get a post by ID
@@ -17,8 +18,12 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
         );
     }
 
+    const populate = [
+        { path: 'borrower', select: 'first_name last_name address profile_picture_url' },
+        { path: 'lender', select: 'first_name last_name address profile_picture_url' }
+    ];
     // Retrieve the post from the database
-    const loan = await getDocumentById('loan',id);
+    const loan = await getDocumentById('loan',id, populate);
     console.log('loan:', loan);
     
     if (!loan) {
@@ -43,6 +48,10 @@ export async function PATCH(request: Request,{ params }: { params: Promise<{ id:
         );
     }
     delete body._id
+    delete body.borrower;
+    if(body.lender){
+        body.lender = foreignKey(body.lender._id)
+    }
     if (!id) {
         return NextResponse.json(
             { message: "Loan ID is required" },

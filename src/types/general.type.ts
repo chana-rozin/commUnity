@@ -48,6 +48,13 @@ export interface CommunityInUser{
     _id: string;
     name?: string;
 }
+export interface UserInLoan{
+    _id: string;
+    first_name: string;
+    last_name: string;
+    address: Address;
+    profile_picture_url: string;
+}
 /*
 תגובה:
 ID מפרסם
