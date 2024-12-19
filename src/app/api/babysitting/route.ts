@@ -27,9 +27,9 @@ export async function GET(request: Request) {
         query.AuthorizedIds = { $in: communities };
     }
 
-    if (search) {
-        query["requester.name"] = { $regex: new RegExp(search, "i") };
-    }
+    // if (search) {
+    //     query["requester.name"] = { $regex: new RegExp(search, "i") };
+    // }
 
     if (active !== "false") {
         query.$or = [

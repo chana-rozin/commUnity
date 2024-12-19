@@ -1,23 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import babysittingSchema from "./babysittingSchema";
 import Select from "react-select";
 import { CommunityInUser } from "@/types/general.type";
+import { Babysitting } from "@/types/babysitting.type";
+import useUserStore from "@/stores/userStore";
+import { useCreateBabysittingRequest } from "@/services/mutations/babysitting";
+import SearchableSelectWithAPI from "@/components/map/map"
+import {Address} from '@/types/general.type'
 
 // Type inference from Zod schema
 const formSchema = babysittingSchema.omit({ requester: true }); // requester will be hidden
 
 type BabysittingRequest = z.infer<typeof formSchema>;
-
-interface AddBabysittingRequestProps {
-    initialValues?: Partial<BabysittingRequest>;
-    communities: CommunityInUser[];
-    onSubmit: (data: BabysittingRequest) => void;
-    onClose: () => void;
-    isOpen: boolean;
-}
 
 type Path<T> = T extends object
     ? { [K in keyof T]: K extends string ? `${K}` | `${K}.${Path<T[K]>}` : never }[keyof T]
@@ -25,22 +22,36 @@ type Path<T> = T extends object
 
 type BabysittingRequestPath = Path<BabysittingRequest>;
 
-const AddBabysittingRequest: React.FC<AddBabysittingRequestProps> = ({
-    initialValues = {},
-    communities,
-    onSubmit,
+const AddBabysittingRequest: React.FC<{ onClose: () => void, isOpen: boolean; }> = ({
     onClose,
     isOpen,
 }) => {
     if (!isOpen) return null;
 
+    const { user } = useUserStore();
+    const createRequestMutation = useCreateBabysittingRequest();
+
+    const communities = [user!.neighborhood, ...(user?.communities ? user.communities : [])];
+
+    const onSubmit = (newRequest: Partial<Babysitting>) => {
+        console.log("onSubmit", newRequest);
+        createRequestMutation.mutate({
+            ...newRequest,
+            requester: {
+                id: user!._id!,
+                name: `${user!.first_name} ${user?.last_name}`,
+            },
+            babysitter: undefined,
+        });
+        onClose();
+    };    
+
     const {
-        control,
         handleSubmit,
+        control,
         formState: { errors },
     } = useForm<BabysittingRequest>({
         resolver: zodResolver(formSchema),
-        defaultValues: initialValues,
     });
 
     const renderInput = (
@@ -105,11 +116,6 @@ const AddBabysittingRequest: React.FC<AddBabysittingRequestProps> = ({
                         {renderInput("address.street", "רחוב")}
                         {renderInput("address.city", "עיר")}
                         {renderInput("address.houseNumber", "מספר בית")}
-                    </section>
-
-                    <section className="flex justify-between gap-4">
-                        {renderInput("childrenNumber", "מספר ילדים", "number")}
-                        {renderInput("ageRange", "טווח גילאים")}
                     </section>
 
                     <div className="mb-4">

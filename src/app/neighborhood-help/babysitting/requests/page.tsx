@@ -20,24 +20,7 @@ function BabysittingPage() {
         user!.neighborhood._id,
         ...user!.communities.map(community=>community._id)
     ]);
-    const createRequestMutation = useCreateBabysittingRequest();
-    const communitiesCluster = [user!.neighborhood,...(user?.communities?user.communities:[])];
-
     const [isAddFormOpen, setAddFormOpen] = useState(false);
-
-    // Handles form submission and mutation
-    const handleCreateBabysitting = (newRequest: Partial<Babysitting>) => {
-        createRequestMutation.mutate({
-            ...newRequest,
-            requester: {
-                id: user!._id!,
-                name: `${user!.first_name} ${user?.last_name}`,
-            },
-            babysitter: undefined,
-        });
-        setAddFormOpen(false);
-    };
-
 
     if (isLoading) return <div>טוען בקשות בייביסיטר</div>;
     if (error) return <div>שגיאה בטעינת בקשות בייביסיטר</div>;
@@ -55,8 +38,6 @@ function BabysittingPage() {
             {isAddFormOpen && (
                 <AddBabysittingRequest
                 isOpen={isAddFormOpen}
-                communities={communitiesCluster}
-                onSubmit={handleCreateBabysitting}
                 onClose={()=>setAddFormOpen(false)}
             />
             )}
