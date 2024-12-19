@@ -72,10 +72,10 @@ export const PostComp: React.FC<PostProps> = ({ creator, likesCount: initialLike
       {/* Header Section */}
       <div className="flex gap-4 items-start mb-4">
         <div className="flex items-center gap-3">
-          <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/68b95c1707a8445652f77e217614fe7ec26ad8b08cd2f80fdc0fcd5190bb58e2" alt="User avatar" className="w-10 h-10 rounded-full" />
+          <img src={creator?.profile_picture_url? creator.profile_picture_url : ""} alt="User avatar" className="w-10 h-10 rounded-full" />
         </div>
         <div className="flex flex-col items-start">
-          <div className="text-sm font-semibold text-neutral-950">{creator.first_name?`${creator.first_name} ${creator.last_name}`:creator._id}</div>
+          <div className="text-sm font-semibold text-neutral-950">{creator?.first_name?`${creator.first_name} ${creator.last_name}`:"אנונימי"}</div>
           <div className="text-xs text-neutral-500">
             {`${getTimeDifference(date)} • ${commentCount} תגובות`}
           </div>

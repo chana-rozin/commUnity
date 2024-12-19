@@ -48,11 +48,11 @@ export const CommentComp: React.FC<CommentProps> = ({ creator, createdDate, cont
         {/* Avatar */}
         <img
           loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/68b95c1707a8445652f77e217614fe7ec26ad8b08cd2f80fdc0fcd5190bb58e2?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
+          src={creator.profile_picture_url}
           alt=""
           className="object-contain shrink-0 aspect-square w-[31px] ml-3"
         />
-     
+
         {/* Right Content */}
         <div className="flex flex-col flex-1 shrink items-start pr-3 basis-0 min-w-[240px] max-md:max-w-full">
           {/* Name and Time */}
