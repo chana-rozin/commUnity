@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     try {
         const body = await request.json(); // Parse request body
         console.log(body);
-        const { password, email, communitiesIds, neighborhoodId } = body;
+        const { password, email, neighborhood } = body;
         const hashPassword = await hashVerificationCode(password);
         const passToInsert:any = { password: hashPassword, email: email }
         const savePasswordAtDb = await insertDocument("password",passToInsert );
@@ -27,9 +27,9 @@ export async function POST(request: Request) {
             city: body.address.city,
             name: body.address.neighborhood
         }
-        let neighborhood: any = await getAllDocuments("neighborhood", query);
-        if (neighborhood.length > 0) {
-            body.neighborhoodId = neighborhood[0]._id;
+        let userNeighborhood: any = await getAllDocuments("neighborhood", query);
+        if (userNeighborhood.length > 0) {
+            body.neighborhood._id = userNeighborhood[0]._id;
         }
         else {
             const newNeighborhood:any = {
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
                     { status: 500 }
                 );
             }
-            body.neighborhoodId = addNeighborhoodResult._id;
+            body.neighborhood._id = addNeighborhoodResult._id;
         }
         const result = await insertDocument("user", body);
         if (!result) {
@@ -55,24 +55,24 @@ export async function POST(request: Request) {
                 { status: 500 }
             );
         }
-        if (neighborhood.length === 0) {
-            const getNeighborhood = await getDocumentById("neighborhood", body.neighborhoodId);
+        if (userNeighborhood.length === 0) {
+            const getNeighborhood = await getDocumentById("neighborhood", body.neighborhood._id);
             if (!getNeighborhood) {
                 return NextResponse.json(
                     { message: "Failed to find user's neighborhood" },
                     { status: 500 }
                 );
             }
-            neighborhood.push(getNeighborhood);
+            userNeighborhood.push(getNeighborhood);
         }
-        console.log(neighborhood[0]);
+        console.log(userNeighborhood[0]);
 
-        let updateNeighborhood: any = neighborhood[0];
+        let updateNeighborhood: any = userNeighborhood[0];
         if (!(updateNeighborhood.streets.includes(body.address.street))) {
             updateNeighborhood.streets.push(body.address.street);
         }
         updateNeighborhood.membersId.push(result._id);
-        const updateNeighborhoodResult = await updateDocumentById("neighborhood", neighborhood[0]._id.toString(), updateNeighborhood);
+        const updateNeighborhoodResult = await updateDocumentById("neighborhood", userNeighborhood[0]._id.toString(), updateNeighborhood);
         if(!updateNeighborhoodResult){
             return NextResponse.json(
                 { message: "Failed to update user's neighborhood" },
@@ -81,11 +81,12 @@ export async function POST(request: Request) {
         }
 
         const id = result._id.toString();
+        const neighborhoodId=  body.neighborhood._id.toString()
         //Generate token
-        const token = generateToken(id, communitiesIds, neighborhoodId);
+        const token = generateToken(id, [],  body.neighborhood._id.toString());
         //response with token in httpOnly:
         const response = NextResponse.json(
-            { insertedId: id },
+            { id:id, neighborhoodId: neighborhoodId },
             { status: 201 },
         );
 

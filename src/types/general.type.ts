@@ -40,6 +40,14 @@ export interface Creator{
     first_name?: string;
     last_name?: string;
 }
+export interface NeighborhoodInUser{
+    _id: string;
+    name?: string;
+}
+export interface CommunityInUser{
+    _id: string;
+    name?: string;
+}
 /*
 תגובה:
 ID מפרסם

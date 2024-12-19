@@ -5,11 +5,10 @@ import { auth } from '@/services/firebaseAdmin';
 
 // Create a new post
 export async function POST(request: Request) {
-    debugger
     try {
         const body = await request.json(); // Parse request body
-        const { accessToken, email, communitiesIds } = body;
-        body.communitiesIds=[];
+        const { accessToken } = body;
+        body.communities=[];
         // Verify the token with Firebase
         const decodedToken = await auth.verifyIdToken(accessToken);
         console.log('Decoded token:', decodedToken);
@@ -22,7 +21,7 @@ export async function POST(request: Request) {
         }
         let neighborhood: any = await getAllDocuments("neighborhood", query);
         if (neighborhood.length > 0) {
-            body.neighborhoodId = neighborhood[0]._id;
+            body.neighborhood._id = neighborhood[0]._id;
         }
         else {
             const newNeighborhood:any = {
@@ -39,7 +38,7 @@ export async function POST(request: Request) {
                     { status: 500 }
                 );
             }
-            body.neighborhoodId = addNeighborhoodResult._id;
+            body.neighborhood._id = addNeighborhoodResult._id;
         }
         const result = await insertDocument("user", body);
         if (!result) {
@@ -49,7 +48,7 @@ export async function POST(request: Request) {
             );
         }
         if (neighborhood.length === 0) {
-            const getNeighborhood = await getDocumentById("neighborhood", body.neighborhoodId);
+            const getNeighborhood = await getDocumentById("neighborhood", body.neighborhood._id);
             if (!getNeighborhood) {
                 return NextResponse.json(
                     { message: "Failed to find user's neighborhood" },
@@ -76,12 +75,13 @@ export async function POST(request: Request) {
 
 
         const id = result._id.toString();
+        const neighborhoodId= body.neighborhood._id.toString()
         // Generate token
-        const token = generateToken(id, communitiesIds, body.neighborhoodId);
+        const token = generateToken(id, [], body.neighborhood._id.toString());
 
         // Respond with token in httpOnly cookie
         const response = NextResponse.json(
-            { insertedId: id },
+            { id:id, neighborhoodId: neighborhoodId },
             { status: 201 },
         );
 
