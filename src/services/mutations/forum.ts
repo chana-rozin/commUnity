@@ -27,6 +27,13 @@ export const useCreatePost = () => {
 
   return useMutation<Post, Error, Partial<Post>>({
     mutationFn: async (postData) => {
+      // Notify via Pusher
+      await http.post('/pusher/send', {
+        channel: `forum_${postData?.communitiesIds ? postData?.communitiesIds[0] : ''}`,
+        event: 'new-message',
+        message: postData,
+      });
+
       const response = await http.post('/posts', postData);
       return response.data;
     },

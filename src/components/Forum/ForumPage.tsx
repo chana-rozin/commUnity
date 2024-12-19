@@ -1,4 +1,6 @@
 "use client";
+import { useEffect } from "react";
+import { pusherClient } from "@/services/pusher";
 import { PostComp } from './Post';
 import { usePosts, useLikePost, useSavePost } from '@/services/mutations/forum';
 import { NewPostInput } from './NewPostInput';
@@ -12,9 +14,22 @@ interface ForumPageProps {
 const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId }) => {
   const {user,setUser} = useUserStore();
   const communityId = selectedCommunityId || user?.neighborhood._id;
-  const { data: posts, isLoading, error } = usePosts(communityId || "");
+  const { data: posts, isLoading, error, refetch } = usePosts(communityId || "");
   const likeMutation = useLikePost();
   const saveMutation = useSavePost(user, setUser);
+
+  useEffect(() => {
+    if (!communityId) return;
+    const channel = pusherClient.subscribe(`forum_${communityId}`);
+      channel.bind("new-post", () => {
+      refetch(); 
+    });
+
+    return () => {
+      channel.unbind_all();
+      pusherClient.unsubscribe(`forum_${communityId}`);
+    };
+  }, [communityId, refetch]);
 
   const handleLike = (postId: string, isCurrentlyLiked: boolean) => {
     if (!user?._id) return;
