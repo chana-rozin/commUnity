@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         }
         let neighborhood: any = await getAllDocuments("neighborhood", query);
         if (neighborhood.length > 0) {
-            body.neighborhood._id = neighborhood[0]._id;
+            body.neighborhood = neighborhood[0]._id;
         }
         else {
             const newNeighborhood:any = {
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
                     { status: 500 }
                 );
             }
-            body.neighborhood._id = addNeighborhoodResult._id;
+            body.neighborhood = addNeighborhoodResult._id;
         }
         const result = await insertDocument("user", body);
         if (!result) {
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
             );
         }
         if (neighborhood.length === 0) {
-            const getNeighborhood = await getDocumentById("neighborhood", body.neighborhood._id);
+            const getNeighborhood = await getDocumentById("neighborhood", body.neighborhood);
             if (!getNeighborhood) {
                 return NextResponse.json(
                     { message: "Failed to find user's neighborhood" },
@@ -73,15 +73,15 @@ export async function POST(request: Request) {
         }
         // Insert into the database
 
-
         const id = result._id.toString();
-        const neighborhoodId= body.neighborhood._id.toString()
+        body._id = id;
         // Generate token
-        const token = generateToken(id, [], body.neighborhood._id.toString());
+        const token = generateToken(id, [], body.neighborhood.toString());
+        body.neighborhood = {_id:body.neighborhood.toString(), name:body.address.neighborhood}; 
 
         // Respond with token in httpOnly cookie
         const response = NextResponse.json(
-            { id:id, neighborhoodId: neighborhoodId },
+            { ...body },
             { status: 201 },
         );
 

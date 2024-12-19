@@ -9,7 +9,11 @@ export async function POST(request: Request,{ params }: { params: Promise<{ id: 
     const query = {
         email: id
     }
-    const userExists = await getAllDocuments('user', query);
+    const populate = [
+        { path: 'neighborhood', select: 'name' },
+        { path: 'communities', select: 'name' }
+    ];
+    const userExists = await getAllDocuments('user', query, populate);
     if (userExists.length === 0) {
         return NextResponse.json(
             { message: "Email not exists" },//not alowwed

@@ -168,9 +168,7 @@ const signUp: React.FC = () => {
             }
             else {
                 debugger
-                newUser._id = result.data.id;
-                newUser.neighborhood._id = result.data.neighborhoodId;
-                useUserStore.getState().setUser(newUser, rememberMe);
+                useUserStore.getState().setUser(result.data, rememberMe);
                 router.push('/home');
             }
         } catch (err) {
