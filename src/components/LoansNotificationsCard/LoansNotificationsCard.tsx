@@ -23,8 +23,8 @@ export function LoansNotificationsCard() {
     };
   }, [user?._id]);
 
-  const borrowedItems = activeLoans?.filter((loan) => loan.borrowerId === user?._id) || [];
-  const lentItems = activeLoans?.filter((loan) => loan.lenderId === user?._id) || [];
+  const borrowedItems = activeLoans?.filter((loan) => loan.borrower._id === user?._id) || [];
+  const lentItems = activeLoans?.filter((loan) => loan.lender?._id === user?._id) || [];
 
   return (
     <div className="flex flex-col mt-4 w-full bg-white rounded-2xl">

@@ -3,8 +3,8 @@ const { Schema } = mongoose;
 
 
 const loanSchema = new Schema({
-    lenderId: { type: Schema.Types.ObjectId, ref: 'user', default: null }, // Allow ObjectId or null
-    borrowerId: { type: Schema.Types.ObjectId, ref: 'user' , required: true },
+    lender: { type: Schema.Types.ObjectId, ref: 'user', default: null }, // Allow ObjectId or null
+    borrower: { type: Schema.Types.ObjectId, ref: 'user' , required: true },
     item: { type: String, required: true },
     createdDate: { type: Date, required: true, default: Date.now },
     LoanDate: { type: Date },
