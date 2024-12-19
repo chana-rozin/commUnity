@@ -30,7 +30,7 @@ export const useCreatePost = () => {
       // Notify via Pusher
       await http.post('/pusher/send', {
         channel: `forum_${postData?.communitiesIds ? postData?.communitiesIds[0] : ''}`,
-        event: 'new-message',
+        event: 'new-post',
         message: postData,
       });
 
