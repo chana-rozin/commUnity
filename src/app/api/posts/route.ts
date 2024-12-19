@@ -39,7 +39,6 @@ export async function GET(request: Request) {
 
 // Create a new post
 export async function POST(request: Request) {
-    debugger
     try {
         const body = await request.json(); // Parse request body
         if (!body) {
