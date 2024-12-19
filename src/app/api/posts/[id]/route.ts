@@ -48,13 +48,15 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     delete body._id;
     delete body.creator;
     delete body.createdDate;
+    delete body.comments;
+    delete body.likedBy;
     if (!id) {
         return NextResponse.json(
             { message: "Post ID is required" },
             { status: 400 } // Bad Request
         );
     }
-
+    
     // Update the post in the database
     const result = await updateDocumentById("post", id, body);
 
