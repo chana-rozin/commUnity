@@ -16,6 +16,11 @@ import { Neighborhood } from "@/types/neighborhood.types";
 
 function BabysittingPage() {
     const { user } = useUserStore();
+
+    if(!user) return <NoLoansSection
+    title="אין בקשות פעילות"
+    description="כרגע אין בקשות לבייביסטר באזורך"/>
+    
     const { data: babysittingRequests, isLoading, error } = useBabysittingRequests([
         user!.neighborhood._id,
         ...user!.communities.map(community=>community._id)
