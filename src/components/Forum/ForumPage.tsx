@@ -11,7 +11,7 @@ interface ForumPageProps {
 
 const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId }) => {
   const {user,setUser} = useUserStore();
-  const communityId = selectedCommunityId || user?.neighborhoodId;
+  const communityId = selectedCommunityId || user?.neighborhood._id;
   const { data: posts, isLoading, error } = usePosts(communityId || "");
   const likeMutation = useLikePost();
   const saveMutation = useSavePost(user, setUser);

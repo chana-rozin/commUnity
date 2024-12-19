@@ -20,7 +20,7 @@ const loanSchema = z.object({
 
 export const HelpRequests: React.FC = () => {
   const user = useUserStore((state) => state.user);
-  const { data: helpRequests, isLoading, error } = useOpenLoansByCommunity(user?.neighborhoodId || "");
+  const { data: helpRequests, isLoading, error } = useOpenLoansByCommunity(user?.neighborhood._id || "");
   const lendItemMutation = useLendItem();
   const createLoanMutation = useCreateLoan();
 
@@ -54,7 +54,7 @@ export const HelpRequests: React.FC = () => {
             borrowerId: user?._id,
             LoanDate: null,
             active: true,
-            AuthorizedIds: user?.neighborhoodId ? [user?.neighborhoodId] : [],
+            AuthorizedIds: user?.neighborhood._id ? [user?.neighborhood._id] : [],
           }}
           onSubmit={handleCreateLoan}
           title="הוספת בקשת השאלה"
