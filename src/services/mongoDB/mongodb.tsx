@@ -69,6 +69,7 @@ export async function insertDocument<T extends Document>(modelName: string, data
         const savedDoc = await doc.save();
         return savedDoc;
     } catch (error: any) {
+        console.log(error.message);
         throw new Error(`Insert failed: ${error.message}`);
     }
 }

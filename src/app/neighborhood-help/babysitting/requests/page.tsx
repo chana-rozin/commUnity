@@ -17,13 +17,11 @@ import { Neighborhood } from "@/types/neighborhood.types";
 function BabysittingPage() {
     const { user } = useUserStore();
     const { data: babysittingRequests, isLoading, error } = useBabysittingRequests([
-        user!.neighborhoodId,
-        ...user!.communitiesIds
+        user!.neighborhood._id,
+        ...user!.communities.map(community=>community._id)
     ]);
     const createRequestMutation = useCreateBabysittingRequest();
-    const { data: communities = [] } = useCommunities();
-    const { data: neighborhood } = useNeighborhood();
-    const communitiesCluster = communities?[{id: neighborhood!._id, name: neighborhood!.name},...communities.map((el:Community)=>({id:el._id, name:el.name}))]:[];
+    const communitiesCluster = [user!.neighborhood,...(user?.communities?user.communities:[])];
 
     const [isAddFormOpen, setAddFormOpen] = useState(false);
 

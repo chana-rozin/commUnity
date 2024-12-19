@@ -31,20 +31,24 @@ export async function GET(request: Request) {
         query["requester.name"] = { $regex: new RegExp(search, "i") };
     }
 
-    // if (active !== "false") {
-    //     query.$or = [
-    //         { date: { $gt: endOfDay } }, // Future date condition
-    //         { 
-    //             date: { $eq: startOfDay }, // Today date condition
-    //             "time.end": { $gte: currentTime }, // Check if time is later than current time
-    //         },
-    //     ];
-    // }
+    if (active !== "false") {
+        query.$or = [
+            { date: { $gt: endOfDay } }, // Future date condition
+            { 
+                date: { $eq: startOfDay }, // Today date condition
+                "time.end": { $gte: currentTime }, // Check if time is later than current time
+            },
+        ];
+    }
     
 
     console.log("query: ", query);
+    const populate = [
+        { path: 'requester', select: '_id first_name last_name profile_picture_url' }, 
+        { path: 'babysitter', select: '_id first_name last_name profile_picture_url' }
+    ];
 
-    const result = await getAllDocuments("babysitting", query);
+    const result = await getAllDocuments("babysitting", query, populate);
     console.log(result);
     return NextResponse.json(result); // Return data as JSON
 }
@@ -61,9 +65,9 @@ export async function POST(request: Request) {
             { status: 400 } // Bad Request
         );
     }
-    body.requesterId = foreignKey(body.requester.id);
-    if(body.babysitterId){
-        body.babysitterId = foreignKey(body.babysitter.id);
+    body.requester = foreignKey(body.requester.id);
+    if(body.babysitter){
+        body.babysitter = foreignKey(body.babysitter.id);
     }
     if(!body.AuthorizedIds||body.AuthorizedIds.length===0){
         return NextResponse.json(
@@ -74,16 +78,9 @@ export async function POST(request: Request) {
     body.AuthorizedIds.forEach((id:string, index:number, array:string[]) => {
         array[index] = foreignKey(id); // Update each element
     });
-
+    console.log("before saving to db")
     // Insert into the database
     const result = await insertDocument("babysitting", body);
-
-    if (!result) {
-        return NextResponse.json(
-            { message: "Failed to create babysitter request" },
-            { status: 500 } // Internal Server Error
-        );
-    }
 
     return NextResponse.json(
         { ...body, _id: result._id.toString() },

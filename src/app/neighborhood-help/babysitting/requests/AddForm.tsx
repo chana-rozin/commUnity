@@ -4,20 +4,16 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import babysittingSchema from "./babysittingSchema";
 import Select from "react-select";
+import { CommunityInUser } from "@/types/general.type";
 
 // Type inference from Zod schema
 const formSchema = babysittingSchema.omit({ requester: true }); // requester will be hidden
 
 type BabysittingRequest = z.infer<typeof formSchema>;
 
-interface Community {
-    id: string;
-    name: string;
-}
-
 interface AddBabysittingRequestProps {
     initialValues?: Partial<BabysittingRequest>;
-    communities: Community[];
+    communities: CommunityInUser[];
     onSubmit: (data: BabysittingRequest) => void;
     onClose: () => void;
     isOpen: boolean;
@@ -150,7 +146,7 @@ const AddBabysittingRequest: React.FC<AddBabysittingRequestProps> = ({
                                     id="AuthorizedIds"
                                     isMulti
                                     options={communities.map((community) => ({
-                                        value: community.id,
+                                        value: community._id,
                                         label: community.name,
                                     }))}
                                     classNamePrefix="react-select"
@@ -162,11 +158,11 @@ const AddBabysittingRequest: React.FC<AddBabysittingRequestProps> = ({
                                         ? field.value.map((id: string) => {
                                             // Find the community object for each selected `id`
                                             const selectedCommunity = communities.find(
-                                                (community) => community.id === id
+                                                (community) => community._id === id
                                             );
                                             // Ensure that `selectedCommunity` is correctly structured
                                             return selectedCommunity
-                                                ? { value: selectedCommunity.id, label: selectedCommunity.name }
+                                                ? { value: selectedCommunity._id, label: selectedCommunity.name }
                                                 : null;
                                         }).filter(Boolean) // Remove null values if any
                                         : []
