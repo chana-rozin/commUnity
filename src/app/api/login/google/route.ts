@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     const userExists = await getAllDocuments('user', query);
     if (userExists.length > 0) {
         const user = userExists[0];
-        const token = generateToken(user._id.toString(), user.communitiesIds, user.neighborhoodId);
+        const token = generateToken(user._id.toString(), user.communities, user.neighborhood._id);
 
         const response = NextResponse.json(
             { user: user },

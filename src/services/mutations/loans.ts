@@ -84,9 +84,9 @@ export const useLendItem = () => {
             return loansService.lendItem(loanId, user._id);
         },
         onSuccess: (_, { user }) => {
-            if (user?.neighborhoodId) {
+            if (user?.neighborhood._id) {
                 queryClient.invalidateQueries({
-                    queryKey: loanQueryKeys.openLoansByCommunity(user.neighborhoodId)
+                    queryKey: loanQueryKeys.openLoansByCommunity(user.neighborhood._id)
                 });
             }
         },

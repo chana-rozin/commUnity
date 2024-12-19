@@ -34,7 +34,7 @@ export const NewPostInput: React.FC = () => {
       creator: {
         _id: user._id
       },
-      communitiesIds: [user?.neighborhoodId || ""] 
+      communitiesIds: [user?.neighborhood._id || ""] 
     };
 
 
