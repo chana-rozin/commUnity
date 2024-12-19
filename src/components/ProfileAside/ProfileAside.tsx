@@ -11,6 +11,8 @@ export const ProfileAside: React.FC<{ categories: { name: string, href: string, 
     const { user } = useUserStore();
     const { communityId, neighborhoodId } = useParams();
 
+    if(!user) return null;
+
     const links = [
         {
             href: `/forum/${user?.neighborhood._id}`,
@@ -23,8 +25,6 @@ export const ProfileAside: React.FC<{ categories: { name: string, href: string, 
             isActive: communityId === community._id,
         })) : []),
     ];
-
-    if (!user) return null;
 
     const { first_name, last_name, address, profile_picture_url } = user;
 
