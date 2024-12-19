@@ -12,7 +12,7 @@ import { z } from "zod";
 const loanSchema = z.object({
   item: z.string().min(1, "יש להזין פריט"),
   createdDate: z.date(),
-  borrowerId: z.string(),
+  borrower: z.string(),
   LoanDate: z.date().nullable(),
   active: z.boolean(),
   AuthorizedIds: z.array(z.string()),
@@ -29,7 +29,7 @@ export const HelpRequests: React.FC = () => {
   if (isLoading) return <p>טוען בקשות עזרה...</p>;
   if (error) return <p className="text-red-500">שגיאה בטעינת בקשות עזרה</p>;
 
-  const handleCreateLoan = (data: Partial<Loan>) => {
+  const handleCreateLoan = (data: Partial<any>) => {
     createLoanMutation.mutate(data);
     setAddFormOpen(false);
   };
@@ -51,7 +51,7 @@ export const HelpRequests: React.FC = () => {
           initialValues={{}}
           hiddenFields={{
             createdDate: new Date(),
-            borrowerId: user?._id,
+            borrower: user?._id,
             LoanDate: null,
             active: true,
             AuthorizedIds: user?.neighborhood._id ? [user?.neighborhood._id] : [],
@@ -69,7 +69,7 @@ export const HelpRequests: React.FC = () => {
               key={request._id}
               title={request.item}
               daysAgo={getTimeDifference(request.createdDate)}
-              userName={request.borrowerId}
+              userName={`${request.borrower.first_name} ${request.borrower.last_name}`}
               address=""
               isBorrowed={false}
               buttonContent="מעוניין לעזור"

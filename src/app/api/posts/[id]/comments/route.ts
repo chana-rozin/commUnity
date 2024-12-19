@@ -5,7 +5,6 @@ import {
     foreignKey
 } from "@/services/mongoDB/mongodb";
 export async function POST(request: Request,{ params }: { params: Promise<{ id: string }>}) {
-    debugger
     console.log('post comment');
     
     let { id } = await params;
