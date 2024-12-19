@@ -12,7 +12,7 @@ const postSchema = new Schema({
         _id: { type: String, required: true },
         creator: { type: Schema.Types.ObjectId, ref: 'user', required: true },
         content: { type: String, required: true },
-        createdDate: { type: Date, required: true },
+        createdDate: { type: Date, default: Date.now },
         likedBy: [{ type: String }]
     }],
     likedBy: [{ type: Schema.Types.ObjectId, ref: 'user' }],
