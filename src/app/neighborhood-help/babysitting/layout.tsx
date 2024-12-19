@@ -1,9 +1,7 @@
 "use client"
 import React, { useState } from 'react'
 import { usePathname } from "next/navigation";
-import TabsController from './components/TabsController';
-import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
-import { Babysitting } from '@/services/models';
+import TabsController from '../../../components/TabsController/TabsController';
 
 export default function BabysittingLayout({ children }: { children: React.ReactNode }) {
 

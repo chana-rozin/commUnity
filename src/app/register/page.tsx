@@ -139,18 +139,21 @@ const signUp: React.FC = () => {
                 ai_training_data: false,
                 general_usage_data: false
             };
+            const image = user.imageUrl?user.imageUrl: "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
             let newUser: User = {
                 first_name: user.firstName,
                 last_name: user.lastName,
                 email: user.email,
+                location: user.location,
                 address: user.address,
                 phone_number: user.phone,
-                profile_picture_url: user.imageUrl,
-                neighborhoodId: "675042e6292054c85b9b65d6",
+                profile_picture_url: image ,
+                neighborhoodId: `${user.address.neighborhood},${user.address.city},${user.address.country}`,
                 communitiesIds: [],
                 preferences: preferences,
                 savedPostsIds: [],
-                savedEventsIds: []
+                savedEventsIds: [],
+                notifications: []
             }
             var result;
             if (signUpBy === "google") {
