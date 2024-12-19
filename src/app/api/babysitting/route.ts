@@ -51,17 +51,19 @@ export async function GET(request: Request) {
 
 // Create a new babysitter request
 export async function POST(request: Request) {
+    try{
     const body = await request.json(); // Parse request body
+    console.log("body: " + JSON.stringify(body));
     delete body._id;
-    if(!body.requesterId){
+    if(!body.requester.id){
         return NextResponse.json(
             { message: "Missing required field: requesterId" },
             { status: 400 } // Bad Request
         );
     }
-    body.requesterId = foreignKey(body.requesterId);
+    body.requesterId = foreignKey(body.requester.id);
     if(body.babysitterId){
-        body.babysitterId = foreignKey(body.babysitterId);
+        body.babysitterId = foreignKey(body.babysitter.id);
     }
     if(!body.AuthorizedIds||body.AuthorizedIds.length===0){
         return NextResponse.json(
@@ -74,7 +76,7 @@ export async function POST(request: Request) {
     });
 
     // Insert into the database
-    const result = await insertDocument("Babysitting", body);
+    const result = await insertDocument("babysitting", body);
 
     if (!result) {
         return NextResponse.json(
@@ -87,6 +89,12 @@ export async function POST(request: Request) {
         { ...body, _id: result._id.toString() },
         { status: 201 } // Created
     );
+}catch(err){
+    return NextResponse.json(
+        { message: "Failed to create babysitter request"+err },
+        { status: 500 } // Internal Server Error
+    );
+}
 }
 
 
