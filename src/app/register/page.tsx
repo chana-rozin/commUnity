@@ -148,8 +148,8 @@ const signUp: React.FC = () => {
                 address: user.address,
                 phone_number: user.phone,
                 profile_picture_url: image ,
-                neighborhoodId: `${user.address.neighborhood},${user.address.city},${user.address.country}`,
-                communitiesIds: [],
+                neighborhood: { _id:`${user.address.neighborhood},${user.address.city},${user.address.country}`},
+                communities: [],
                 preferences: preferences,
                 savedPostsIds: [],
                 savedEventsIds: [],
@@ -168,7 +168,8 @@ const signUp: React.FC = () => {
             }
             else {
                 debugger
-                newUser._id = result.data.insertedId;
+                newUser._id = result.data.id;
+                newUser.neighborhood._id = result.data.neighborhoodId;
                 useUserStore.getState().setUser(newUser, rememberMe);
                 router.push('/home');
             }

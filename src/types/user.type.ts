@@ -1,4 +1,4 @@
-import { Address, Preference, Notifications, Location} from './general.type'
+import { Address, Preference, Notifications, Location, NeighborhoodInUser, CommunityInUser} from './general.type'
 export interface User {
     _id?: string;
     first_name: string;
@@ -9,8 +9,8 @@ export interface User {
     phone_number: string;
     age?: number;
     profile_picture_url: string;
-    neighborhoodId: string;
-    communitiesIds: string[];
+    neighborhood: NeighborhoodInUser;
+    communities: CommunityInUser[];
     preferences: Preference;
     savedPostsIds: string[];
     savedEventsIds: string[];

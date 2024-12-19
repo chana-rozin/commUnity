@@ -15,8 +15,8 @@ export const useCommunities = () => {
 export const useNeighborhood = () => {
     const user = useUserStore((state) => state.user);
     return useQuery({
-        queryKey: ['neighborhood', user?.neighborhoodId],
-        queryFn: () => getNeighborhood(user!.neighborhoodId),
-        enabled: !!user?.neighborhoodId, // Only fetch if the neighborhoodId exists
+        queryKey: ['neighborhood', user?.neighborhood._id],
+        queryFn: () => getNeighborhood(user!.neighborhood._id),
+        enabled: !!user?.neighborhood._id, // Only fetch if the neighborhood id exists
     });
 };
