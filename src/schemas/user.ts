@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { UrgencyLevel } from "@/types/general.type";
+import { UrgencyLevel, NotificationType } from "@/types/general.type";
 const { Schema } = mongoose;
 
 const userSchema = new mongoose.Schema({
@@ -33,15 +33,22 @@ const userSchema = new mongoose.Schema({
     },
     notification: [{
         type: {
+            _id: { type: String, required: true },
             message: { type: String, required: true },
-            receiverId: { type: Schema.Types.ObjectId, required: true },
-            sendeId: { type: Schema.Types.ObjectId, required: true },
+            sender: { type: Schema.Types.ObjectId, required: true },
             urgencyLevel: {
                 type: Number,
                 enum: Object.values(UrgencyLevel),  // Use enum values dynamically
                 required: true,
                 default: UrgencyLevel.Low
-            }
+            },
+            type: {
+                type: String,
+                enum: Object.values(NotificationType),
+                required: true,
+                default: UrgencyLevel.Low
+            },
+            subject: { type: Schema.Types.ObjectId }
         },
     }]
 });
