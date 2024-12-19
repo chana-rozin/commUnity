@@ -50,7 +50,7 @@ export const CommentComp: React.FC<CommentProps> = ({ creator, createdDate, cont
           loading="lazy"
           src={creator.profile_picture_url}
           alt=""
-          className="object-contain shrink-0 aspect-square w-[31px] ml-3"
+          className="w-8 h-8 rounded-full object-cover"
         />
 
         {/* Right Content */}

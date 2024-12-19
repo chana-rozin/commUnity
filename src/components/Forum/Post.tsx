@@ -72,7 +72,7 @@ export const PostComp: React.FC<PostProps> = ({ creator, likesCount: initialLike
       {/* Header Section */}
       <div className="flex gap-4 items-start mb-4">
         <div className="flex items-center gap-3">
-          <img src={creator?.profile_picture_url? creator.profile_picture_url : ""} alt="User avatar" className="w-10 h-10 rounded-full" />
+          <img src={creator?.profile_picture_url? creator.profile_picture_url : ""} alt="User avatar" className="w-10 h-10 rounded-full object-cover" />
         </div>
         <div className="flex flex-col items-start">
           <div className="text-sm font-semibold text-neutral-950">{creator?.first_name?`${creator.first_name} ${creator.last_name}`:"אנונימי"}</div>

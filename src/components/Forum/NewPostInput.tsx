@@ -67,7 +67,7 @@ export const NewPostInput: React.FC = () => {
             loading="lazy"
             src={user?.profile_picture_url}
             alt="User avatar"
-            className="object-contain shrink-0 self-stretch my-auto w-12 aspect-square rounded-full"
+            className="object-contain shrink-0 self-stretch my-auto w-12 aspect-square rounded-full object-cover"
           />
           <textarea
             value={text}
