@@ -36,7 +36,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/services/mongoInit.ts"
+    "src/services/mongoDB/mongoInit.ts"
   ],
   "exclude": [
     "node_modules"

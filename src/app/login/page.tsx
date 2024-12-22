@@ -142,9 +142,14 @@ const Login: React.FC = () => {
             } else {
                 try {
                     setForgetPasswordError(null)
-                    sendVerificationCode(emailValue);
+                    const userExist = await http.post(`/login/${emailValue}`)
+                    if (userExist) {
+                        sendVerificationCode(emailValue);
+                    }
+
                 }
                 catch (error) {
+                    setForgetPasswordError('יש שגיאה בנתונים')
                     console.error('Error sending password reset code:', error);
                 }
             }

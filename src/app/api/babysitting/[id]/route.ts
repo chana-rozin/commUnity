@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import {
     updateDocumentById,
     deleteDocumentById
-} from "@/services/mongodb";
+} from "@/services/mongoDB/mongodb";
 // Update a babysitter request by ID
 export async function PUT(request: Request) {
     const url = new URL(request.url);
@@ -17,7 +17,7 @@ export async function PUT(request: Request) {
     }
 
     // Update the babysitter request in the database
-    const result = await updateDocumentById("babysitterRequests", id, body);
+    const result = await updateDocumentById("Babysitting", id, body);
 
     if (!result) {
         return NextResponse.json(
@@ -44,7 +44,7 @@ export async function DELETE(request: Request) {
     }
 
     // Delete the babysitter request from the database
-    const result = await deleteDocumentById("babysitterRequests", id);
+    const result = await deleteDocumentById("Babysitting", id);
 
     if (!result) {
         return NextResponse.json(

@@ -11,7 +11,7 @@ const CommunityForumPage: React.FC = () => {
   const { communityId } = useParams();
   const { user, setUser } = useUserStore();
 
-  const categories = [{ name: "ראשי", href: "/home", isActive: user?.neighborhoodId==communityId }, { name: "שמורים", href: "/saved", isActive: false }]
+  const categories = [{ name: "ראשי", href: "/home", isActive: user?.neighborhood._id==communityId }, { name: "שמורים", href: "/saved", isActive: false }]
 
   return (
     <main>

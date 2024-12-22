@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 const fieldLabels: Record<string, string> = {
     item: "פריט",
     createdDate: "תאריך יצירה",
-    borrowerId: "מספר מזהה של מבקש",
+    borrower: "מספר מזהה של מבקש",
     LoanDate: "תאריך השאלה",
     active: "פעיל",
     AuthorizedIds: "רשימת מורשים",

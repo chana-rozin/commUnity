@@ -1,14 +1,15 @@
 import * as React from 'react';
 import {formatDate} from '@/utils/dates';
+import { Creator } from '@/types/general.type';
 
 export interface CommentProps {
-  creatorId: string;
+  creator: Creator;
   content: string;
   createdDate: Date | string;
   previousDate?: Date | string; 
 }
 
-export const CommentComp: React.FC<CommentProps> = ({ creatorId, createdDate, content, previousDate,}) => {
+export const CommentComp: React.FC<CommentProps> = ({ creator, createdDate, content, previousDate,}) => {
   //-------TEMPORARY--------------------
   // Replace with a function to get the hebrew date and format it
   // Conversion function to ensure we always have a Date object
@@ -47,17 +48,17 @@ export const CommentComp: React.FC<CommentProps> = ({ creatorId, createdDate, co
         {/* Avatar */}
         <img
           loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/68b95c1707a8445652f77e217614fe7ec26ad8b08cd2f80fdc0fcd5190bb58e2?placeholderIfAbsent=true&apiKey=86fe1a7bbf6141b4b43b46544552077e"
+          src={creator.profile_picture_url}
           alt=""
-          className="object-contain shrink-0 aspect-square w-[31px] ml-3"
+          className="w-8 h-8 rounded-full object-cover"
         />
-     
+
         {/* Right Content */}
         <div className="flex flex-col flex-1 shrink items-start pr-3 basis-0 min-w-[240px] max-md:max-w-full">
           {/* Name and Time */}
           <div className="flex items-center gap-2">
             <div className="overflow-hidden pr-1 text-base font-medium text-right text-neutral-800">
-              {creatorId}
+              {creator.first_name? `${creator.first_name} ${creator.last_name}` : creator._id}
             </div>
             <div className="text-xs leading-none text-center text-neutral-500">
               {`${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`}

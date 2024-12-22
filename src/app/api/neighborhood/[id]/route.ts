@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { getDocumentById} from "@/services/mongodb";
+import { getDocumentById} from "@/services/mongoDB/mongodb";
 
 export async function GET(request: Request, { params }: {params: Promise<{ id: string }>}){
     try{
     const { id } = await params;
-    const neighborhood = await getDocumentById("neighborhoods",id);
+    console.log("get neighborhood: ", id);
+    const neighborhood = await getDocumentById("neighborhood",id);
     if(!neighborhood)
         throw new Error;
     return NextResponse.json(neighborhood);

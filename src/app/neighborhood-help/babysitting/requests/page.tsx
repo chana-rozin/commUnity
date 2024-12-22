@@ -1,39 +1,62 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { RequestCard } from "../components/RequestCard";
 import { useBabysittingRequests, useCreateBabysittingRequest } from "@/services/mutations/babysitting";
+import useUserStore from "@/stores/userStore";
+import { FaPlus } from "react-icons/fa";
+import AddBabysittingRequest from "./AddForm";
+import { Babysitting } from "@/types/babysitting.type";
+import babysittingSchema from "./babysittingSchema";
+import { NoLoansSection } from "@/components/Loans/NoLoansSection"
+import { useCommunities, useNeighborhood } from "@/services/mutations/profileAside";
+import { Community } from "@/types/community.type";
+import { getNeighborhood } from "@/services/neighborhoods";
+import { Neighborhood } from "@/types/neighborhood.types";
 
 function BabysittingPage() {
-    const { data: babysittingRequests, isLoading, error } = useBabysittingRequests();
-    const createRequestMutation = useCreateBabysittingRequest();
+    const { user } = useUserStore();
 
-    const handleAddRequest = () => {
-        const newRequest = {
-            id: Date.now().toString(), // Example unique ID
-            title: "New Babysitting Request",
-            description: "Need a babysitter for the weekend.",
-            date: new Date(),
-        };
-        createRequestMutation.mutate(newRequest);
-    };
+    const { data: babysittingRequests, isLoading, error } = useBabysittingRequests(user?[
+        user!.neighborhood._id,
+        ...user!.communities.map(community=>community._id)
+    ]:[]);
+    const [isAddFormOpen, setAddFormOpen] = useState(false);
 
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error loading babysitting requests</div>;
+    if (isLoading) return <div>טוען בקשות בייביסיטר</div>;
+    if (error) return <div>שגיאה בטעינת בקשות בייביסיטר</div>;
 
     return (
-        <div className="flex w-full self-stretch">
-            <main className="flex w-full flex-wrap gap-5 justify-center content-start items-start self-start px-4 bg-indigo-100 rounded-2xl min-h-[669px]">
-                {babysittingRequests?.map((request) => (
-                    <RequestCard key={request._id} request={request} />
-                ))}
-            </main>
+        <div className="relative flex flex-col w-full h-full ">
+            {/* Add Request Button */}
             <button
-                onClick={handleAddRequest}
-                className="mt-4 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                onClick={() => setAddFormOpen(true)}
+                className="absolute top-7 left-5 bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-500"
             >
-                Add Request
+                <FaPlus />
             </button>
+            {/* AddForm */}
+            {isAddFormOpen && (
+                <AddBabysittingRequest
+                isOpen={isAddFormOpen}
+                onClose={()=>setAddFormOpen(false)}
+            />
+            )}
+
+            {/* Main Content */}
+            {isLoading? <div>טוען בקשות בייביסיטר</div>:
+            error? <div>שגיאה בטעינת בקשות בייביסיטר</div>:
+            babysittingRequests?.length || 0 > 0 ?
+                <main className="flex w-full flex-wrap gap-5 justify-center content-start items-start self-start px-4 bg-indigo-100 rounded-2xl min-h-[669px]">
+                    {babysittingRequests?.map((request) => (
+                        <RequestCard key={request._id} request={request} />
+                    ))}
+                </main>
+                : <section className="">
+                    <NoLoansSection
+                        title="אין בקשות פעילות"
+                        description="כרגע אין בקשות לבייביסטר באזורך"
+                    /></section>}
         </div>
     );
 }

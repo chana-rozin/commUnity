@@ -40,6 +40,11 @@ export const RegistrationForm: React.FC<props> = ({ handleStep }) => {
         }
         console.log('onSubmit');
         console.log(data);
+        debugger
+        if(!address.value.address.house_number){
+            setAddressError('נא להכניס כתובת עם מספר בית/בנין');
+            return;
+        }
         const dataToSave = {
             firstName: data.firstName,
             lastName: data.lastName,

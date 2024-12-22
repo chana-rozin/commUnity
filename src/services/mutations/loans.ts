@@ -84,9 +84,9 @@ export const useLendItem = () => {
             return loansService.lendItem(loanId, user._id);
         },
         onSuccess: (_, { user }) => {
-            if (user?.neighborhoodId) {
+            if (user?.neighborhood._id) {
                 queryClient.invalidateQueries({
-                    queryKey: loanQueryKeys.openLoansByCommunity(user.neighborhoodId)
+                    queryKey: loanQueryKeys.openLoansByCommunity(user.neighborhood._id)
                 });
             }
         },
@@ -117,15 +117,15 @@ export const useReturnLoan = () => {
     });
 };
 
-//   // Mutation to remind a lender about a loan
-//   export const useRemindLender = () => {
-//     return useMutation<void, Error, { loanId: string }>({
-//       mutationFn: async ({ loanId }) => {
-//         // Implement your remind lender logic here
-//         return loansService.remindLender(loanId);
-//       },
-//       onError: (error) => {
-//         console.error('Failed to send reminder', error);
-//       }
-//     });
-//   };
+// Mutation to remind a lender about a loan
+export const useRemindBorrower = () => {
+    return useMutation<void, Error, { loanId: string, item:string, lenderId: string, borrowerId:string }>({
+        mutationFn: async ({ loanId, item, lenderId, borrowerId}) => {
+            // Implement remind borrower logic
+            return loansService.remindBorrower(loanId,item, lenderId, borrowerId);
+        },
+        onError: (error) => {
+            console.error('Failed to send reminder', error);
+        }
+    });
+};

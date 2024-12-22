@@ -2,18 +2,19 @@ import * as React from 'react';
 import { FaRegBell, FaArrowLeft } from 'react-icons/fa';
 import { ItemCard } from './ItemCard'; 
 import { NoLoansSection } from "./NoLoansSection";
-import { useActiveLoansByUser, useReturnLoan } from '@/services/mutations/loans';
+import { useActiveLoansByUser, useReturnLoan, useRemindBorrower } from '@/services/mutations/loans';
 import useUserStore from '@/stores/userStore'; 
 import { getTimeDifference } from "@/utils/dates";
+import { Loan } from '@/types/loan.type';
 
 
 export const ActiveLoans: React.FC = ({}) => {
   const user = useUserStore((state) => state.user);
   const { data: activeLoans, isLoading, error } = useActiveLoansByUser(user?._id || '');
   const returnLoanMutation = useReturnLoan();
-  
-  const borrowedItems = activeLoans?.filter(loan => loan.borrowerId === user?._id) || [];
-  const lentItems = activeLoans?.filter(loan => loan.lenderId === user?._id) || [];
+  const remindBorrowerMutation = useRemindBorrower(); 
+  const borrowedItems = activeLoans?.filter(loan => loan.borrower._id === user?._id) || [];
+  const lentItems = activeLoans?.filter(loan => loan.lender?._id === user?._id) || [];
   
   if (isLoading) return <div>טוען פריטים...</div>;
   if (error) return <div>שגיאה בטעינת הלוואות</div>;
@@ -33,10 +34,10 @@ export const ActiveLoans: React.FC = ({}) => {
             <ItemCard 
               title={item.item}
               daysAgo={getTimeDifference(item.LoanDate || new Date())}
-              userName={item.lenderId || ''}
+              userName={`${item.lender?.first_name} ${item.lender?.last_name}` || ''}
               address=""
               isBorrowed={true}
-              buttonContent="החזרתי!"
+              buttonContent={item.lender ? "החזרתי!" : "בטל השאלה" }
               ButtonIcon={FaArrowLeft}
               onButtonClick={() => returnLoanMutation.mutate({
                 loanId: item._id,
@@ -60,18 +61,23 @@ export const ActiveLoans: React.FC = ({}) => {
       </div>
       
       {lentItems.length > 0 ? (
-        lentItems.map((item) => (
+        lentItems.map((item:Loan) => (
           <div key={item._id} className="flex flex-wrap grow shrink gap-1.5 items-start self-stretch my-auto h-60 w-[184px]">
             <ItemCard 
               title={item.item}
               daysAgo={getTimeDifference(item.LoanDate || new Date())}
-              userName={item.borrowerId}
+              userName={`${item.borrower.first_name} ${item.borrower.last_name}`}
               address=""
               isBorrowed={false}
               buttonContent="שלח תזכורת"
               ButtonIcon={FaRegBell}
-              onButtonClick={() => console.log("שלחתי תזכורת")}//TODO: implement logic
-            />
+              onButtonClick={() => remindBorrowerMutation.mutate({ 
+                loanId: item._id,
+                lenderId: item.lender?._id || '',
+                borrowerId: item.borrower._id,
+                item: item.item
+              })}
+              />
           </div>
         ))
       ) : (

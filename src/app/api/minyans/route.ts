@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import {
     insertDocument,
-    getDocumentByQuery
-} from "@/services/mongodb";
+    getAllDocuments,
+    foreignKey
+} from "@/services/mongoDB/mongodb";
 
 // Fetch all posts
 // Fetch all or filtered posts
@@ -50,7 +51,7 @@ export async function GET(request: Request) {
     // }
     
     // Retrieve posts based on the query
-    const minyans = await getDocumentByQuery("minyans", query);
+    const minyans = await getAllDocuments("minyan", query);
 
     return NextResponse.json(minyans); // Return data as JSON
 }
@@ -65,8 +66,25 @@ export async function POST(request: Request) {
             { status: 400 } // Bad Request
         );
     }
+    delete body._id; 
+    if(!body.isRegular){
+        body.membersCount=0;
+    }
+    else{
+        body.membersCount = 10;
+    }
+    if(!body.AuthorizedIds){
+        return NextResponse.json(
+            { message: "Missing required field: AuthorizedIds" },
+            { status: 400 } // Bad Request
+        );
+    }
+    body.AuthorizedIds.forEach((id:string, index:number, array:string[]) => {
+        array[index] = foreignKey(id); // Update each element
+    });
+
        // Insert into the database
-    const result = await insertDocument("minyans", body);
+    const result = await insertDocument("minyan", body);
     if (!result) {
         return NextResponse.json(
             { message: "Failed to create minyan" },

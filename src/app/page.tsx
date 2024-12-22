@@ -14,7 +14,7 @@ export default function Home() {
     if (!user)
       router.push('/login');
     else
-      router.push(`/forum/${user.neighborhoodId}`);
+      router.push(`/forum/${user.neighborhood._id}`);
   }, [user])
 
   return (<>
