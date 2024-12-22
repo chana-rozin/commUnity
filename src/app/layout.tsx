@@ -1,43 +1,43 @@
 "use client";
+
 import { Noto_Sans_Hebrew } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/Navbar/Navbar";
-import {Footer} from "@/components/Footer/Footer"
 import QueryProvider from "./QueryProvider";
 import useUserStore from "@/stores/userStore";
-import { useRouter } from "next/navigation"; // Import useRouter
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from "next/navigation";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import UserModeLayout from "@/components/Layout/UserModeLayout";
+import { useEffect, useState } from "react";
 
 const notoSansHebrew = Noto_Sans_Hebrew({
-  subsets: ['hebrew'],
-  weight: ['300', '400', '500', '600', '700'],
-  display: 'swap',
+  subsets: ["hebrew"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
 });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const { user } = useUserStore();
-  const router = useRouter(); // Initialize the router
+  const router = useRouter();
 
-  // Redirect to /register if no user is found
-  // useEffect(() => {
-  //   if (!user) {
-  //     router.push("/register");
-  //   }
-  // }, [user, router]);
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    } else {
+      router.push("/home");
+    }
+  }, [user, router]);
 
   return (
     <html lang="he" dir="rtl" className={notoSansHebrew.className}>
       <body className="flex flex-col px-12 pt-3 pb-6 bg-violet-50 max-md:px-5">
-        <Navbar />
         <ToastContainer
-                toastClassName="bg-indigo-500 text-white"
-                progressClassName="bg-indigo-700"
-            />
+          toastClassName="bg-indigo-500 text-white"
+          progressClassName="bg-indigo-700"
+        />
         <QueryProvider>
-          {children}
+          {user ? <UserModeLayout>{children}</UserModeLayout> : children}
         </QueryProvider>
-        <Footer/>
       </body>
     </html>
   );
