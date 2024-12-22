@@ -85,13 +85,13 @@ export enum PrayerTime {
     Arvit = 'ערבית'
 }
 export enum NotificationType {
-    Reminder="תזכורת",
-    Warning="אזהרה",
-    Request="בקשה",
-    Alert="התראה",
+    Reminder=1,
+    Warning=2,
+    Request=3,
+    Alert=4
 }
 export enum SubjectInNotificationType { 
-    babysitting = 'ביביסיטר',
-    loan= 'השאלה',
-    event='אירוע'
+    babysitting = 1,
+    loan= 2,
+    event= 3
 }
