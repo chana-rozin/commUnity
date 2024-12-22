@@ -17,47 +17,72 @@ import { Neighborhood } from "@/types/neighborhood.types";
 function BabysittingPage() {
     const { user } = useUserStore();
 
-    const { data: babysittingRequests, isLoading, error } = useBabysittingRequests(user?[
+    const { data: babysittingRequests, isLoading, error } = useBabysittingRequests(user ? [
         user!.neighborhood._id,
-        ...user!.communities.map(community=>community._id)
-    ]:[]);
+        ...user!.communities.map(community => community._id)
+    ] : []);
     const [isAddFormOpen, setAddFormOpen] = useState(false);
 
     if (isLoading) return <div>טוען בקשות בייביסיטר</div>;
     if (error) return <div>שגיאה בטעינת בקשות בייביסיטר</div>;
 
     return (
-        <div className="relative flex flex-col w-full h-full ">
-            {/* Add Request Button */}
+        // <div className="relative flex flex-col w-full h-full ">
+        //     {/* Add Request Button */}
+        //     <button
+        //         onClick={() => setAddFormOpen(true)}
+        //         className="absolute top-7 left-5 bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-500"
+        //     >
+        //         <FaPlus />
+        //     </button>
+        //     {/* AddForm */}
+        //     {isAddFormOpen && (
+        //         <AddBabysittingRequest
+        //         isOpen={isAddFormOpen}
+        //         onClose={()=>setAddFormOpen(false)}
+        //     />
+        //     )}
+
+        //     {/* Main Content */}
+        //     {isLoading? <div>טוען בקשות בייביסיטר</div>:
+        //     error? <div>שגיאה בטעינת בקשות בייביסיטר</div>:
+        //     babysittingRequests?.length || 0 > 0 ?
+        //         <main className="flex w-full flex-wrap gap-5 justify-center content-start items-start self-start px-4 bg-indigo-100 rounded-2xl min-h-[669px]">
+        //             {babysittingRequests?.map((request) => (
+        //                 <RequestCard key={request._id} request={request} />
+        //             ))}
+        //         </main>
+        //         : <section className="">
+        //             <NoLoansSection
+        //                 title="אין בקשות פעילות"
+        //                 description="כרגע אין בקשות לבייביסטר באזורך"
+        //             /></section>}
+        // </div>
+
+        <section className="relative">
+            {/* Button for opening AddForm */}
             <button
                 onClick={() => setAddFormOpen(true)}
                 className="absolute top-7 left-5 bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-500"
             >
                 <FaPlus />
             </button>
+
             {/* AddForm */}
             {isAddFormOpen && (
                 <AddBabysittingRequest
-                isOpen={isAddFormOpen}
-                onClose={()=>setAddFormOpen(false)}
-            />
+                    isOpen={isAddFormOpen}
+                    onClose={() => setAddFormOpen(false)}
+                />
             )}
-
-            {/* Main Content */}
-            {isLoading? <div>טוען בקשות בייביסיטר</div>:
-            error? <div>שגיאה בטעינת בקשות בייביסיטר</div>:
-            babysittingRequests?.length || 0 > 0 ?
-                <main className="flex w-full flex-wrap gap-5 justify-center content-start items-start self-start px-4 bg-indigo-100 rounded-2xl min-h-[669px]">
+            <div className="flex overflow-hidden flex-wrap gap-5 justify-start content-start items-center px-4 py-6 w-full bg-indigo-100 rounded-2xl min-h-[669px] max-md:max-w-full">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {babysittingRequests?.map((request) => (
                         <RequestCard key={request._id} request={request} />
                     ))}
-                </main>
-                : <section className="">
-                    <NoLoansSection
-                        title="אין בקשות פעילות"
-                        description="כרגע אין בקשות לבייביסטר באזורך"
-                    /></section>}
-        </div>
+                </div>
+            </div>
+        </section>
     );
 }
 

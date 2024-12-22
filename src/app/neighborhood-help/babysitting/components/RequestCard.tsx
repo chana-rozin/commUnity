@@ -2,6 +2,11 @@ import * as React from 'react';
 import { BabysittingRequest } from '../types';
 import { Babysitting } from '@/types/babysitting.type'
 import { type } from 'os';
+import { HiOutlineCalendarDays } from "react-icons/hi2";
+import { CiClock1 } from "react-icons/ci";
+import { FaChildren } from "react-icons/fa6"; import { PiLadderSimpleLight } from "react-icons/pi";
+import { MdOutlineHouse } from "react-icons/md";
+import { BiPencil } from "react-icons/bi";
 
 interface RequestCardProps {
     request: Babysitting;
@@ -19,44 +24,36 @@ export function RequestCard({ request }: RequestCardProps) {
     });
 
     return (
-        <div className="flex flex-col grow shrink h-60 w-[184px]">
+        <div className="flex flex-col  flex-1 shrink items-start py-5 pr-5 w-full bg-white rounded-2xl basis-0">
             <div className="flex flex-col py-5 pr-5 w-full bg-white rounded-2xl">
                 <h2 className="gap-4 self-stretch w-full text-lg font-bold leading-10 text-neutral-950">
-                    {request.requester.name}
+                    {`${request.requester.first_name} ${request.requester.last_name}`}
                 </h2>
-                <div className="gap-1 mt-1 text-xs leading-4 text-right text-stone-500">
-                    <span className="text-sm font-semibold leading-5 text-stone-500">
-                        תאריך:
-                    </span>
-                    <span className="dir-ltr text-sm leading-4 text-stone-500">
-                        {' '}{formattedDate}, {request.time.start}-{request.time.end}
-                    </span>
-                    <br />
-                    <span className="text-sm font-semibold leading-5 text-stone-500">
-                        מספר ילדים:
-                    </span>
-                    <span className="text-sm leading-4 text-stone-500">
-                        {' '}{request.childrenNumber}
-                    </span>
-                    <br />
-                    <span className="text-sm font-semibold leading-5 text-stone-500">
-                        גילאים:{' '}
-                    </span>
-                    <span className="text-sm leading-4 text-stone-500">{request.ageRange}</span>
-                    <br />
-                    <span className="text-sm font-semibold leading-5 text-stone-500">
-                        כתובת:
-                    </span>
-                    <span className="text-sm leading-4 text-stone-500">
+                <div className="flex flex-col gap-2 mt-1 text-xs leading-4 text-right text-stone-500">
+                    <div title='תאריך' className="flex items-center text-sm font-semibold leading-5 text-stone-500 gap-2">
+                        <HiOutlineCalendarDays className='text-indigo-500'/>
+                        {formattedDate}
+                    </div>
+                    <div title='שעה' className="flex items-center text-sm font-semibold leading-5 text-stone-500 gap-2">
+                        <CiClock1 className='text-indigo-500'/>
+                        {request.time.start}-{request.time.end}
+                    </div>
+                    <div title="מס' ילדים" className="flex items-center text-sm font-semibold leading-5 text-stone-500 gap-2">
+                        <FaChildren className='text-indigo-500'/>
+                        {request.childrenNumber}
+                    </div>
+                    <div title='טווח גילאים' className="flex items-center text-sm font-semibold leading-5 text-stone-500 gap-2">
+                        <PiLadderSimpleLight className='text-indigo-500'/>
+                        {request.ageRange}
+                    </div>
+                    <div title='כתובת' className="flex items-center text-sm font-semibold leading-5 text-stone-500 gap-2">
+                        <MdOutlineHouse className='text-indigo-500'/>
                         {' '}{request.address.street} {request.address.houseNumber} {request.address.city}
-                    </span>
-                    <br/>
-                    <span className="text-sm font-semibold leading-5 text-stone-500">
-                        הערות:
-                    </span>
-                    <span className="text-sm leading-4 text-stone-500 overflow-hidden whitespace-warp truncate w-[80%]">
-                        {' '}{request.notes}
-                    </span>
+                    </div>
+                    <div title='הערות' className="flex items-center text-sm font-semibold leading-5 text-stone-500 gap-2">
+                        <BiPencil className='text-indigo-500'/>
+                        {' '}{request.notes?.length?request.notes:"אין הערות"}
+                    </div>
 
                 </div>
                 <div className="flex gap-4 mt-1 w-80 max-w-full min-h-[42px]" />
