@@ -73,7 +73,7 @@ export async function PATCH(request: Request,{ params }: { params: Promise<{ id:
 // Delete a babysitter request by ID
 export async function DELETE(request: Request,{ params }: { params: Promise<{ id: string }>}) {
     const { id } = await params;
-    
+
     if (!id) {
         return NextResponse.json(
             { message: "Babysitter request ID is required" },
@@ -82,7 +82,7 @@ export async function DELETE(request: Request,{ params }: { params: Promise<{ id
     }
 
     // Delete the babysitter request from the database
-    const result = await deleteDocumentById("Babysitting", id);
+    const result = await deleteDocumentById("babysitting", id);
 
     if (!result) {
         return NextResponse.json(

@@ -8,7 +8,8 @@ import { FaChildren } from "react-icons/fa6"; import { PiLadderSimpleLight } fro
 import { MdOutlineHouse } from "react-icons/md";
 import { BiPencil } from "react-icons/bi";
 import useUserStore from '@/stores/userStore';
-import { useBabysit } from '@/services/mutations/babysitting';
+import { useBabysit, useDeleteBabysittingRequest } from '@/services/mutations/babysitting';
+import { AiTwotoneDelete } from "react-icons/ai";
 
 interface RequestCardProps {
     request: Babysitting;
@@ -16,24 +17,17 @@ interface RequestCardProps {
 
 export function RequestCard({ request }: RequestCardProps) {
 
-    const {user} = useUserStore();
+    const { user } = useUserStore();
     const { mutate: babysit } = useBabysit(); // Get the mutate function from useBabysit hook
+    const { mutate: deleteBabysitting } = useDeleteBabysittingRequest();
 
     const offerToBabysit = () => {
-        if (!user) {
-            console.error("User is not logged in.");
-            return;
-        }
-
-        babysit({ requestId: request._id, user: user }, {
-            onSuccess: () => {
-                console.log("Successfully offered to babysit!");
-            },
-            onError: (error) => {
-                console.error("Failed to offer to babysit:", error);
-            },
-        });
+        babysit({ requestId: request._id, user: user });
     };
+
+    const deleteRequest = () => {
+        deleteBabysitting({ requestId: request._id, authorizedIds: request.AuthorizedIds });
+    }
 
     const date = new Date(request.date);
 
@@ -45,7 +39,7 @@ export function RequestCard({ request }: RequestCardProps) {
     });
 
     return (
-        <div className="flex flex-col  flex-1 shrink items-start py-5 pr-5 w-full bg-white rounded-2xl basis-0">
+        <div className="flex flex-col  flex-1 shrink items-start p-5 w-full bg-white rounded-2xl basis-0">
             <div className="flex flex-col py-5 pr-5 w-full bg-white rounded-2xl">
                 <h2 className="gap-4 self-stretch w-full text-lg font-bold leading-10 text-neutral-950">
                     {`${request.requester.first_name} ${request.requester.last_name}`}
@@ -80,19 +74,21 @@ export function RequestCard({ request }: RequestCardProps) {
                 <div className="flex gap-4 mt-1 w-80 max-w-full min-h-[42px]" />
                 <div className="flex gap-3 justify-end mt-1 w-full text-base font-medium leading-none text-neutral-100">
                     <div className="flex gap-5 ">
-                        <button
-                            className="flex gap-3 items-center p-2 ml-6 bg-indigo-600 rounded-[50px]"
-                            aria-label="הצע לשמרטף"
-                            onClick={offerToBabysit}
-                        >
-                            <span className="self-stretch my-auto">רוצה לשמרטף!</span>
-                            <img
-                                loading="lazy"
-                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c3802ac905fb5f7158ac32beb79d55b28a3351cb29b01bbfd7788ea91e194f9?placeholderIfAbsent=true&apiKey=526d563cdba2451a913eb25ca7c41611"
-                                alt=""
-                                className="object-contain shrink-0 self-stretch my-auto aspect-[1.05] w-[21px]"
-                            />
-                        </button>
+                        {request.requester._id == user?._id
+                            ? <AiTwotoneDelete onClick={deleteRequest} className='cursor-pointer text-indigo-500 text-2xl' />
+                            : <button
+                                className="flex gap-3 items-center p-2 ml-6 bg-indigo-600 rounded-[50px]"
+                                aria-label="הצע לשמרטף"
+                                onClick={offerToBabysit}
+                            >
+                                <span className="self-stretch my-auto">רוצה לשמרטף!</span>
+                                <img
+                                    loading="lazy"
+                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c3802ac905fb5f7158ac32beb79d55b28a3351cb29b01bbfd7788ea91e194f9?placeholderIfAbsent=true&apiKey=526d563cdba2451a913eb25ca7c41611"
+                                    alt=""
+                                    className="object-contain shrink-0 self-stretch my-auto aspect-[1.05] w-[21px]"
+                                />
+                            </button>}
                     </div>
                 </div>
             </div>

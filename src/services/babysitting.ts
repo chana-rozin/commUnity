@@ -25,6 +25,12 @@ export const babysit = async (requestId: string, babysitterId: string): Promise<
     return response.data;
 };
 
+export const deleteBabysitting = async (requestId: string): Promise<any> => {
+    const url = `/babysitting/${requestId}`;
+    const response = await http.delete(url);
+    return response.data;
+}
+
 // export const getOpenLoansByCommunityId = async (communityId: string): Promise<any> => {
 //     const url = `/loans?communities=${communityId}&is_open=true`;
 //     const response = await http.get(url);
