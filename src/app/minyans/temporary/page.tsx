@@ -1,7 +1,7 @@
 "use client"
 import * as React from "react";
-import { PrayerSection } from "./Section";
-import { MinyanCardProps } from "./types";
+import { PrayerSection } from "../../../components/minyans/Section";
+import { MinyanCardProps } from "../../../components/minyans/types";
 
 
 const minyanData = {
@@ -87,12 +87,6 @@ const minyanData = {
 const Minyans: React.FC = () => {
     return (
             <div className="flex flex-col items-end bg-violet-50 max-w-[775px]">
-                <div className="flex items-center pr-4 text-sm font-medium leading-none whitespace-nowrap">
-                    <div className="self-stretch p-2 my-auto bg-violet-50 shadow-sm text-violet-950">
-                        מזדמנים
-                    </div>
-                    <div className="self-stretch p-2 my-auto text-neutral-700">קבועים</div>
-                </div>
                 <div className="flex flex-col justify-center items-center p-4 w-full bg-indigo-100 rounded-2xl max-md:max-w-full">
                     <div className="flex flex-wrap gap-1 items-start px-px w-full max-w-[733px] max-md:max-w-full">
                         <div className="flex flex-col w-7">

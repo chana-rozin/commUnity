@@ -28,10 +28,21 @@ export interface Comment {
 }
 
 export interface Notifications {
-    message: string;
-    receiverId: string;
-    sendeId: string;
+    _id: string;
+    message: string; 
+    sender: SenderInNotification;
     urgencyLevel: UrgencyLevel;
+    subject: SubjectInNotification;
+    type: NotificationType;
+}
+export interface SenderInNotification{
+    _id: string;
+    first_name?: string;
+    last_name?: string;
+}
+export interface SubjectInNotification{
+    _id: string;
+    type: SubjectInNotificationType;
 }
 
 export interface Creator{
@@ -72,4 +83,15 @@ export enum PrayerTime {
     Shacharit = 'שחרית',
     Mincha = 'מנחה',
     Arvit = 'ערבית'
+}
+export enum NotificationType {
+    Reminder="תזכורת",
+    Warning="אזהרה",
+    Request="בקשה",
+    Alert="התראה",
+}
+export enum SubjectInNotificationType { 
+    babysitting = 'ביביסיטר',
+    loan= 'השאלה',
+    event='אירוע'
 }
