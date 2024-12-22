@@ -77,12 +77,17 @@ export async function insertDocument<T extends Document>(modelName: string, data
 export async function getAllDocuments(modelName: string, query: Object = {}, populateFields?: { path: string, select: string } | { path: string, select: string }[]): Promise<any[]> {
     await ensureDBConnection();
     const model = getModel(modelName);
+    console.log('Populate: ', populateFields);
 
     try {
         const queryBuilder = model.find(query);
         if (populateFields) {
             queryBuilder.populate(populateFields);
         }
+
+        console.log('Query:', queryBuilder.getQuery());
+        console.log('Populate fields:', populateFields);
+        console.log('Populate:', queryBuilder.getPopulatedPaths());
         return await queryBuilder.exec();
     } catch (error: any) {
         throw new Error(`Get failed: ${error.message}`);
