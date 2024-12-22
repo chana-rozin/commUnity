@@ -27,7 +27,8 @@ export async function POST(request: Request) {
     }
     const populate = [
         { path: 'neighborhood', select: 'name' },
-        { path: 'communities', select: 'name' }
+        { path: 'communities', select: 'name' },
+        { path: 'notifications.sender', select: 'name'}
     ];
     const userExists = await getAllDocuments('user', query, populate);
     if (userExists.length > 0) {
