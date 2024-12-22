@@ -139,6 +139,7 @@ const signUp: React.FC = () => {
                 ai_training_data: false,
                 general_usage_data: false
             };
+            const image = user.imageUrl?user.imageUrl: "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
             let newUser: User = {
                 first_name: user.firstName,
                 last_name: user.lastName,
@@ -146,12 +147,13 @@ const signUp: React.FC = () => {
                 location: user.location,
                 address: user.address,
                 phone_number: user.phone,
-                profile_picture_url: user.imageUrl,
-                neighborhoodId: `${user.address.neighborhood},${user.address.city},${user.address.country}`,
-                communitiesIds: [],
+                profile_picture_url: image ,
+                neighborhood: { _id:`${user.address.neighborhood},${user.address.city},${user.address.country}`},
+                communities: [],
                 preferences: preferences,
                 savedPostsIds: [],
-                savedEventsIds: []
+                savedEventsIds: [],
+                notifications: []
             }
             var result;
             if (signUpBy === "google") {
@@ -166,8 +168,7 @@ const signUp: React.FC = () => {
             }
             else {
                 debugger
-                newUser._id = result.data.insertedId;
-                useUserStore.getState().setUser(newUser, rememberMe);
+                useUserStore.getState().setUser(result.data, rememberMe);
                 router.push('/home');
             }
         } catch (err) {

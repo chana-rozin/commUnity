@@ -19,9 +19,10 @@ export const createCommunity = async (community: any): Promise<any> => {
 }
 
 export const getCommunitiesByUser = async (user: any): Promise<any> => {
-    console.log('type: ',typeof(user.communitiesIds));
+    console.log('type1: ',typeof user.communitiesIds);
     const communitiesIdsStr = user.communitiesIds.join(',');
-    console.log(communitiesIdsStr);
+    console.log("communitiesIdsStr: ",communitiesIdsStr);
     const response = await http.get(`/users/${user._id}/communities?ids=${communitiesIdsStr}`);
+    console.log("response.data: ", response.data)
     return response.data;
 }

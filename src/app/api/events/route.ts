@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import {
     insertDocument,
-    getDocumentByQuery
-} from "@/services/mongodb";
+    getAllDocuments,
+    foreignKey
+} from "@/services/mongoDB/mongodb";
 
 // Fetch all posts
 // Fetch all or filtered posts
@@ -25,7 +26,7 @@ export async function GET(request: Request) {
     }
 
     // Retrieve posts based on the query
-    posts = await getDocumentByQuery("events", query);
+    posts = await getAllDocuments("event", query);
 
     return NextResponse.json(posts); // Return data as JSON
 }
@@ -42,8 +43,18 @@ export async function POST(request: Request) {
         );
     }
     delete body._id;
+    delete body.createdDate;
+    if (!body.AuthorizedIds) {
+        return NextResponse.json(
+            { message: "Missing required field: AuthorizedIds" },
+            { status: 400 } // Bad Request
+        );
+    }
+    body.AuthorizedIds.forEach((id: string, index: number, array: string[]) => {
+        array[index] = foreignKey(id); // Update each element
+    });
     // Insert into the database
-    const result = await insertDocument("events", body);
+    const result = await insertDocument("event", body);
 
     if (!result) {
         return NextResponse.json(
@@ -53,7 +64,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-        { ...body, _id: result.insertedId },
+        { ...body, _id: result._id.toString() },
         { status: 201 } // Created
     );
 }

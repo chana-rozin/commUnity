@@ -15,7 +15,7 @@ interface OpenPostSectionProps extends Post {
   onSave: (postId: string) => void;
 }
 
-const OpenPostSection: React.FC<OpenPostSectionProps> = ({_id, creatorId, createdDate, liked,
+const OpenPostSection: React.FC<OpenPostSectionProps> = ({ _id, creator, createdDate, liked,
   saved, content, comments, images, likedBy, onLike, onSave,
 }) => {
   const [allComments, setAllComments] = useState<Comment[]>(comments);
@@ -27,7 +27,7 @@ const OpenPostSection: React.FC<OpenPostSectionProps> = ({_id, creatorId, create
 
   useEffect(() => {
     const channel = pusherClient.subscribe(`forum_${_id}`);
-    channel.bind('new-message', (data: { message: Comment }) =>{
+    channel.bind('new-message', (data: { message: Comment }) => {
       console.log(data.message);
       setAllComments((prevComments) => [...prevComments, data.message]);
     });
@@ -43,35 +43,33 @@ const OpenPostSection: React.FC<OpenPostSectionProps> = ({_id, creatorId, create
 
   return (
     <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
-        <div className="mb-4">
-          <PostComp
-            creatorId={creatorId}
-            createdDate={createdDate}
-            content={content}
-            images={images}
-            commentCount={comments?.length || 0}
-            likesCount={likedBy?.length || 0}
-            liked={liked} 
-            saved= {saved}
-            onLike={(isLiked) => onLike(_id, isLiked)}
-            onSave={() => onSave(_id)}
-          />
+      <PostComp
+        creator={creator}
+        createdDate={createdDate}
+        content={content}
+        images={images}
+        commentCount={comments?.length || 0}
+        likesCount={likedBy?.length || 0}
+        liked={liked}
+        saved={saved}
+        onLike={(isLiked) => onLike(_id, isLiked)}
+        onSave={() => onSave(_id)}
+      />
+      <div className="flex flex-col justify-center items-center px-3 mt-4 w-full bg-white rounded-2xl min-h-[434px]">
+        <div className="flex flex-col px-0.5 w-full max-w-[737px]">
+          {allComments.map((comment, index) => (
+            <CommentComp
+              key={comment._id}
+              creator={comment.creator}
+              createdDate={comment.createdDate}
+              content={comment.content}
+              previousDate={index > 0 ? allComments[index - 1].createdDate : undefined}
+            />
+          ))}
         </div>
-          <div className="flex flex-col justify-center items-center px-3 mt-4 w-full bg-white rounded-2xl min-h-[434px]">
-            <div className="flex flex-col px-0.5 w-full max-w-[737px]">
-              {allComments.map((comment, index) => (
-                  <CommentComp
-                    key={comment._id}
-                    creatorId={comment.creatorId}
-                    createdDate={comment.createdDate}
-                    content={comment.content}
-                    previousDate={index > 0 ? allComments[index - 1].createdDate : undefined}
-                  />
-                ))}
-            </div>
-            <NewCommentInput postId={_id}/>
-          </div>
-        </div>
+        <NewCommentInput postId={_id} />
+      </div>
+    </div>
   );
 };
 

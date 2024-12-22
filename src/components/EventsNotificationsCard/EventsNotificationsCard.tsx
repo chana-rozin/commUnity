@@ -8,7 +8,7 @@ import { NoLoansSection } from "../Loans/NoLoansSection";
 
 export function EventsNotificationsCard() {
     const user = useUserStore((state) => state.user);
-    const { data: events, isLoading, error } = useEventsByCommunityId(user?.neighborhoodId || "");
+    const { data: events, isLoading, error } = useEventsByCommunityId(user?.neighborhood._id || "");
     return (
         <div className="flex flex-col w-full bg-white rounded-2xl">
             <div className="flex justify-between items-center w-full mb-4">

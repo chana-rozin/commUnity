@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import {
     deleteDocumentById,
     getDocumentById,
-    patchDocumentById
-} from "@/services/mongodb";
+    updateDocumentById,
+    foreignKey
+} from "@/services/mongoDB/mongodb";
 
 //Get a post by ID
 
@@ -17,8 +18,12 @@ export async function GET(request: Request,{ params }: { params: Promise<{ id: s
         );
     }
 
+    const populate = [
+        { path: 'borrower', select: 'first_name last_name address profile_picture_url' },
+        { path: 'lender', select: 'first_name last_name address profile_picture_url' }
+    ];
     // Retrieve the post from the database
-    const loan = await getDocumentById('loans',id);
+    const loan = await getDocumentById('loan',id, populate);
     console.log('loan:', loan);
     
     if (!loan) {
@@ -43,6 +48,10 @@ export async function PATCH(request: Request,{ params }: { params: Promise<{ id:
         );
     }
     delete body._id
+    delete body.borrower;
+    if(body.lender){
+        body.lender = foreignKey(body.lender._id)
+    }
     if (!id) {
         return NextResponse.json(
             { message: "Loan ID is required" },
@@ -51,7 +60,7 @@ export async function PATCH(request: Request,{ params }: { params: Promise<{ id:
     }
 
     // Update the post in the database
-    const result = await patchDocumentById("loans", id, body);
+    const result = await updateDocumentById("loan", id, body);
 
     if (!result) {
         return NextResponse.json(
@@ -79,7 +88,7 @@ export async function DELETE(request: Request,{ params }: { params: Promise<{ id
     }
 
     // Delete the post from the database
-    const result = await deleteDocumentById("loans", id);
+    const result = await deleteDocumentById("loan", id);
 
     if (!result) {
         return NextResponse.json(

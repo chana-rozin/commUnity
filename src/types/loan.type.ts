@@ -1,7 +1,8 @@
+import { UserInLoan } from './general.type'
 export interface Loan{
     _id: string;
-    lenderId?: string;
-    borrowerId: string;
+    lender?: UserInLoan;
+    borrower: UserInLoan;
     item: string;
     createdDate: Date;
     LoanDate: Date | null;
