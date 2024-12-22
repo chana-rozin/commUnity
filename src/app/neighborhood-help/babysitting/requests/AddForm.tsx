@@ -34,7 +34,7 @@ const AddBabysittingRequest: React.FC<{ onClose: () => void, isOpen: boolean; }>
     const communities = [user!.neighborhood, ...(user?.communities ? user.communities : [])];
 
     const onSubmit = (newRequest: Partial<Babysitting>) => {
-        console.log("onSubmit", newRequest);
+        console.log("onSubmit", JSON.stringify(newRequest));
         createRequestMutation.mutate({
             ...newRequest,
             requester: {
@@ -103,21 +103,17 @@ const AddBabysittingRequest: React.FC<{ onClose: () => void, isOpen: boolean; }>
 
                 {/* Form */}
                 <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        console.log("Form submitted"); // This is firing
-                        handleSubmit(
-                            (data) => {
-                                console.log("Validation succeeded", data);
-                                onSubmit(data);
-                            },
-                            (errors) => {
-                                console.log("Validation failed", errors); // Log this
-                            }
-                        );
-
-                    }}
-                    className="space-y-6">
+                    onSubmit={handleSubmit(
+                        (data) => {
+                            console.log("Validation succeeded", data);
+                            onSubmit(data);
+                        },
+                        (errors) => {
+                            console.log("Validation failed", errors);
+                        }
+                    )}
+                    className="space-y-6"
+                >
                     <section className="flex justify-between gap-4">
                         {renderInput("date", "תאריך", "date")}
 
@@ -132,6 +128,11 @@ const AddBabysittingRequest: React.FC<{ onClose: () => void, isOpen: boolean; }>
                         {renderInput("address.street", "רחוב")}
                         {renderInput("address.city", "עיר")}
                         {renderInput("address.houseNumber", "מספר בית")}
+                    </section>
+
+                    <section className="flex justify-between gap-4">
+                        {renderInput("childrenNumber", "מספר ילדים", "number")}
+                        {renderInput("ageRange", "טווח גילאים")}
                     </section>
 
                     <div className="mb-4">
