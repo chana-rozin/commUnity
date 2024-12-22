@@ -10,7 +10,7 @@ export async function POST(request: Request) {
             return NextResponse.json(
                 { message: "Missing required fields" },
                 { status: 400 } // Bad Request
-            );
+            ); 
         }
         const receiver = await getDocumentById("user", body.receiverId);
         if(!receiver) {

@@ -29,7 +29,7 @@ export interface Comment {
 
 export interface Notifications {
     _id: string;
-    message: string;
+    message: string; 
     sender: SenderInNotification;
     urgencyLevel: UrgencyLevel;
     subject: SubjectInNotification;
