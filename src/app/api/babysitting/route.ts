@@ -41,10 +41,8 @@ export async function GET(request: Request) {
         ];
     }
 
-
-    console.log("query: ", query);
     const populate = [
-        { path: 'requester', select: '_id first_name last_name profile_picture_url' },
+        { path: 'requester', select: '_id first_name last_name profile_picture_url'},
         { path: 'babysitter', select: '_id first_name last_name profile_picture_url' }
     ];
     console.log('Populate:', populate);
@@ -65,9 +63,9 @@ export async function POST(request: Request) {
                 { status: 400 } // Bad Request
             );
         }
-        body.requester = foreignKey(body.requester.id);
+        body.requester = foreignKey(body.requester._id);
         if (body.babysitter) {
-            body.babysitter = foreignKey(body.babysitter.id);
+            body.babysitter = foreignKey(body.babysitter._id);
         }
         if (!body.AuthorizedIds || body.AuthorizedIds.length === 0) {
             return NextResponse.json(
