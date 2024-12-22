@@ -99,9 +99,9 @@ const Minyans: React.FC = () => {
                             <div className="self-stretch my-auto">הפעל חיפוש לפי מיקום</div>
                         </div>
                     </div>
-                    <PrayerSection title="שחרית" minyans={minyanData.shacharit} />
+                    {/* <PrayerSection title="שחרית" minyans={minyanData.shacharit} />
                     <PrayerSection title="מנחה" minyans={minyanData.mincha} />
-                    <PrayerSection title="ערבית" minyans={minyanData.arvit} />
+                    <PrayerSection title="ערבית" minyans={minyanData.arvit} /> */}
                 </div>
             </div>
     
