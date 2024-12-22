@@ -7,12 +7,33 @@ import { CiClock1 } from "react-icons/ci";
 import { FaChildren } from "react-icons/fa6"; import { PiLadderSimpleLight } from "react-icons/pi";
 import { MdOutlineHouse } from "react-icons/md";
 import { BiPencil } from "react-icons/bi";
+import useUserStore from '@/stores/userStore';
+import { useBabysit } from '@/services/mutations/babysitting';
 
 interface RequestCardProps {
     request: Babysitting;
 }
 
 export function RequestCard({ request }: RequestCardProps) {
+
+    const {user} = useUserStore();
+    const { mutate: babysit } = useBabysit(); // Get the mutate function from useBabysit hook
+
+    const offerToBabysit = () => {
+        if (!user) {
+            console.error("User is not logged in.");
+            return;
+        }
+
+        babysit({ requestId: request._id, user: user }, {
+            onSuccess: () => {
+                console.log("Successfully offered to babysit!");
+            },
+            onError: (error) => {
+                console.error("Failed to offer to babysit:", error);
+            },
+        });
+    };
 
     const date = new Date(request.date);
 
@@ -31,28 +52,28 @@ export function RequestCard({ request }: RequestCardProps) {
                 </h2>
                 <div className="flex flex-col gap-2 mt-1 text-xs leading-4 text-right text-stone-500">
                     <div title='תאריך' className="flex items-center text-sm font-semibold leading-5 text-stone-500 gap-2">
-                        <HiOutlineCalendarDays className='text-indigo-500'/>
+                        <HiOutlineCalendarDays className='text-indigo-500' />
                         {formattedDate}
                     </div>
                     <div title='שעה' className="flex items-center text-sm font-semibold leading-5 text-stone-500 gap-2">
-                        <CiClock1 className='text-indigo-500'/>
+                        <CiClock1 className='text-indigo-500' />
                         {request.time.start}-{request.time.end}
                     </div>
                     <div title="מס' ילדים" className="flex items-center text-sm font-semibold leading-5 text-stone-500 gap-2">
-                        <FaChildren className='text-indigo-500'/>
+                        <FaChildren className='text-indigo-500' />
                         {request.childrenNumber}
                     </div>
                     <div title='טווח גילאים' className="flex items-center text-sm font-semibold leading-5 text-stone-500 gap-2">
-                        <PiLadderSimpleLight className='text-indigo-500'/>
+                        <PiLadderSimpleLight className='text-indigo-500' />
                         {request.ageRange}
                     </div>
                     <div title='כתובת' className="flex items-center text-sm font-semibold leading-5 text-stone-500 gap-2">
-                        <MdOutlineHouse className='text-indigo-500'/>
+                        <MdOutlineHouse className='text-indigo-500' />
                         {' '}{request.address.street} {request.address.houseNumber} {request.address.city}
                     </div>
                     <div title='הערות' className="flex items-center text-sm font-semibold leading-5 text-stone-500 gap-2">
-                        <BiPencil className='text-indigo-500'/>
-                        {' '}{request.notes?.length?request.notes:"אין הערות"}
+                        <BiPencil className='text-indigo-500' />
+                        {' '}{request.notes?.length ? request.notes : "אין הערות"}
                     </div>
 
                 </div>
@@ -62,6 +83,7 @@ export function RequestCard({ request }: RequestCardProps) {
                         <button
                             className="flex gap-3 items-center p-2 ml-6 bg-indigo-600 rounded-[50px]"
                             aria-label="הצע לשמרטף"
+                            onClick={offerToBabysit}
                         >
                             <span className="self-stretch my-auto">רוצה לשמרטף!</span>
                             <img

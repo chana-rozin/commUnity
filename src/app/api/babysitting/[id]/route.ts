@@ -1,41 +1,79 @@
 import { NextResponse } from "next/server";
 import {
     updateDocumentById,
-    deleteDocumentById
+    deleteDocumentById,
+    foreignKey
 } from "@/services/mongoDB/mongodb";
-// Update a babysitter request by ID
-export async function PUT(request: Request) {
-    const url = new URL(request.url);
-    const id = url.searchParams.get("id"); // Extract babysitter request ID from query string
-    const body = await request.json(); // Parse request body
+import { useParams } from "next/navigation";
 
+
+export async function PATCH(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+    let { id } = await params;
+    const body = await request.json(); // Parse request body
+    if (!body) {
+        return NextResponse.json(
+            { message: "Missing required fields" },
+            { status: 400 } // Bad Request
+        );
+    }
+    delete body._id
+    delete body.requester;
+    if(body.babysitter){
+        body.babysitter = foreignKey(body.babysitter);
+    }
     if (!id) {
         return NextResponse.json(
-            { message: "Babysitter request ID is required" },
+            { message: "Request ID is required" },
             { status: 400 } // Bad Request
         );
     }
 
-    // Update the babysitter request in the database
-    const result = await updateDocumentById("Babysitting", id, body);
+    // Update the post in the database
+    const result = await updateDocumentById("babysitting", id, body);
 
     if (!result) {
         return NextResponse.json(
-            { message: "Failed to update babysitter request" },
+            { message: "Failed to update loan" },
             { status: 500 } // Internal Server Error
         );
     }
 
     return NextResponse.json(
-        { message: "Babysitter request updated successfully" }
+        { message: "Request updated successfully" }
     );
 }
+// Update a babysitter request by ID
+// export async function PUT(request: Request) {
+//     const url = new URL(request.url);
+//     const id = url.searchParams.get("id"); // Extract babysitter request ID from query string
+//     const body = await request.json(); // Parse request body
+
+//     if (!id) {
+//         return NextResponse.json(
+//             { message: "Babysitter request ID is required" },
+//             { status: 400 } // Bad Request
+//         );
+//     }
+
+//     // Update the babysitter request in the database
+//     const result = await updateDocumentById("Babysitting", id, body);
+
+//     if (!result) {
+//         return NextResponse.json(
+//             { message: "Failed to update babysitter request" },
+//             { status: 500 } // Internal Server Error
+//         );
+//     }
+
+//     return NextResponse.json(
+//         { message: "Babysitter request updated successfully" }
+//     );
+// }
 
 // Delete a babysitter request by ID
-export async function DELETE(request: Request) {
-    const url = new URL(request.url);
-    const id = url.searchParams.get("id"); // Extract babysitter request ID from query string
-
+export async function DELETE(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+    const { id } = await params;
+    
     if (!id) {
         return NextResponse.json(
             { message: "Babysitter request ID is required" },
