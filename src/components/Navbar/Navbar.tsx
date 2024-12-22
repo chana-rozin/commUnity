@@ -30,7 +30,7 @@ export function Navbar() {
     { text: "בית", href: "/home" },
     { text: "לוח מודעות", href: "/events" },
     { text: "סיוע שכונתי", href: "/neighborhood-help/loans" },
-    { text: "מניינים", href: "/minyans" },
+    { text: "מניינים", href: "/minyans/regular" },
   ];
 
   const toggleMenu = () => setIsOpen(!isOpen);
