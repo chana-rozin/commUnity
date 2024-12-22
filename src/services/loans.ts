@@ -40,7 +40,7 @@ export const createLoan = async (loan: any): Promise<any> => {
 
 export const lendItem = async (loanId: string, lenderId: string): Promise<Loan> => {
     const url = `/loans/${loanId}`;
-    const response = await http.patch(url, { lenderId: lenderId, LoanDate: new Date() });
+    const response = await http.patch(url, { lender:{_id:lenderId} , LoanDate: new Date() });
     return response.data;
 };
 

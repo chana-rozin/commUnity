@@ -70,7 +70,7 @@ export const HelpRequests: React.FC = () => {
               title={request.item}
               daysAgo={getTimeDifference(request.createdDate)}
               userName={`${request.borrower.first_name} ${request.borrower.last_name}`}
-              address=""
+              address={`${request.borrower.address.street} ${request.borrower.address.houseNumber}`}
               isBorrowed={false}
               buttonContent="מעוניין לעזור"
               ButtonIcon={FaHeart}
