@@ -25,7 +25,11 @@ export async function POST(request: Request) {
     const query = {
         email: email
     }
-    const userExists = await getAllDocuments('user', query);
+    const populate = [
+        { path: 'neighborhood', select: 'name' },
+        { path: 'communities', select: 'name' }
+    ];
+    const userExists = await getAllDocuments('user', query, populate);
     if (userExists.length > 0) {
         const user = userExists[0];
         const token = generateToken(user._id.toString(), user.communities, user.neighborhood._id);
