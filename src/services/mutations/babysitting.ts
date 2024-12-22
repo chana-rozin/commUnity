@@ -1,13 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getBabysitting, getAuthorizedBabysittingRequestsByCommunitiesId, createBabysitting } from "@/services/babysitting";
 import { Babysitting } from "@/types/babysitting.type";
+import { toast } from "react-toastify";
 
-export const useBabysittingRequests = () => {
+export const useBabysittingRequests = (authorizedIds: string[]) => {
     return useQuery<Babysitting[]>({
-        queryKey: ["babysittingRequests"],
-        queryFn: async ({ queryKey }) => {
-            const [_, authorizedIds] = queryKey;
-            return getAuthorizedBabysittingRequestsByCommunitiesId(authorizedIds as string[]);
+        queryKey: ["babysittingRequests", authorizedIds],
+        queryFn: async () => {
+            return getAuthorizedBabysittingRequestsByCommunitiesId(authorizedIds);
         },
         retry: 1,
     });
@@ -20,6 +20,7 @@ export const useCreateBabysittingRequest = () => {
         mutationFn: async (requestData) => createBabysitting(requestData as Babysitting),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["babysittingRequests"] });
+            toast.success("הבקשה נוספה בהצלחה")
         },
         onError: (error) => {
             console.error("Failed to create a babysitting request:", error);
