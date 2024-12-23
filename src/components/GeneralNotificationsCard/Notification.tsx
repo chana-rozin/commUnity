@@ -1,10 +1,12 @@
 import React from 'react';
 import { BiBell, BiTime, BiCalendarExclamation } from 'react-icons/bi';
 import { lendItem } from "@/services/loans";
+import {deleteNotification} from "@/services/users"
 import {
     Notifications, UrgencyLevel, NotificationType,
     SubjectInNotificationType
 } from '@/types/general.type';
+import { user } from '@/services/mongoDB/models';
 
 interface NotificationWrapperProps {
     urgencyLevel: UrgencyLevel;
@@ -95,16 +97,7 @@ const RequestNotification: React.FC<RequestNotificationProps> = ({ notification 
     };
 
     const handleReject = () => {
-        switch (notification.subject.type) {
-            case SubjectInNotificationType.loan:
-                //TODO: delete notification
-                break;
-            case SubjectInNotificationType.babysitting:
-                return; //TODO: Implement reject logic
-            default:
-                return;
-        }
-        console.log('Rejected request:', notification._id);
+        deleteNotification(notification._id);
     };
 
     const getRequestTypeInfo = () => {

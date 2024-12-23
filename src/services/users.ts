@@ -1,4 +1,6 @@
 import http from "./http";
+import useUserStore from '@/stores/userStore';
+
 
 export const getUsers = async (): Promise<any> => {
     const url = `/users`;
@@ -24,4 +26,15 @@ export const updateUser = async (userId: string, user: any): Promise<any> => {
     const url = `/users/${userId}`;
     const response = await http.patch(url, user);
     return response;
+}
+
+export const deleteNotification = async (notificationId: string): Promise<void> => {
+    const { deleteNotification } = useUserStore((state) => ({
+        deleteNotification: state.deleteNotification,
+    }));
+
+    deleteNotification(notificationId);
+
+    const url = `/notifications/${notificationId}`;
+    await http.delete(url);
 }

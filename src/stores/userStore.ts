@@ -11,14 +11,15 @@ interface UserState {
     setUser: (user: User, persist?: boolean) => void;
     clearUser: () => void;
     addNotification: (notification: Notifications) => void;
+    deleteNotification: (notificationId: string) => void;
 }
 
-const useUserStore =create<UserState>()(
+const useUserStore = create<UserState>()(
     persist(
         (set) => ({
             user: null,
             loginTime: null,
-            setUser: (user, persist:any = true) => {
+            setUser: (user, persist: any = true) => {
                 const loginTime = Date.now();
                 set({ user, loginTime });
 
@@ -35,13 +36,24 @@ const useUserStore =create<UserState>()(
                 localStorage.removeItem('user');
                 localStorage.removeItem('loginTime');
             },
-            addNotification: (notification: Notifications) => 
+            addNotification: (notification: Notifications) =>
                 set((state) => ({
                     user: state.user ? {
                         ...state.user,
                         notifications: [...(state.user.notifications || []), notification]
                     } : null
-                }))
+                })),
+            deleteNotification: (notificationId: string) =>
+                set((state) => ({
+                    user: state.user
+                        ? {
+                            ...state.user,
+                            notifications: state.user.notifications.filter(
+                                (notification) => notification._id !== notificationId
+                            ),
+                        }
+                        : null,
+                })),
         }),
         {
             name: 'user-storage',
