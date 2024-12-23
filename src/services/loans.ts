@@ -41,29 +41,28 @@ export const createLoan = async (loan: any): Promise<any> => {
 
 export const offerHelp = async (loanId: string, lenderId: string, lenderName:string, item:string, borrowerId: string): Promise<Notifications> => {
     const url = `/notifications`;
-    const response = await http.post(url, {
+
+    const notificationData = {
         receiverId: borrowerId,
         message: `הצעה: ${lenderName} מעוניין להלוות לך  ${item}`,
-        sender: lenderId,
-        urgencyLevel: 1, //medium
-        type: 3, //request
-        subject: { _id: loanId, type: 2 }, //type:loan
-    });
+        sender: {_id: lenderId},
+        urgencyLevel: 1,
+        type: 3,
+        subject: { _id: loanId, type: 2 },
+    };
 
+    const response = await http.post(url, notificationData);
+    const createdNotification = response.data.notification;
+
+    // Send Pusher message with the created notification
     await http.post('/pusher/send', {
         channel: `user-${borrowerId}`,
         event: "loan-request",
-        message: {
-            receiverId: borrowerId,
-            message: `הצעה: ${lenderName} מעוניין להלוות לך  ${item}`,
-            sender: {_id:lenderId},
-            urgencyLevel: 1, //medium
-            type: 3, //request
-            subject: { _id: loanId, type: 2 }, //type:loan
-        } // Send the full notification object
+        message: createdNotification
     });
+    console.log("notification response id:",createdNotification._id);
 
-    return response.data;
+    return createdNotification;
 };
 
 export const lendItem = async (loanId: string, lenderId: string): Promise<Loan> => {
@@ -81,28 +80,23 @@ export const returnLoan = async (loanId: string): Promise<Loan> => {
 
 export const remindBorrower = async (loanId: string, item: string, lenderId: string, lenderName:string, borrowerId: string): Promise<Notifications> => {
     const url = `/notifications`;
-    
-    const response = await http.post(url, {
+    const notificationData = {
         receiverId: borrowerId,
         message: `⚠️ תזכורת: הפריט ${item} טרם הוחזר ל${lenderName}`,
-        sender: {_id:lenderId},
-        urgencyLevel: 2, //medium
-        type: 1, //reminder
-        subject: { _id: loanId, type: 2 }, //type:loan
-    });
+        sender: {_id: lenderId},
+        urgencyLevel: 2,
+        type: 1,
+        subject: { _id: loanId, type: 2 },
+    };
+    const response = await http.post(url, notificationData);
+    const createdNotification = response.data.notification;
 
     await http.post('/pusher/send', {
         channel: `user-${borrowerId}`,
         event: "loan-reminder",
-        message: {
-            receiverId: borrowerId,
-            message: `⚠️ תזכורת: הפריט ${item} טרם הוחזר ל${lenderName}`,
-            sender: lenderId,
-            urgencyLevel: 2, //medium
-            type: 1, //reminder
-            subject: { _id: loanId, type: 2 }, //type:loan
-        }  // Send the full notification object
+        message: createdNotification
     });
+    console.log("notification response id:",createdNotification._id);
 
     return response.data;
 };

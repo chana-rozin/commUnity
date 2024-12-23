@@ -29,12 +29,6 @@ export const updateUser = async (userId: string, user: any): Promise<any> => {
 }
 
 export const deleteNotification = async (notificationId: string): Promise<void> => {
-    const { deleteNotification } = useUserStore((state) => ({
-        deleteNotification: state.deleteNotification,
-    }));
-
-    deleteNotification(notificationId);
-
     const url = `/notifications/${notificationId}`;
     await http.delete(url);
 }

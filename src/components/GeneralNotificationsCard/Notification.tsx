@@ -1,12 +1,12 @@
 import React from 'react';
 import { BiBell, BiTime, BiCalendarExclamation } from 'react-icons/bi';
 import { lendItem } from "@/services/loans";
-import {deleteNotification} from "@/services/users"
+import { deleteNotification } from "@/services/users"
 import {
     Notifications, UrgencyLevel, NotificationType,
     SubjectInNotificationType
 } from '@/types/general.type';
-import { user } from '@/services/mongoDB/models';
+import useUserStore from '@/stores/userStore';
 
 interface NotificationWrapperProps {
     urgencyLevel: UrgencyLevel;
@@ -83,11 +83,15 @@ interface RequestNotificationProps {
 }
 
 const RequestNotification: React.FC<RequestNotificationProps> = ({ notification }) => {
-    const handleAccept = () => {
+    console.log(notification);
+    const deleteNotificationFromStore = useUserStore((state) => state.deleteNotification);
+
+    const handleAccept = async () => {
         switch (notification.subject.type) {
             case SubjectInNotificationType.loan:
-                lendItem(notification.subject._id, notification.sender._id);
-                deleteNotification(notification._id);
+                await lendItem(notification.subject._id, notification.sender._id);
+                deleteNotificationFromStore(notification._id);
+                await deleteNotification(notification._id);
                 break;
             case SubjectInNotificationType.babysitting:
                 return; //TODO: Implement accept logic
@@ -96,8 +100,19 @@ const RequestNotification: React.FC<RequestNotificationProps> = ({ notification 
         }
     };
 
-    const handleReject = () => {
-        deleteNotification(notification._id);
+    const handleReject = async () => {
+        debugger
+        try {
+            if (!notification?._id) {
+                console.error('No notification ID found');
+                return;
+            }
+            deleteNotificationFromStore(notification._id);// updates user store
+            await deleteNotification(notification._id);//deletes from server
+
+        } catch (error) {
+            console.error('Failed to delete notification:', error);
+        }
     };
 
     const getRequestTypeInfo = () => {

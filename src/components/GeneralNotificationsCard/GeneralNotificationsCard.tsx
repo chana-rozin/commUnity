@@ -46,7 +46,7 @@ const GeneralNotificationsCard: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-                {sortedNotifications.map((notification: Notifications) => {
+                {sortedNotifications.map((notification: Notifications, index: number) => {
                     switch (notification.type) {
                         case NotificationType.Request:
                             return (
