@@ -15,11 +15,11 @@ const NotificationWrapper: React.FC<NotificationWrapperProps> = ({ urgencyLevel,
     const getUrgencyStyles = () => {
         switch (urgencyLevel) {
             case UrgencyLevel.High:
-                return 'border-red-500 bg-red-50';
+                return 'border-none bg-red-50';
             case UrgencyLevel.Medium:
-                return 'border-yellow-500 bg-yellow-50';
+                return 'border-none bg-yellow-50';
             case UrgencyLevel.Low:
-                return 'border-blue-500 bg-blue-50';
+                return 'border-none bg-violet-50';
             default:
                 return 'border-gray-200 bg-white';
         }
@@ -62,9 +62,9 @@ const ReminderNotification: React.FC<ReminderNotificationProps> = ({ notificatio
     return (
         <NotificationWrapper urgencyLevel={notification.urgencyLevel}>
             <div className="flex items-start gap-4">
-                <div className="text-blue-600">{getIcon()}</div>
+                <div className="text-indigo-600">{getIcon()}</div>
                 <div className="flex-1">
-                    <h3 className="text-lg font-semibold mb-2">
+                    <h3 className="text-lg font-semibold mb-1">
                         {getTitle()}
                     </h3>
                     <div className="text-sm text-gray-700">
@@ -84,8 +84,7 @@ const RequestNotification: React.FC<RequestNotificationProps> = ({ notification 
     const handleAccept = () => {
         switch (notification.subject.type) {
             case SubjectInNotificationType.loan:
-                debugger
-                lendItem(notification.sender._id, notification.sender);
+                lendItem(notification.subject._id, notification.sender._id);
                 //TODO: delete notification
                 break;
             case SubjectInNotificationType.babysitting:
@@ -139,22 +138,22 @@ const RequestNotification: React.FC<RequestNotificationProps> = ({ notification 
     return (
         <NotificationWrapper urgencyLevel={notification.urgencyLevel}>
             <div className="flex items-start gap-4">
-                <div className="text-blue-600">{requestInfo.icon}</div>
+                <div className="text-indigo-600">{requestInfo.icon}</div>
                 <div className="flex-1">
-                    <h3 className="text-lg font-semibold mb-2">
+                    <h3 className="text-lg font-semibold mb-1">
                         {requestInfo.title}
                     </h3>
                     <div>
                         <div className="text-sm text-gray-700 mb-3">{notification.message}</div>
                         <div className="flex gap-2 justify-end">
                             <button
-                                className="px-4 py-2 text-sm rounded-md bg-red-50 hover:bg-red-100 border border-red-200 text-red-700"
+                                className="px-3 py-1 text-xs font-medium rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 transition"
                                 onClick={handleReject}
                             >
                                 {requestInfo.rejectText}
                             </button>
                             <button
-                                className="px-4 py-2 text-sm rounded-md bg-green-600 hover:bg-green-700 text-white"
+                                className="px-3 py-1 text-xs font-medium rounded-md bg-indigo-50 hover:bg-indigo-100 text-indigo-600 transition"
                                 onClick={handleAccept}
                             >
                                 {requestInfo.acceptText}
