@@ -53,7 +53,14 @@ export const offerHelp = async (loanId: string, lenderId: string, lenderName:str
     await http.post('/pusher/send', {
         channel: `user-${borrowerId}`,
         event: "loan-request",
-        notification: response.data  // Send the full notification object
+        notification: {
+            receiverId: borrowerId,
+            message: `הצעה: ${lenderName} מעוניין להלוות לך  ${item}`,
+            sender: lenderId,
+            urgencyLevel: 1, //medium
+            type: 3, //request
+            subject: { _id: loanId, type: 2 }, //type:loan
+        } // Send the full notification object
     });
 
     return response.data;
@@ -86,7 +93,14 @@ export const remindBorrower = async (loanId: string, item: string, lenderId: str
     await http.post('/pusher/send', {
         channel: `user-${borrowerId}`,
         event: "loan-reminder",
-        notification: response.data  // Send the full notification object
+        notification: {
+            receiverId: borrowerId,
+            message: `⚠️ תזכורת: הפריט ${item} טרם הוחזר ל${lenderName}`,
+            sender: lenderId,
+            urgencyLevel: 2, //medium
+            type: 1, //reminder
+            subject: { _id: loanId, type: 2 }, //type:loan
+        }  // Send the full notification object
     });
 
     return response.data;
