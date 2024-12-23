@@ -11,6 +11,11 @@ const fieldLabels: Record<string, string> = {
     LoanDate: "תאריך השאלה",
     active: "פעיל",
     AuthorizedIds: "רשימת מורשים",
+    name: "שם",
+    description: "תיאור",
+    date: "תאריך",
+    location: "מיקום",
+    expirationDate: "תאריך אחרון לפרסום"
 };
 
 interface AddFormProps<T extends ZodType> {
