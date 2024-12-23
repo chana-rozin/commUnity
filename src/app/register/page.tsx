@@ -177,11 +177,9 @@ const signUp: React.FC = () => {
     }
 
     return (
-        <div className="overflow-hidden py-10 pr-9 pl-16 bg-white max-md:px-5">
+        <div className="overflow-hidden py-10 px-9 bg-white max-md:px-5">
             <div className="flex gap-5 max-md:flex-col">
-                <div className="flex flex-col w-[55%] max-md:ml-0 max-md:w-full">
                     <OpeningImage />
-                </div>
                 {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} userExists={userExists} setRememberMe={setRememberMe} rememberMe={rememberMe} setEmail={setEmail} /> : step === 2 ?
                     <Step2 handleStep={handleStep} /> : step === 3 ? <Step3 handleStep={handleStep} googleImage={googleImage} /> : <Step4 handleStep={handleStep} signUp={signUp} />}
                 <FormPopUp onSubmit={checkVerificationCode} inputRole={"קוד אימות"} isResend='לא קיבלת קוד? שלח שוב' resend={sendVerificationCode} inputError={userGiveWrongCode} setInputError={setUserGiveWrongCode} title='נשלח קוד אימות לכתובת המייל' isOpen={verificationPopUp} onClose={() => { setVerificationPopUp(false) }} data={email} formObj={{input: z.string()}} />

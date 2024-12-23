@@ -5,13 +5,11 @@ import { AuthTab } from '../../components/register/step1/AuthTab'
 import OpeningImage from '../../components/OpeningImage/OpeningImage'
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { auth } from '@/services/firebaseConfig'
-import Logo from '../../components/register/logo'
 import { useRouter } from 'next/navigation';
 import { z, ZodObject } from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { form, formTypesSchema } from "@/schemas/loginFormSchema";
 import { zodResolver } from '@hookform/resolvers/zod';
-import styles from './login.module.css'
 import { MdOutlineVisibility } from "react-icons/md";
 import { MdOutlineVisibilityOff } from "react-icons/md";
 import http from '../../services/http'
@@ -20,10 +18,10 @@ import FormPopUp from '@/components/PopUp/AuthPopUp'
 
 
 
-const loginFormSchema= z
+const loginFormSchema = z
     .object({
         email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
-        password: z.string().min(8, { message: 'Be at least 8 characters long' }).regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' }).regex(/[0-9]/, { message: 'Contain at least one number.' }).regex(/[^a-zA-Z0-9]/, {message: 'Contain at least one special character.', }).trim()
+        password: z.string().min(8, { message: 'Be at least 8 characters long' }).regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' }).regex(/[0-9]/, { message: 'Contain at least one number.' }).regex(/[^a-zA-Z0-9]/, { message: 'Contain at least one special character.', }).trim()
     })
 
 type LoginTypesSchema = z.infer<typeof loginFormSchema>;
@@ -170,7 +168,6 @@ const Login: React.FC = () => {
         }
     }
     async function checkVerificationCode(email: string, code: string) {
-        debugger
         try {
             const result = await http.post('/verify-email/check', { email: email, code: code })
             if (result.status === 200) {
@@ -191,11 +188,11 @@ const Login: React.FC = () => {
     async function handlePasswordChange(email: string, password: string) {
         try {
             const result = await http.post('/passwords', { email: email, password: password });
-            if(result.status === 200) {
+            if (result.status === 200) {
                 setNewPassError(null)
                 setNewPasswordPopUp(false);
             }
-            else{
+            else {
                 throw new Error(result.data);
             }
         } catch (error) {
@@ -204,16 +201,13 @@ const Login: React.FC = () => {
     }
 
     return (
-        <div className="overflow-hidden py-10 pr-9 pl-16 bg-white max-md:px-5">
+        <div className=" py-10 px-9 bg-white max-h-[100%] max-md:px-5">
             <div className="flex gap-5 max-md:flex-col">
-                <div className="flex flex-col w-[55%] max-md:ml-0 max-md:w-full">
-                    <OpeningImage />
-                </div>
-                <div className={styles.formContainer}>
-                    <div className="flex flex-col ml-5 w-[100%] max-md:ml-0 max-md:w-full">
-                        <div className="flex flex-col items-start mt-4 w-full max-md:mt-10 max-md:max-w-full">
-                            <Logo />
-                            <div className="flex overflow-hidden gap-1 justify-center items-center px-4 py-2.5 mt-14 max-w-full text-base tracking-normal text-center bg-neutral-100 min-h-[59px] rounded-[99px] text-neutral-950 w-[430px] max-md:mt-10">
+                <OpeningImage />
+                <div className="align-center my-0 mx-auto">
+                    <div className="flex flex-col ml-5 max-h-[100vh] max-md:ml-0 max-md:w-full">
+                        <div className="flex flex-col items-start w-full max-md:mt-10 max-md:max-w-full">
+                            <div className="flex overflow-hidden gap-1 justify-center items-center px-4 py-2.5 mt-5 max-w-full text-base tracking-normal text-center bg-neutral-100 min-h-[59px] rounded-[99px] text-neutral-950 w-[430px] max-md:mt-10">
                                 <AuthTab label="היכנס" isActive={true} />
                                 <AuthTab label="הירשם" isActive={false} onClick={goToSignUp} />
                             </div>
