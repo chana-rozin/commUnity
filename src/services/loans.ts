@@ -41,7 +41,6 @@ export const createLoan = async (loan: any): Promise<any> => {
 
 export const offerHelp = async (loanId: string, lenderId: string, lenderName:string, item:string, borrowerId: string): Promise<Notifications> => {
     const url = `/notifications`;
-
     const response = await http.post(url, {
         receiverId: borrowerId,
         message: `הצעה: ${lenderName} מעוניין להלוות לך  ${item}`,

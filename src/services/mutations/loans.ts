@@ -123,8 +123,8 @@ export const useOfferHelp = () => {
     const queryClient = useQueryClient();
 
     return useMutation<Notifications, Error, { loanId: string, lenderId: string,lenderName:string, item:string, borrowerId: string }>({
-        mutationFn: async ({ loanId, lenderId, borrowerId, lenderName,item}) => {
-            return loansService.offerHelp(loanId, lenderId, borrowerId, lenderName,item);
+        mutationFn: async ({ loanId, lenderId, lenderName,item, borrowerId}) => {
+            return loansService.offerHelp(loanId, lenderId, lenderName,item, borrowerId);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: loanQueryKeys.all });
@@ -138,8 +138,8 @@ export const useOfferHelp = () => {
 // Mutation to remind a borrower
 export const useRemindBorrower = () => {
     return useMutation<Notifications, Error, { loanId: string, item: string, lenderId: string,lenderName:string, borrowerId: string }>({
-        mutationFn: async ({ loanId, item, lenderId, borrowerId ,lenderName}) => {
-            return loansService.remindBorrower(loanId, item, lenderId, borrowerId,lenderName);
+        mutationFn: async ({ loanId, item, lenderId,lenderName, borrowerId }) => {
+            return loansService.remindBorrower(loanId, item, lenderId,lenderName, borrowerId);
         },
         onError: (error) => {
             console.error('Failed to send reminder notification', error);
