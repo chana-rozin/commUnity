@@ -9,7 +9,7 @@ import { Babysitting } from "@/types/babysitting.type";
 import useUserStore from "@/stores/userStore";
 import { useCreateBabysittingRequest } from "@/services/mutations/babysitting";
 import SearchableSelectWithAPI from "@/components/map/map"
-import {Address} from '@/types/general.type'
+import { Address } from '@/types/general.type'
 
 // Type inference from Zod schema
 const formSchema = babysittingSchema.omit({ requester: true }); // requester will be hidden
@@ -34,17 +34,18 @@ const AddBabysittingRequest: React.FC<{ onClose: () => void, isOpen: boolean; }>
     const communities = [user!.neighborhood, ...(user?.communities ? user.communities : [])];
 
     const onSubmit = (newRequest: Partial<Babysitting>) => {
-        console.log("onSubmit", newRequest);
+        console.log("onSubmit", JSON.stringify(newRequest));
         createRequestMutation.mutate({
             ...newRequest,
             requester: {
-                id: user!._id!,
-                name: `${user!.first_name} ${user?.last_name}`,
+                _id: user!._id!,
+                first_name: user!.first_name,
+                last_name: user!.last_name,
             },
             babysitter: undefined,
         });
         onClose();
-    };    
+    };
 
     const {
         handleSubmit,
@@ -101,7 +102,18 @@ const AddBabysittingRequest: React.FC<{ onClose: () => void, isOpen: boolean; }>
                 <h2 className="text-xl font-bold text-gray-900 mb-4">הוספת בקשת בייביסיטר</h2>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <form
+                    onSubmit={handleSubmit(
+                        (data) => {
+                            console.log("Validation succeeded", data);
+                            onSubmit(data);
+                        },
+                        (errors) => {
+                            console.log("Validation failed", errors);
+                        }
+                    )}
+                    className="space-y-6"
+                >
                     <section className="flex justify-between gap-4">
                         {renderInput("date", "תאריך", "date")}
 
@@ -116,6 +128,11 @@ const AddBabysittingRequest: React.FC<{ onClose: () => void, isOpen: boolean; }>
                         {renderInput("address.street", "רחוב")}
                         {renderInput("address.city", "עיר")}
                         {renderInput("address.houseNumber", "מספר בית")}
+                    </section>
+
+                    <section className="flex justify-between gap-4">
+                        {renderInput("childrenNumber", "מספר ילדים", "number")}
+                        {renderInput("ageRange", "טווח גילאים")}
                     </section>
 
                     <div className="mb-4">
