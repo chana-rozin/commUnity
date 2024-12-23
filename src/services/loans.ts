@@ -56,7 +56,7 @@ export const offerHelp = async (loanId: string, lenderId: string, lenderName:str
         message: {
             receiverId: borrowerId,
             message: `הצעה: ${lenderName} מעוניין להלוות לך  ${item}`,
-            sender: lenderId,
+            sender: {_id:lenderId},
             urgencyLevel: 1, //medium
             type: 3, //request
             subject: { _id: loanId, type: 2 }, //type:loan
@@ -67,6 +67,7 @@ export const offerHelp = async (loanId: string, lenderId: string, lenderName:str
 };
 
 export const lendItem = async (loanId: string, lenderId: string): Promise<Loan> => {
+    debugger
     const url = `/loans/${loanId}`;
     const response = await http.patch(url, { lender:{_id:lenderId} , LoanDate: new Date() });
     return response.data;
@@ -84,7 +85,7 @@ export const remindBorrower = async (loanId: string, item: string, lenderId: str
     const response = await http.post(url, {
         receiverId: borrowerId,
         message: `⚠️ תזכורת: הפריט ${item} טרם הוחזר ל${lenderName}`,
-        sender: lenderId,
+        sender: {_id:lenderId},
         urgencyLevel: 2, //medium
         type: 1, //reminder
         subject: { _id: loanId, type: 2 }, //type:loan

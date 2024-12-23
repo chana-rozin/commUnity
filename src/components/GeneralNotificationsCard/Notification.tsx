@@ -84,7 +84,8 @@ const RequestNotification: React.FC<RequestNotificationProps> = ({ notification 
     const handleAccept = () => {
         switch (notification.subject.type) {
             case SubjectInNotificationType.loan:
-                lendItem(notification.subject._id, notification.sender._id);
+                debugger
+                lendItem(notification.sender._id, notification.sender);
                 //TODO: delete notification
                 break;
             case SubjectInNotificationType.babysitting:
