@@ -139,6 +139,7 @@ const signUp: React.FC = () => {
                 ai_training_data: false,
                 general_usage_data: false
             };
+            const image = user.imageUrl?user.imageUrl: "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
             let newUser: User = {
                 first_name: user.firstName,
                 last_name: user.lastName,
@@ -146,12 +147,13 @@ const signUp: React.FC = () => {
                 location: user.location,
                 address: user.address,
                 phone_number: user.phone,
-                profile_picture_url: user.imageUrl,
-                neighborhoodId: `${user.address.neighborhood},${user.address.city},${user.address.country}`,
-                communitiesIds: [],
+                profile_picture_url: image ,
+                neighborhood: { _id:`${user.address.neighborhood},${user.address.city},${user.address.country}`},
+                communities: [],
                 preferences: preferences,
                 savedPostsIds: [],
-                savedEventsIds: []
+                savedEventsIds: [],
+                notifications: []
             }
             var result;
             if (signUpBy === "google") {
@@ -166,8 +168,7 @@ const signUp: React.FC = () => {
             }
             else {
                 debugger
-                newUser._id = result.data.insertedId;
-                useUserStore.getState().setUser(newUser, rememberMe);
+                useUserStore.getState().setUser(result.data, rememberMe);
                 router.push('/home');
             }
         } catch (err) {
@@ -176,11 +177,9 @@ const signUp: React.FC = () => {
     }
 
     return (
-        <div className="overflow-hidden py-10 pr-9 pl-16 bg-white max-md:px-5">
+        <div className="overflow-hidden py-10 px-9 bg-white max-md:px-5">
             <div className="flex gap-5 max-md:flex-col">
-                <div className="flex flex-col w-[55%] max-md:ml-0 max-md:w-full">
                     <OpeningImage />
-                </div>
                 {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} userExists={userExists} setRememberMe={setRememberMe} rememberMe={rememberMe} setEmail={setEmail} /> : step === 2 ?
                     <Step2 handleStep={handleStep} /> : step === 3 ? <Step3 handleStep={handleStep} googleImage={googleImage} /> : <Step4 handleStep={handleStep} signUp={signUp} />}
                 <FormPopUp onSubmit={checkVerificationCode} inputRole={"קוד אימות"} isResend='לא קיבלת קוד? שלח שוב' resend={sendVerificationCode} inputError={userGiveWrongCode} setInputError={setUserGiveWrongCode} title='נשלח קוד אימות לכתובת המייל' isOpen={verificationPopUp} onClose={() => { setVerificationPopUp(false) }} data={email} formObj={{input: z.string()}} />

@@ -10,8 +10,8 @@ import { NoLoansSection } from "./NoLoansSection";
 export const LoansHistory: React.FC = () => {
   const user = useUserStore((state) => state.user);
   const { data: loansHistory, isLoading, error } = useLoansHistoryByUser(user?._id || "");
-  const borrowedItems = loansHistory?.filter(loan => loan.borrowerId === user?._id) || [];
-  const lentItems = loansHistory?.filter(loan => loan.lenderId === user?._id) || [];
+  const borrowedItems = loansHistory?.filter(loan => loan.borrower._id === user?._id) || [];
+  const lentItems = loansHistory?.filter(loan => loan.lender?._id === user?._id) || [];
   
   if (isLoading) return <div>טוען פריטים...</div>;
   if (error) return <div>שגיאה בטעינת הלוואות</div>;
@@ -33,7 +33,7 @@ export const LoansHistory: React.FC = () => {
             <ItemCard 
               title={item.item}
               daysAgo={getTimeDifference(item.LoanDate || new Date)}
-              userName={item.lenderId || ''}
+              userName={`${item.lender?.first_name} ${item.lender?.last_name}` || ''}
               address=""
               isBorrowed={true}
             />
@@ -59,7 +59,7 @@ export const LoansHistory: React.FC = () => {
             <ItemCard 
               title={item.item}
               daysAgo={getTimeDifference(item.LoanDate || new Date)}
-              userName={item.borrowerId}
+              userName={`${item.borrower.first_name} ${item.borrower.last_name}`}
               address=""
               isBorrowed={false}
             />

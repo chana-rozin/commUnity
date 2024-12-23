@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import {
     insertDocument,
-    getDocumentByQuery
-} from "@/services/mongodb";
+    getAllDocuments,
+    foreignKey
+} from "@/services/mongoDB/mongodb";
 
 // Fetch all posts
 // Fetch all or filtered posts
@@ -31,18 +32,18 @@ export async function GET(request: Request) {
         if (!query.$or) {
             query.$or = [];
         }
-        // Add conditions for borrowerID and lenderID
+        // Add conditions for borrower ID and lenderID
         query.$or.push(
-            { borrowerId: userId },
-            { lenderId: userId }
+            { borrower: userId },
+            { lender: userId }
         );
     }
     if(isOpen){
         if(isOpen==='true'){
-            query.lenderId = null;
+            query.lender = null;
         }
         else{
-            query.lenderId = { $ne: null }; // Fetch loans that are not lent out
+            query.lender = { $ne: null }; // Fetch loans that are not lent out
         }
     }
     if(active){
@@ -51,9 +52,13 @@ export async function GET(request: Request) {
     else{
         query.active = true; // Default to active loans
     }
+    const populate = [
+        { path: 'borrower', select: 'first_name last_name address profile_picture_url' },
+        { path: 'lender', select: 'first_name last_name address profile_picture_url' }
+    ];
     
     // Retrieve posts based on the query
-    loans = await getDocumentByQuery("loans", query);
+    loans = await getAllDocuments("loan", query, populate);
     console.log(loans);
     
     return NextResponse.json(loans); // Return data as JSON
@@ -70,12 +75,28 @@ export async function POST(request: Request) {
         );
     }
     delete body._id;
-
-    if(!body.lenderId){
-        body.lenderId = null;
+    delete body.createdDate;
+    if(!body.borrower){
+        return NextResponse.json(
+            { message: "Borrower ID is required" },
+            { status: 400 } // Bad Request
+        )
+    }
+    body.borrower = foreignKey(body.borrower);
+    if(!body.AuthorizedIds){
+        return NextResponse.json(
+            { message: "Authorized IDs are required" },
+            { status: 400 } // Bad Request
+        )
+    }
+    body.AuthorizedIds.forEach((id:string, index:number, array:string[]) => {
+        array[index] = foreignKey(id); // Update each element
+    });
+    if(body.lender){
+        body.lender = foreignKey(body.lender._id);
     }
     // Insert into the database
-    const result = await insertDocument("loans", body);
+    const result = await insertDocument("loan", body);
 
     if (!result) {
         return NextResponse.json(
@@ -85,7 +106,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-        { ...body, _id: result.insertedId },
+        { ...body, _id: result._id.toString() },
         { status: 201 } // Created
     );
 }

@@ -2,32 +2,34 @@ import { NextResponse } from "next/server";
 import {
     getAllDocuments,
     insertDocument,
-} from "@/services/mongodb";
-import Ad from '@/models/ad' // Import the Mongoose model
+    foreignKey
+} from "@/services/mongoDB/mongodb";
 
 // Fetch all ads
 export async function GET(request: Request) {
-    const ads = await getAllDocuments("ads"); // Retrieve all ads
+    const ads = await getAllDocuments("ad"); // Retrieve all ads
     return NextResponse.json(ads); // Return data as JSON
 }
 
 // Create a new ad
 export async function POST(request: Request) {
-
     const body = await request.json();
+    if(!body.AuthorizedIds){
+        return NextResponse.json(
+            { message: "Missing required field: AuthorizedIds" },
+            { status: 400 } // Bad Request
+        );
+    }
+    body.AuthorizedIds.forEach((id:string, index:number, array:string[]) => {
+        array[index] = foreignKey(id); // Update each element
+    });
+    delete body._id; // Remove unnecessary field
 
     try {
-        // Use Mongoose to validate the data
-        const newAd = new Ad(body);
-
-        // Validate the document (this throws if validation fails)
-        await newAd.validate();
-
-        // If validation passes, use the service to insert the document
-        const result = await insertDocument("ads", newAd.toObject());
+        const result = await insertDocument("ad", body);
 
         return NextResponse.json(
-            { ...body, _id: result.insertedId },
+            { ...body, _id: result._id.toString() },
             { status: 201 } // Created
         );
     } catch (error) {

@@ -1,21 +1,20 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 const eventSchema = new Schema({
-    name: { type: String },
+    name: { type: String, required: true },
     description: { type: String },
-    date: { type: Date },
-    location: { type: String },
-    createdDate: { type: Date },
-    active: { type: Boolean},
+    date: { type: Date, required: true },
+    location: { type: String , required: true },
+    createdDate: { type: Date ,default: Date.now},
+    active: { type: Boolean, required: true},
     AuthorizedIds: [{
         type: Schema.Types.ObjectId,
         refPath: 'authorizedType',  // This field will determine the collection
+        required: true  // This field will determine the collection
     }],
-
-    // This field will store the name of the collection ('Community' or 'Neighborhood')
     authorizedType: {
         type: String,
-        enum: ['community', 'neighborhood'],  // Enforce values to either 'Community' or 'Neighborhood'
+        enum: ['community', 'neighborhood'],  // Enforce values to either 'community' or 'neighborhood'
     },
 })
 

@@ -21,10 +21,50 @@ export interface Location {
 
 export interface Comment {
     _id: string;
-    creatorId: string;
+    creator: Creator;
     content: string;
     createdDate: Date;
     likedBy: string[];
+}
+
+export interface Notifications {
+    _id: string;
+    message: string; 
+    sender: SenderInNotification;
+    urgencyLevel: UrgencyLevel;
+    subject: SubjectInNotification;
+    type: NotificationType;
+}
+export interface SenderInNotification{
+    _id: string;
+    first_name?: string;
+    last_name?: string;
+}
+export interface SubjectInNotification{
+    _id: string;
+    type: SubjectInNotificationType;
+}
+
+export interface Creator{
+    _id: string;
+    profile_picture_url?: string;
+    first_name?: string;
+    last_name?: string;
+}
+export interface NeighborhoodInUser{
+    _id: string;
+    name?: string;
+}
+export interface CommunityInUser{
+    _id: string;
+    name?: string;
+}
+export interface UserInLoan{
+    _id: string;
+    first_name: string;
+    last_name: string;
+    address: Address;
+    profile_picture_url: string;
 }
 /*
 תגובה:
@@ -33,32 +73,25 @@ ID מפרסם
 גוף
 ID’s של לייקים
 */
-
-export interface FileInfo {
-    id: string;        // מזהה ייחודי לקובץ
-    name: string;      // שם הקובץ
-    size: number;      // גודל הקובץ בבתים
-    type: string;      // סוג הקובץ (MIME type)
-    uploadedAt: Date;  // תאריך ושעה של ההעלאה
-    url: string;       // קישור לגישה לקובץ
-}
-
-// הרחבה לתמונות
-export interface ImageFile extends FileInfo {
-    width: number;     // רוחב התמונה בפיקסלים
-    height: number;    // גובה התמונה בפיקסלים
-    altText?: string;  // טקסט אלטרנטיבי לתמונה
-}
-
-// הרחבה לסרטונים
-export interface VideoFile extends FileInfo {
-    duration: number;  // משך הסרטון בשניות
-    resolution: string; // רזולוציית הסרטון (למשל "1920x1080")
-    thumbnailUrl?: string; // קישור לתמונה ממוזערת של הסרטון
+export enum UrgencyLevel {
+    Low = 1,
+    Medium = 2,
+    High = 3
 }
 
 export enum PrayerTime {
     Shacharit = 'שחרית',
     Mincha = 'מנחה',
     Arvit = 'ערבית'
+}
+export enum NotificationType {
+    Reminder=1,
+    Warning=2,
+    Request=3,
+    Alert=4
+}
+export enum SubjectInNotificationType { 
+    babysitting = 1,
+    loan= 2,
+    event= 3
 }

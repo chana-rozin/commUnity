@@ -2,8 +2,6 @@
 import React, { useState } from 'react'
 import { usePathname } from "next/navigation";
 import TabsController from '../../../components/TabsController/TabsController';
-import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
-import { Babysitting } from '@/services/models';
 
 export default function BabysittingLayout({ children }: { children: React.ReactNode }) {
 
@@ -18,9 +16,7 @@ export default function BabysittingLayout({ children }: { children: React.ReactN
     return (
         <div className="flex flex-col w-full max-w-[750px] max-md:pl-5">
             <TabsController defaultTab={currentTab} tabs={tabs} />
-            <div className="flex overflow-hidden flex-wrap gap-5 justify-center content-center items-center px-4 py-6 w-full bg-indigo-100 rounded-2xl min-h-[669px] max-md:max-w-full">
-                {children}
-            </div>
+            {children}
         </div>
     );
 }

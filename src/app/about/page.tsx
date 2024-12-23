@@ -17,12 +17,12 @@ const AboutPage = () => {
         {
             name: "יעל רוזנבום",
             linkedin: "https://www.linkedin.com/in/yael-rosenbom-103846336/",
-            role: "מפתחת פרונטאנד"
+            role: "מפתחת באקאנד"
         },
         {
             name: "צפורה מארוקו",
             linkedin: "https://www.linkedin.com/in/tzipora-maroko-b6b0b9250/",
-            role: "מפתחת באקאנד"
+            role: "מפתחת פרונטאנד"
         },
         {
             name: "טלי פרלה",

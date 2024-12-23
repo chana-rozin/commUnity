@@ -1,4 +1,6 @@
 "use client";
+import { useEffect } from "react";
+import { pusherClient } from "@/services/pusher";
 import { PostComp } from './Post';
 import { usePosts, useLikePost, useSavePost } from '@/services/mutations/forum';
 import { NewPostInput } from './NewPostInput';
@@ -10,11 +12,25 @@ interface ForumPageProps {
 }
 
 const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId }) => {
-  const {user,setUser} = useUserStore();
-  const communityId = selectedCommunityId || user?.neighborhoodId;
-  const { data: posts, isLoading, error } = usePosts(communityId || "");
+  const { user, setUser } = useUserStore();
+  const communityId = selectedCommunityId || user?.neighborhood._id;
+  const { data: posts, isLoading, error, refetch } = usePosts(communityId || "");
   const likeMutation = useLikePost();
   const saveMutation = useSavePost(user, setUser);
+
+  useEffect(() => {
+    if (!communityId) return;
+
+    const channel = pusherClient.subscribe(`forum_${communityId}`);
+    channel.bind("new-post", () => {
+      refetch(); 
+    });
+
+    return () => {
+      channel.unbind_all();
+      pusherClient.unsubscribe(`forum_${communityId}`);
+    };
+  }, [communityId, refetch]);
 
   const handleLike = (postId: string, isCurrentlyLiked: boolean) => {
     if (!user?._id) return;
@@ -35,25 +51,28 @@ const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId }) => {
   return (
     <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
       <NewPostInput />
-        {posts && posts.length === 0 ? (
-          <div>No posts to display.</div>
+      {posts && posts.length === 0 ? (
+        <div>No posts to display.</div>
       ) : (
-        posts?.map((post) => (
-          <Link key={post._id} href={`/forum/${communityId}/${post._id}`}>
-            <PostComp
-              creatorId={post.creatorId}
-              createdDate={post.createdDate}
-              content={post.content}
-              images={post.images}
-              commentCount={post.comments?.length || 0}
-              likesCount={post.likedBy?.length || 0}
-              liked={post.likedBy?.includes(user._id || "")}
-              saved={user.savedPostsIds.includes(post._id)}
-              onLike={(isLiked) => handleLike(post._id, isLiked)}
-              onSave={() => handleSave(post._id)}
-            />
-          </Link>
-        ))
+        posts
+          ?.slice() 
+          .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()) 
+          .map((post) => (
+            <Link key={post._id} href={`/forum/${communityId}/${post._id}`}>
+              <PostComp
+                creator={post.creator}
+                createdDate={post.createdDate}
+                content={post.content}
+                images={post.images}
+                commentCount={post.comments?.length || 0}
+                likesCount={post.likedBy?.length || 0}
+                liked={post.likedBy?.includes(user._id || "")}
+                saved={user.savedPostsIds.includes(post._id)}
+                onLike={(isLiked) => handleLike(post._id, isLiked)}
+                onSave={() => handleSave(post._id)}
+              />
+            </Link>
+          ))
       )}
     </div>
   );
