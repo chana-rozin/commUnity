@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { FaHeart, FaPlus } from "react-icons/fa";
 import { ItemCard } from "./ItemCard";
-import { useOpenLoansByCommunity, useLendItem, useCreateLoan } from "@/services/mutations/loans";
+import { useOpenLoansByCommunity, useOfferHelp, useCreateLoan } from "@/services/mutations/loans";
 import { getTimeDifference } from "@/utils/dates";
 import useUserStore from "@/stores/userStore";
 import { Loan } from "@/types/loan.type";
@@ -21,7 +21,7 @@ const loanSchema = z.object({
 export const HelpRequests: React.FC = () => {
   const user = useUserStore((state) => state.user);
   const { data: helpRequests, isLoading, error } = useOpenLoansByCommunity(user?.neighborhood._id || "");
-  const lendItemMutation = useLendItem();
+  const offerHelpMutation = useOfferHelp();
   const createLoanMutation = useCreateLoan();
 
   const [isAddFormOpen, setAddFormOpen] = useState(false);
@@ -75,9 +75,10 @@ export const HelpRequests: React.FC = () => {
               buttonContent="מעוניין לעזור"
               ButtonIcon={FaHeart}
               onButtonClick={() =>
-                lendItemMutation.mutate({
+                offerHelpMutation.mutate({
                   loanId: request._id,
-                  user: user,
+                  lenderId: user?._id || "",
+                  borrowerId: request.borrower._id
                 })
               }
             />

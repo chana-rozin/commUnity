@@ -1,5 +1,6 @@
 import http from "./http";
 import { Loan } from "../types/loan.type";
+import { Notifications } from "@/types/general.type";
 //loans?communities=bla&search=bla&active=false&is_open=true&user_id=bla
 
 export const getLoans = async (): Promise<any> => {
@@ -38,6 +39,27 @@ export const createLoan = async (loan: any): Promise<any> => {
     return response;
 }
 
+export const offerHelp = async (loanId: string, lenderId: string, borrowerId: string): Promise<Notifications> => {
+    const url = `/notifications`;
+
+    const response = await http.post(url, {
+        receiverId: borrowerId,
+        message: `📩 הצעה: ${lenderId} מעוניין לעזור עם ההלוואה שלך`,
+        sender: lenderId,
+        urgencyLevel: 2, //medium
+        type: 3, //request
+        subject: { _id: loanId, type: 2 }, //type:loan
+    });
+
+    await http.post('/pusher/send', {
+        channel: `user-${borrowerId}`,
+        event: "loan-request",
+        notification: response.data  // Send the full notification object
+    });
+
+    return response.data;
+};
+
 export const lendItem = async (loanId: string, lenderId: string): Promise<Loan> => {
     const url = `/loans/${loanId}`;
     const response = await http.patch(url, { lender:{_id:lenderId} , LoanDate: new Date() });
@@ -50,27 +72,23 @@ export const returnLoan = async (loanId: string): Promise<Loan> => {
     return response.data;
 };
 
-export const remindBorrower = async (loanId: string, item: string, lenderId: string, borrowerId: string) => {
-    try {
-        // TODO: Send notification to borrower
-        //   await sendNotification({
-        //     userId: borrowerId,
-        //     message: `תזכורת: הפריט ${item} טרם הוחזר למלווה`,
-        //     type: 'reminder',
-        //     metadata: {
-        //       loanId,
-        //       lenderId,
-        //       item
-        //     }
-        //   });
+export const remindBorrower = async (loanId: string, item: string, lenderId: string, borrowerId: string): Promise<Notifications> => {
+    const url = `/notifications`;
+    
+    const response = await http.post(url, {
+        receiverId: borrowerId,
+        message: `⚠️ תזכורת: הפריט ${item} טרם הוחזר למלווה`,
+        sender: lenderId,
+        urgencyLevel: 2, //medium
+        type: 1, //reminder
+        subject: { _id: loanId, type: 2 }, //type:loan
+    });
 
-        await http.post('/pusher/send', {
-            channel: `user-${borrowerId}`,
-            event: "loan-reminder",
-            message: `⚠️ תזכורת: הפריט ${item} טרם הוחזר למלווה`,
-        });
-    } catch (error) {
-        console.error('Failed to send reminder', error);
-        throw error;
-    }
+    await http.post('/pusher/send', {
+        channel: `user-${borrowerId}`,
+        event: "loan-reminder",
+        notification: response.data  // Send the full notification object
+    });
+
+    return response.data;
 };

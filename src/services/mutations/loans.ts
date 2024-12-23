@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as loansService from '../loans';
 import { Loan } from '@/types/loan.type';
 import { User } from "@/types/user.type";
+import { Notifications } from '@/types/general.type';
 
 // Query Keys
 export const loanQueryKeys = {
@@ -117,15 +118,31 @@ export const useReturnLoan = () => {
     });
 };
 
-// Mutation to remind a lender about a loan
-export const useRemindBorrower = () => {
-    return useMutation<void, Error, { loanId: string, item:string, lenderId: string, borrowerId:string }>({
-        mutationFn: async ({ loanId, item, lenderId, borrowerId}) => {
-            // Implement remind borrower logic
-            return loansService.remindBorrower(loanId,item, lenderId, borrowerId);
+// Mutation to offer help
+export const useOfferHelp = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation<Notifications, Error, { loanId: string, lenderId: string, borrowerId: string }>({
+        mutationFn: async ({ loanId, lenderId, borrowerId }) => {
+            return loansService.offerHelp(loanId, lenderId, borrowerId);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: loanQueryKeys.all });
         },
         onError: (error) => {
-            console.error('Failed to send reminder', error);
-        }
+            console.error('Failed to send offer help notification', error);
+        },
+    });
+};
+
+// Mutation to remind a borrower
+export const useRemindBorrower = () => {
+    return useMutation<Notifications, Error, { loanId: string, item: string, lenderId: string, borrowerId: string }>({
+        mutationFn: async ({ loanId, item, lenderId, borrowerId }) => {
+            return loansService.remindBorrower(loanId, item, lenderId, borrowerId);
+        },
+        onError: (error) => {
+            console.error('Failed to send reminder notification', error);
+        },
     });
 };

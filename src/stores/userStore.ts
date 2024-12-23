@@ -2,12 +2,15 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { User } from "@/types/user.type";
 import { CONFIG } from '@/config';
+import { Notifications } from "@/types/general.type";
+
 
 interface UserState {
     user: User | null;
     loginTime: number | null; // Track login time for session expiration
     setUser: (user: User, persist?: boolean) => void;
     clearUser: () => void;
+    addNotification: (notification: Notifications) => void;
 }
 
 const useUserStore =create<UserState>()(
@@ -32,6 +35,13 @@ const useUserStore =create<UserState>()(
                 localStorage.removeItem('user');
                 localStorage.removeItem('loginTime');
             },
+            addNotification: (notification: Notifications) => 
+                set((state) => ({
+                    user: state.user ? {
+                        ...state.user,
+                        notifications: [...(state.user.notifications || []), notification]
+                    } : null
+                }))
         }),
         {
             name: 'user-storage',
