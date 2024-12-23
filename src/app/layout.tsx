@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="he" dir="rtl" className={notoSansHebrew.className}>
-      <body className="flex flex-col px-12 pt-3 pb-6 bg-violet-50 max-md:px-5">
+      <body className="flex flexbox flex-col px-12 py-3 bg-violet-50">
         <ToastContainer
           toastClassName="bg-indigo-500 text-white"
           progressClassName="bg-indigo-700"
