@@ -7,7 +7,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import styles from '../register.module.css'
 import { MdOutlineVisibility } from "react-icons/md";
 import { MdOutlineVisibilityOff } from "react-icons/md";
-import Logo from '../logo';
 import { useRouter } from 'next/navigation';
 
 
@@ -22,7 +21,7 @@ interface props {
     setEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, userExists ,setRememberMe, rememberMe, setEmail}) => {
+const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, userExists, setRememberMe, rememberMe, setEmail }) => {
     const router = useRouter();
     const {
         register,
@@ -30,7 +29,7 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
         formState: { errors }
     } = useForm<firstformTypesSchema>({ resolver: zodResolver(firstformTypes) });
     const [showPassword, setShowPassword] = React.useState(false);
-    
+
     const baseStyles = "gap-1 px-4 py-2 text-base font-medium text-center rounded-md w-full";
     const variantStyles = {
         primary: "bg-indigo-600 text-white",
@@ -53,10 +52,9 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
     }
     return (
         <div className={styles.step1Container}>
-            <div className="flex flex-col items-start mt-4 w-full max-md:mt-10 max-md:max-w-full">
-                <Logo />
-                <div className="flex overflow-hidden gap-1 justify-center items-center px-4 py-2.5 mt-14 max-w-full text-base tracking-normal text-center bg-neutral-100 min-h-[59px] rounded-[99px] text-neutral-950 w-[430px] max-md:mt-10">
-                    <AuthTab label="היכנס" isActive={false} onClick={()=>router.push('/login')}/>
+            <div className="flex flex-col items-start w-full max-md:max-w-full">
+                <div className="flex overflow-hidden gap-1 justify-center items-center px-4 mt-5 max-w-full text-base tracking-normal text-center bg-neutral-100 min-h-[59px] rounded-[99px] text-neutral-950 w-[430px] max-md:mt-10">
+                    <AuthTab label="היכנס" isActive={false} onClick={() => router.push('/login')} />
                     <AuthTab label="הירשם" isActive={true} />
                 </div>
 
@@ -108,7 +106,7 @@ const step1: React.FC<props> = ({ loginWithGoogle, loginWithEmailAndPassword, us
                         </button>
 
                         <div className="flex gap-2 items-center py-1.5 mt-4">
-                            <input 
+                            <input
                                 onChange={handleRememberMeBtn}
                                 type="checkbox"
                                 id="remember"
