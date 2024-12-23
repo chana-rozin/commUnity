@@ -3,6 +3,7 @@ import ForumPage from '../../components/Forum/ForumPage';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
 import { LoansNotificationsCard } from '@/components/LoansNotificationsCard/LoansNotificationsCard';
 import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
+import GeneralNotificationsCard from '@/components/GeneralNotificationsCard/GeneralNotificationsCard';
 import useUserStore from '@/stores/userStore';
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -58,6 +59,9 @@ const HomePage = () => {
         </div>
         {/* Left Column */}
         <div className="flex flex-col flex-1 shrink basis-0 min-w-[260px]">
+          <div className="flex flex-col p-5 w-full  bg-white rounded-2xl mb-4">
+            <GeneralNotificationsCard />
+          </div>
           {/* Loans Section */}
           <div className="flex flex-col p-5  w-full bg-white rounded-2xl">
             <LoansNotificationsCard />
