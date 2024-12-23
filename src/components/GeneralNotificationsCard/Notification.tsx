@@ -83,7 +83,6 @@ interface RequestNotificationProps {
 }
 
 const RequestNotification: React.FC<RequestNotificationProps> = ({ notification }) => {
-    console.log(notification);
     const deleteNotificationFromStore = useUserStore((state) => state.deleteNotification);
 
     const handleAccept = async () => {
@@ -101,7 +100,6 @@ const RequestNotification: React.FC<RequestNotificationProps> = ({ notification 
     };
 
     const handleReject = async () => {
-        debugger
         try {
             if (!notification?._id) {
                 console.error('No notification ID found');
