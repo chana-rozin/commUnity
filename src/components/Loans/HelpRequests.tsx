@@ -78,6 +78,8 @@ export const HelpRequests: React.FC = () => {
                 offerHelpMutation.mutate({
                   loanId: request._id,
                   lenderId: user?._id || "",
+                  lenderName: `${user?.first_name} ${user?.last_name}`,
+                  item: request.item,
                   borrowerId: request.borrower._id
                 })
               }

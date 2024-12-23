@@ -39,14 +39,14 @@ export const createLoan = async (loan: any): Promise<any> => {
     return response;
 }
 
-export const offerHelp = async (loanId: string, lenderId: string, borrowerId: string): Promise<Notifications> => {
+export const offerHelp = async (loanId: string, lenderId: string, lenderName:string, item:string, borrowerId: string): Promise<Notifications> => {
     const url = `/notifications`;
 
     const response = await http.post(url, {
         receiverId: borrowerId,
-        message: `📩 הצעה: ${lenderId} מעוניין לעזור עם ההלוואה שלך`,
+        message: `הצעה: ${lenderName} מעוניין להלוות לך  ${item}`,
         sender: lenderId,
-        urgencyLevel: 2, //medium
+        urgencyLevel: 1, //medium
         type: 3, //request
         subject: { _id: loanId, type: 2 }, //type:loan
     });
@@ -72,12 +72,12 @@ export const returnLoan = async (loanId: string): Promise<Loan> => {
     return response.data;
 };
 
-export const remindBorrower = async (loanId: string, item: string, lenderId: string, borrowerId: string): Promise<Notifications> => {
+export const remindBorrower = async (loanId: string, item: string, lenderId: string, lenderName:string, borrowerId: string): Promise<Notifications> => {
     const url = `/notifications`;
     
     const response = await http.post(url, {
         receiverId: borrowerId,
-        message: `⚠️ תזכורת: הפריט ${item} טרם הוחזר למלווה`,
+        message: `⚠️ תזכורת: הפריט ${item} טרם הוחזר ל${lenderName}`,
         sender: lenderId,
         urgencyLevel: 2, //medium
         type: 1, //reminder

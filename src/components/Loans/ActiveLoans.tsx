@@ -75,7 +75,8 @@ export const ActiveLoans: React.FC = ({}) => {
                 loanId: item._id,
                 lenderId: item.lender?._id || '',
                 borrowerId: item.borrower._id,
-                item: item.item
+                item: item.item,
+                lenderName:`${item.lender?.first_name} ${item.lender?.last_name}`
               })}
               />
           </div>
