@@ -53,7 +53,7 @@ export const offerHelp = async (loanId: string, lenderId: string, lenderName:str
     await http.post('/pusher/send', {
         channel: `user-${borrowerId}`,
         event: "loan-request",
-        notification: {
+        message: {
             receiverId: borrowerId,
             message: `הצעה: ${lenderName} מעוניין להלוות לך  ${item}`,
             sender: lenderId,
@@ -93,7 +93,7 @@ export const remindBorrower = async (loanId: string, item: string, lenderId: str
     await http.post('/pusher/send', {
         channel: `user-${borrowerId}`,
         event: "loan-reminder",
-        notification: {
+        message: {
             receiverId: borrowerId,
             message: `⚠️ תזכורת: הפריט ${item} טרם הוחזר ל${lenderName}`,
             sender: lenderId,

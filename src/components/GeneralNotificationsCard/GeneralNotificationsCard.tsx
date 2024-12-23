@@ -5,10 +5,6 @@ import useUserStore from "@/stores/userStore";
 import { pusherClient } from '@/services/pusher';
 import { NoLoansSection } from "../Loans/NoLoansSection";
 
-interface PusherNotificationMessage {
-    notification: Notifications;
-}
-
 const GeneralNotificationsCard: React.FC = () => {
     const user = useUserStore((state) => state.user);
     const addNotification = useUserStore((state) => state.addNotification);
@@ -19,9 +15,9 @@ const GeneralNotificationsCard: React.FC = () => {
 
         const channel = pusherClient.subscribe(`user-${user._id}`);
 
-        const handleNotification = (data: PusherNotificationMessage) => {
-            if (data.notification) {
-                addNotification(data.notification);
+        const handleNotification = (data: { message: Notifications }) => {
+            if (data.message) {
+                addNotification(data.message);
             }
         };
 
