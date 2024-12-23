@@ -9,7 +9,7 @@ import {
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const communities = searchParams.get("communities")?.split(",");
-    console.log("communities: ", communities);
+    const open = searchParams.get("open");
     const search = searchParams.get("search");
     const active = searchParams.get("active");
     let query: any = {};
@@ -40,6 +40,13 @@ export async function GET(request: Request) {
             },
         ];
     }
+
+    if (open === "true") {
+        query.$or = [
+            { babysitter: { $exists: false } }, // Babysitter field does not exist
+            { babysitter: null }              // Babysitter field is explicitly null
+        ];
+    }    
 
     const populate = [
         { path: 'requester', select: '_id first_name last_name profile_picture_url'},

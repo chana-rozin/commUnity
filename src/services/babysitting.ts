@@ -7,8 +7,8 @@ export const getBabysitting = async (): Promise<Babysitting[]> => {
     return response.data;
 }
 
-export const getBabysittingByCommunitiesId = async (communityIds: string[]): Promise<Babysitting[]> => {
-    const url = `/babysitting?communities=${communityIds.join(',')}`;
+export const getBabysittingByCommunitiesId = async (communityIds: string[], onlyOpen=false): Promise<Babysitting[]> => {
+    const url = `/babysitting?communities=${communityIds.join(',')}&&open=${onlyOpen}`;
     const response = await http.get(url);
     return response.data;
 }

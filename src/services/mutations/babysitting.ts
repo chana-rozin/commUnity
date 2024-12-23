@@ -9,7 +9,7 @@ export const useBabysittingRequests = (authorizedIds: string[]) => {
     return useQuery<Babysitting[]>({
         queryKey: ["babysittingRequests", authorizedIds],
         queryFn: async () => {
-            return getBabysittingByCommunitiesId(authorizedIds);
+            return getBabysittingByCommunitiesId(authorizedIds, true);
         },
         retry: 1,
     });
