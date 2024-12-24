@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { ReminderNotification, RequestNotification } from "./Notification";
 import { Notifications, NotificationType } from "@/types/general.type";
 import useUserStore from "@/stores/userStore";
@@ -8,7 +8,7 @@ import { NoLoansSection } from "../Loans/NoLoansSection";
 const GeneralNotificationsCard: React.FC = () => {
     const user = useUserStore((state) => state.user);
     const addNotification = useUserStore((state) => state.addNotification);
-    const notifications = user?.notifications || [];
+    const notifications = user?.notifications ?? [];  // Use nullish coalescing
 
     useEffect(() => {
         if (!user?._id) return;
@@ -21,10 +21,18 @@ const GeneralNotificationsCard: React.FC = () => {
             }
         };
 
-        channel.bind("loan-request", handleNotification);
-        channel.bind("loan-reminder", handleNotification);
-        channel.bind("babysit-request", handleNotification);
-        channel.bind("babysit-reminder", handleNotification);
+        // Define event types to make maintenance easier
+        const eventTypes = [
+            'loan-request',
+            'loan-reminder',
+            'babysit-request',
+            'babysit-reminder'
+        ];
+
+        // Bind all events
+        eventTypes.forEach(eventType => {
+            channel.bind(eventType, handleNotification);
+        });
 
         return () => {
             channel.unbind_all();
@@ -32,12 +40,38 @@ const GeneralNotificationsCard: React.FC = () => {
         };
     }, [user?._id, addNotification]);
 
-    const sortedNotifications = [...notifications].sort((a: Notifications, b: Notifications) => {
-        if (b.urgencyLevel !== a.urgencyLevel) {
-            return b.urgencyLevel - a.urgencyLevel;
+    // Memoize sorted notifications to prevent unnecessary re-renders
+    const sortedNotifications = useMemo(() => {
+        return [...notifications].sort((a: Notifications, b: Notifications) => {
+            if (b.urgencyLevel !== a.urgencyLevel) {
+                return b.urgencyLevel - a.urgencyLevel;
+            }
+            return b.type - a.type;
+        });
+    }, [notifications]);
+
+    const renderNotification = (notification: Notifications) => {
+        const key = notification._id ?? `notification-${notification.type}-${Date.now()}`;
+        
+        switch (notification.type) {
+            case NotificationType.Request:
+                return (
+                    <RequestNotification
+                        key={key}
+                        notification={notification}
+                    />
+                );
+            case NotificationType.Reminder:
+                return (
+                    <ReminderNotification
+                        key={key}
+                        notification={notification}
+                    />
+                );
+            default:
+                return null;
         }
-        return b.type - a.type;
-    });
+    };
 
     return (
         <div className="flex flex-col w-full bg-white rounded-xl">
@@ -46,26 +80,7 @@ const GeneralNotificationsCard: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-                {sortedNotifications.map((notification: Notifications, index: number) => {
-                    switch (notification.type) {
-                        case NotificationType.Request:
-                            return (
-                                <RequestNotification
-                                    key={notification._id}
-                                    notification={notification}
-                                />
-                            );
-                        case NotificationType.Reminder:
-                            return (
-                                <ReminderNotification
-                                    key={notification._id}
-                                    notification={notification}
-                                />
-                            );
-                        default:
-                            return null;
-                    }
-                })}
+                {sortedNotifications.map(renderNotification)}
             </div>
 
             {!sortedNotifications.length && (
