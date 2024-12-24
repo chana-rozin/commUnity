@@ -10,6 +10,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const communities = searchParams.get("communities")?.split(",");
     const open = searchParams.get("open");
+    const user = searchParams.get("user_id");
     const search = searchParams.get("search");
     const active = searchParams.get("active");
     let query: any = {};
@@ -27,36 +28,48 @@ export async function GET(request: Request) {
         query.AuthorizedIds = { $in: communities };
     }
 
-    // if (search) {
-    //     query["requester.name"] = { $regex: new RegExp(search, "i") };
-    // }
-
     if (active !== "false") {
-        query.$or = [
+        if (!query.$or) {
+            query.$or = [];
+        }
+        query.$or.push(
             { date: { $gt: endOfDay } }, // Future date condition
             {
                 date: { $eq: startOfDay }, // Today date condition
                 "time.end": { $gte: currentTime }, // Check if time is later than current time
-            },
-        ];
+            }
+        );
     }
 
     if (open === "true") {
-        query.$or = [
+        if (!query.$or) {
+            query.$or = [];
+        }
+        query.$or.push(
             { babysitter: { $exists: false } }, // Babysitter field does not exist
             { babysitter: null }              // Babysitter field is explicitly null
-        ];
-    }    
+        );
+    }
+
+    if (user) {
+        if (!query.$or) {
+            query.$or = [];
+        }
+        query.$or.push(
+            { "requester": foreignKey(user) },
+            { "babysitter": foreignKey(user) }  // Match the babysitter field with the user
+        );
+    }
 
     const populate = [
-        { path: 'requester', select: '_id first_name last_name profile_picture_url'},
+        { path: 'requester', select: '_id first_name last_name profile_picture_url' },
         { path: 'babysitter', select: '_id first_name last_name profile_picture_url' }
     ];
-    console.log('Populate:', populate);
     const result = await getAllDocuments("babysitting", query, populate);
     console.log(result);
-    return NextResponse.json(result); // Return data as JSON
+    return NextResponse.json(result);
 }
+
 
 // Create a new babysitter request
 export async function POST(request: Request) {
