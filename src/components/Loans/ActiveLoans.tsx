@@ -15,7 +15,7 @@ export const ActiveLoans: React.FC = ({}) => {
   const remindBorrowerMutation = useRemindBorrower(); 
   const borrowedItems = activeLoans?.filter(loan => loan.borrower._id === user?._id) || [];
   const lentItems = activeLoans?.filter(loan => loan.lender?._id === user?._id) || [];
-  
+  console.log(borrowedItems);
   if (isLoading) return <div>טוען פריטים...</div>;
   if (error) return <div>שגיאה בטעינת הלוואות</div>;
   
