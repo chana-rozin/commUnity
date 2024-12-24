@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { IconType } from 'react-icons';
+import { MdLocationOn } from 'react-icons/md';
 
 export interface ItemCardProps {
   title: string;
@@ -8,7 +9,7 @@ export interface ItemCardProps {
   address: string;
   isBorrowed: boolean;
   buttonContent?: string;
-  ButtonIcon?: IconType; // React Icon component
+  ButtonIcon?: IconType; 
   onButtonClick?: () => void;
 }
 
@@ -46,9 +47,10 @@ export const ItemCard: React.FC<ItemCardProps> = ({
               <div className="text-base font-semibold text-neutral-950">
                 {userName ? userName : "עוד לא נמצא:("}
               </div>
-              <div className="text-xs font-medium leading-none text-neutral-500">
-                {address}
-              </div>
+              <div className="flex items-center gap-1 text-xs font-medium leading-none text-neutral-500">
+            <MdLocationOn className="w-4 h-4 text-neutral-500" />
+            <span>{address}</span>
+          </div>
             </div>
           </div>
         </div>
