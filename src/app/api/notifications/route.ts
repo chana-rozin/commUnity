@@ -54,9 +54,9 @@ export async function POST(request: Request) {
                 { status: 500 } // Internal Server Error
             );
         }
-        const populate ={
+        const populate = {
             path: "notifications.sender",
-            select: "_id first_name last_name",
+            select: "first_name last_name",
         }
         const userWithPopulate = await getDocumentById("user",body.receiverId,populate );
         if(!userWithPopulate){
