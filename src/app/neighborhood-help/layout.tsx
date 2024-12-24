@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { usePathname } from "next/navigation";
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
 import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
-
+import GeneralNotificationsCard from '@/components/GeneralNotificationsCard/GeneralNotificationsCard';
 export default function NeighborhoodHelpLayout({ children }: { children: React.ReactNode }) {
 
     const pathname = usePathname();
@@ -16,7 +16,10 @@ export default function NeighborhoodHelpLayout({ children }: { children: React.R
                 <ProfileAside categories={categories} />
             </aside>
             {children}
-            <div className="flex justify-end flex-1 shrink basis-0 min-w-[260px]">
+            <div className="flex flex-col flex-1 shrink basis-0 min-w-[260px]">
+                <div className="flex flex-col p-5 w-full  bg-white rounded-2xl">
+                    <GeneralNotificationsCard />
+                </div>
                 <div className="flex flex-col p-5 w-full  bg-white rounded-2xl">
                     <EventsNotificationsCard />
                 </div>
