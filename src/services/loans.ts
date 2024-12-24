@@ -46,9 +46,7 @@ export const offerHelp = async (loanId: string, lenderId: string, lenderName:str
     const notificationData = {
         receiverId: borrowerId,
         message: `הצעה: ${lenderName} מעוניין להלוות לך  ${item}`,
-        sender: {_id: lenderId,  
-            first_name: firstName,
-            last_name: lastName},
+        sender: {_id: lenderId},
         urgencyLevel: 1,
         type: 3,
         subject: { _id: loanId, type: 2 },
