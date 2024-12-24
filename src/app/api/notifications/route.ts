@@ -28,8 +28,9 @@ export async function POST(request: Request) {
                 { status: 404 } // Not Found
             );
         }
+        const notificationId = Date.now().toString();
         let notification = {
-            _id: Date.now().toString(),
+            _id: notificationId,
             message: body.message,
             sender: foreignKey(body.sender._id),
             urgencyLevel: body.urgencyLevel? body.urgencyLevel: UrgencyLevel.Low,
@@ -46,18 +47,30 @@ export async function POST(request: Request) {
         console.log(receiver.notifications, Object.values(UrgencyLevel));
         
         const updatedUser = await updateDocumentById("user",body.receiverId,query);
+    
         if(!updatedUser) {
             return NextResponse.json(
                 { message: "Failed to update user's notifications" },
                 { status: 500 } // Internal Server Error
             );
         }
+        const populate ={
+            path: "notifications.sender",
+            select: "_id first_name last_name",
+        }
+        const userWithPopulate = await getDocumentById("user",body.receiverId,populate );
+        if(!userWithPopulate){
+            return NextResponse.json(
+                { message: "Failed to retrieve user with notifications" },
+                { status: 500 } // Internal Server Error
+            );
+        }
+        const notificationToSend = userWithPopulate.notifications.find((notification:any)=>
+            notification._id === notificationId
+        )
         return NextResponse.json({
             message: "Notification added successfully",
-            notification: {
-                ...notification,
-                receiverId: body.receiverId
-            }
+            ...notificationToSend
         }, { status: 201 });
 
     }
