@@ -21,7 +21,7 @@ export const useRequestsByUser = (authorizedIds: string[], userId: string) => {
     return useQuery<Babysitting[]>({
         queryKey: ["babysittingRequestsByUser", authorizedIds, userId], // Include userId in the query key
         queryFn: async () => {
-            return getRequestsByUser(userId, authorizedIds); // Add userId to the API call
+            return getRequestsByUser(userId, authorizedIds, true); // Add userId to the API call
         },
         retry: 1,
     });

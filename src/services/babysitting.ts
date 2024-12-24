@@ -15,8 +15,8 @@ export const getOpenRequestsByCommunities = async (communityIds: string[], onlyO
     return response.data;
 }
 
-export const getRequestsByUser = async (userId: string, communityIds: string[]): Promise<Babysitting[]> => {
-    const url = `/babysitting?user_id=${userId}&communities=${communityIds.join(',')}`;
+export const getRequestsByUser = async (userId: string, communityIds: string[], onlyOpen=false): Promise<Babysitting[]> => {
+    const url = `/babysitting?user_id=${userId}&communities=${communityIds.join(',')}&open=${onlyOpen}`;
     const response = await http.get(url);
     return response.data;
 }
