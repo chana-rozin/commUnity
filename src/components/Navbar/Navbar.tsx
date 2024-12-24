@@ -28,7 +28,7 @@ export function Navbar() {
 
   const navItems = [
     { text: "בית", href: "/home" },
-    { text: "לוח מודעות", href: "/events" },
+    { text: "לוח מודעות", href: "/events-ads" },
     { text: "סיוע שכונתי", href: "/neighborhood-help/loans" },
     { text: "מניינים", href: "/minyans/regular" },
   ];

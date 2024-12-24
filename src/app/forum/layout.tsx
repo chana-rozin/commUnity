@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { usePathname } from "next/navigation";
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
+import GeneralNotificationsCard from '@/components/GeneralNotificationsCard/GeneralNotificationsCard';
 import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
 import { LoansNotificationsCard } from '@/components/LoansNotificationsCard/LoansNotificationsCard';
 
@@ -18,6 +19,9 @@ export default function NeighborhoodHelpLayout({ children }: { children: React.R
             </aside>
             {children}
             <div className="flex flex-col flex-1 shrink basis-0 min-w-[260px]">
+                <div className="flex flex-col p-5 w-full  bg-white rounded-2xl">
+                    <GeneralNotificationsCard />
+                </div>
                 <div className="flex flex-col p-5 w-full  bg-white rounded-2xl">
                     <LoansNotificationsCard />
                 </div>
