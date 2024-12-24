@@ -5,7 +5,6 @@ import { UrgencyLevel } from "@/types/general.type";
 
 // Create a new post
 export async function POST(request: Request) {
-
     try {
         const body = await request.json(); // Parse request body
         if (!body) {
