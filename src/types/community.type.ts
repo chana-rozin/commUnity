@@ -1,14 +1,10 @@
+import { UserInCommunity } from "./general.type";
 export interface Community{
     _id: string;
     name: string;
     description: string;
     adminId: string[];
-    members: {
-        _id: string;
-        first_name: string;
-        last_name: string;
-        profile_picture_url: string;
-    }[];
+    members: UserInCommunity[]
     imageUrl: string;
 }
 
