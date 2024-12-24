@@ -4,11 +4,10 @@ import { User } from "@/types/user.type";
 import { CONFIG } from '@/config';
 import { Notifications } from "@/types/general.type";
 
-
 interface UserState {
     user: User | null;
-    loginTime: number | null; // Track login time for session expiration
-    setUser: (user: User, persist?: boolean) => void;
+    loginTime: number | null;
+    setUser: (user: User, shouldPersist?: boolean) => void;
     clearUser: () => void;
     addNotification: (notification: Notifications) => void;
     deleteNotification: (notificationId: string) => void;
@@ -19,22 +18,19 @@ const useUserStore = create<UserState>()(
         (set) => ({
             user: null,
             loginTime: null,
-            setUser: (user, persist: any = true) => {
+            setUser: (user, shouldPersist = true) => {
                 const loginTime = Date.now();
-                set({ user, loginTime });
-
-                if (persist[1]) {
-                    localStorage.setItem('user', JSON.stringify(user));
-                    localStorage.setItem('loginTime', loginTime.toString());
-                } else {
-                    localStorage.removeItem('user');
-                    localStorage.removeItem('loginTime');
-                }
+                set({ 
+                    user, 
+                    loginTime 
+                });
+                
+                // Let Zustand's persist middleware handle persistence
+                // Remove manual localStorage management
             },
             clearUser: () => {
                 set({ user: null, loginTime: null });
-                localStorage.removeItem('user');
-                localStorage.removeItem('loginTime');
+                // Remove manual localStorage management
             },
             addNotification: (notification: Notifications) =>
                 set((state) => ({
@@ -57,9 +53,9 @@ const useUserStore = create<UserState>()(
         }),
         {
             name: 'user-storage',
-            storage: createJSONStorage(() =>
-                typeof window !== 'undefined'
-                    ? localStorage
+            storage: createJSONStorage(() => 
+                typeof window !== 'undefined' 
+                    ? localStorage 
                     : {
                         getItem: () => null,
                         setItem: () => { },
