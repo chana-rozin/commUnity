@@ -52,10 +52,14 @@ export async function POST(request: Request) {
                 { status: 500 } // Internal Server Error
             );
         }
-        return NextResponse.json(
-            { message: "Notification added successfully" },
-            { status: 201 } // Created
-        );
+        return NextResponse.json({
+            message: "Notification added successfully",
+            notification: {
+                ...notification,
+                receiverId: body.receiverId
+            }
+        }, { status: 201 });
+
     }
     catch (error) {
         console.error(error);

@@ -35,7 +35,7 @@ export const ActiveLoans: React.FC = ({}) => {
               title={item.item}
               daysAgo={getTimeDifference(item.LoanDate || new Date())}
               userName={`${item.lender?.first_name} ${item.lender?.last_name}` || ''}
-              address=""
+              address={`${item.lender?.address.street} ${item.lender?.address.houseNumber}`}
               isBorrowed={true}
               buttonContent={item.lender ? "החזרתי!" : "בטל השאלה" }
               ButtonIcon={FaArrowLeft}
@@ -67,7 +67,7 @@ export const ActiveLoans: React.FC = ({}) => {
               title={item.item}
               daysAgo={getTimeDifference(item.LoanDate || new Date())}
               userName={`${item.borrower.first_name} ${item.borrower.last_name}`}
-              address=""
+              address={`${item.borrower.address.street} ${item.borrower.address.houseNumber}`}
               isBorrowed={false}
               buttonContent="שלח תזכורת"
               ButtonIcon={FaRegBell}
@@ -75,7 +75,8 @@ export const ActiveLoans: React.FC = ({}) => {
                 loanId: item._id,
                 lenderId: item.lender?._id || '',
                 borrowerId: item.borrower._id,
-                item: item.item
+                item: item.item,
+                lenderName:`${item.lender?.first_name} ${item.lender?.last_name}`
               })}
               />
           </div>
