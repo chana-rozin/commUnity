@@ -54,17 +54,6 @@ const CommunityForumPage: React.FC = () => {
           {/* Posts Section */}
           <ForumPage selectedCommunityId={communityId as string} />
         </div>
-        {/* Left Column */}
-        <div className="flex flex-col flex-1 shrink basis-0 min-w-[260px]">
-          {/* Loans Section */}
-          <div className="flex flex-col p-5  w-full bg-white rounded-2xl">
-            <LoansNotificationsCard />
-          </div>
-          {/* Events Section */}
-          <div className="flex flex-col p-5 mt-4 w-full bg-white rounded-2xl">
-            <EventsNotificationsCard />
-          </div>
-        </div>
       </div>
     </main>
   );
