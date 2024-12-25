@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo } from "react";
+"use client"
+import React, { useEffect, useMemo, useState} from "react";
 import { ReminderNotification, RequestNotification } from "./Notification";
 import { Notifications, NotificationType } from "@/types/general.type";
 import useUserStore from "@/stores/userStore";
@@ -8,7 +9,7 @@ import { NoLoansSection } from "../Loans/NoLoansSection";
 const GeneralNotificationsCard: React.FC = () => {
     const user = useUserStore((state) => state.user);
     const addNotification = useUserStore((state) => state.addNotification);
-    const notifications = user?.notifications ?? [];  // Use nullish coalescing
+    const [notifications, setNotifications] = useState<Notifications[]>(user?.notifications ?? []);  // Use nullish coalescing
 
     useEffect(() => {
         if (!user?._id) return;
@@ -16,8 +17,10 @@ const GeneralNotificationsCard: React.FC = () => {
         const channel = pusherClient.subscribe(`user-${user._id}`);
 
         const handleNotification = (data: { message: Notifications }) => {
+            console.log("data.message: ",JSON.stringify(data.message));
             if (data.message) {
                 addNotification(data.message);
+                setNotifications((prev) => [...prev, data.message]);
             }
         };
 
