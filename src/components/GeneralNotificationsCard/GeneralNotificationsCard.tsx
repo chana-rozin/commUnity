@@ -9,7 +9,7 @@ import { NoLoansSection } from "../Loans/NoLoansSection";
 const GeneralNotificationsCard: React.FC = () => {
     const user = useUserStore((state) => state.user);
     const addNotification = useUserStore((state) => state.addNotification);
-    const [notifications, setNotifications] = useState<Notifications[]>(user?.notifications ?? []);  // Use nullish coalescing
+    const notifications = user?.notifications ?? [];  // Use nullish coalescing
 
     useEffect(() => {
         if (!user?._id) return;
@@ -20,7 +20,6 @@ const GeneralNotificationsCard: React.FC = () => {
             console.log("data.message: ",JSON.stringify(data.message));
             if (data.message) {
                 addNotification(data.message);
-                setNotifications((prev) => [...prev, data.message]);
             }
         };
 

@@ -107,10 +107,10 @@ const ReminderNotification = memo(({ notification }: ReminderNotificationProps) 
                 </div>
                 <div className="flex gap-2 justify-end">
                     <button
-                        className="px-3 py-1 text-xs font-medium rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 transition"
+                        className="p-3 text-xs font-medium rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 transition"
                         onClick={handleAccept}
                     >
-                        תודה, אשתדל לזכור
+                        תודה!, אשתדל לזכור:)
                     </button>
                 </div>
             </div>
@@ -131,7 +131,6 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
         try {
             switch (notification.subject.type) {
                 case SubjectInNotificationType.loan:
-                    debugger
                     await lendItem(notification.subject._id, notification.sender._id);
                     break;
                 case SubjectInNotificationType.babysitting:
