@@ -16,10 +16,6 @@ const CommunityForumPage: React.FC = () => {
   return (
     <main>
       <div className="flex flex-wrap gap-4 items-start mt-5 w-full">
-        {/* Right Column - Profile Section */}
-        <aside className="flex flex-col min-h-[909px] w-[211px] max-w-full" role="complementary">
-          <ProfileAside categories={categories} />
-        </aside>
 
         {/* Middle Column */}
         <div className="flex flex-col min-w-[240px] w-[775px]">

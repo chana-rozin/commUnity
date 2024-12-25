@@ -7,13 +7,15 @@ import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/Ev
 import { LoansNotificationsCard } from '@/components/LoansNotificationsCard/LoansNotificationsCard';
 
 
-export default function NeighborhoodHelpLayout({ children }: { children: React.ReactNode }) {
+export default function ForumLayout({ children }: { children: React.ReactNode }) {
 
-    const pathname = usePathname();
     const categories = [{ name: "ראשי", href: "/home", isActive: true }, { name: "שמורים", href: "/saved", isActive: false }]
 
     return (
         <div className="flex flex-wrap gap-4 items-start mt-5 w-full">
+            <aside className="flex flex-col w-[211px] max-w-full" role="complementary">
+                <ProfileAside categories={categories} />
+            </aside>
             {children}
         </div>
     );
