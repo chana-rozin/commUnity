@@ -1,3 +1,5 @@
+
+"use client"
 import React, { useCallback, memo } from 'react';
 import { BiBell, BiTime, BiCalendarExclamation } from 'react-icons/bi';
 import { lendItem } from "@/services/loans";
@@ -61,6 +63,8 @@ interface ReminderNotificationProps {
 }
 
 const ReminderNotification = memo(({ notification }: ReminderNotificationProps) => {
+    const deleteNotificationFromStore = useUserStore((state) => state.deleteNotification);
+    
     const getTitle = () => {
         switch (notification.subject.type) {
             case SubjectInNotificationType.loan:
@@ -72,9 +76,24 @@ const ReminderNotification = memo(({ notification }: ReminderNotificationProps) 
         }
     };
 
+    const handleAccept = useCallback(async () => {
+        try {
+            if (!notification._id) {
+                console.error('No notification ID found');
+                return;
+            }
+
+            deleteNotificationFromStore(notification._id);
+            await deleteNotification(notification._id);
+        } catch (error) {
+            console.error('Failed to delete notification:', error);
+            // TODO: Add error handling UI feedback
+        }
+    }, [notification._id, deleteNotificationFromStore]);
+
     return (
         <NotificationWrapper urgencyLevel={notification.urgencyLevel}>
-            <div className="flex items-start gap-4">
+            <div className="flex flex-col items-start gap-4">
                 <div className="text-indigo-600">
                     <NotificationIcon type={notification.subject.type} />
                 </div>
@@ -85,6 +104,14 @@ const ReminderNotification = memo(({ notification }: ReminderNotificationProps) 
                     <div className="text-sm text-gray-700">
                         {notification.message}
                     </div>
+                </div>
+                <div className="flex gap-2 justify-end">
+                    <button
+                        className="px-3 py-1 text-xs font-medium rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 transition"
+                        onClick={handleAccept}
+                    >
+                        תודה, אשתדל לזכור
+                    </button>
                 </div>
             </div>
         </NotificationWrapper>
@@ -102,7 +129,6 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
 
     const handleAccept = useCallback(async () => {
         try {
-            debugger
             switch (notification.subject.type) {
                 case SubjectInNotificationType.loan:
                     debugger
@@ -114,7 +140,7 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
                 default:
                     return;
             }
-            
+
             if (notification._id) {
                 deleteNotificationFromStore(notification._id);
                 await deleteNotification(notification._id);
@@ -131,7 +157,7 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
                 console.error('No notification ID found');
                 return;
             }
-            
+
             deleteNotificationFromStore(notification._id);
             await deleteNotification(notification._id);
         } catch (error) {
