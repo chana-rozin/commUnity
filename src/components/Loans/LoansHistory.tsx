@@ -19,7 +19,7 @@ export const LoansHistory: React.FC = () => {
 
 
   return (
-    <section className="flex overflow-hidden flex-wrap gap-5 justify-center content-center items-center px-4 py-6 w-full bg-indigo-100 rounded-2xl min-h-[669px] max-md:max-w-full">
+    <section className="flex overflow-hidden flex-wrap gap-5 px-4 py-6 w-full bg-indigo-100 rounded-2xl min-h-[669px] max-md:max-w-full">
       {/* Borrowed Items Section */}
       <div className="flex overflow-hidden grow shrink items-center self-stretch px-4 py-px my-auto text-lg font-bold leading-10 bg-white rounded-2xl min-h-[43px] min-w-[240px] text-neutral-950 w-[686px] max-md:max-w-full">
         <h2 className="self-stretch my-auto min-h-[42px]">
@@ -29,11 +29,11 @@ export const LoansHistory: React.FC = () => {
       
       {borrowedItems.length > 0 ? (
         borrowedItems.map((item: Loan) => (
-          <div key={item._id} className="flex flex-wrap grow shrink gap-1.5 items-start self-stretch my-auto h-60 w-[184px]">
+          <div key={item._id} className="flex flex-wrap shrink gap-1.5 items-start self-stretch my-auto h-50 w-[220px]">
             <ItemCard 
               title={item.item}
               daysAgo={getTimeDifference(item.LoanDate || new Date)}
-              userName={`${item.lender?.first_name} ${item.lender?.last_name}` || ''}
+              userName={`${item.lender?.first_name} ${item.lender?.last_name}` || undefined}
               address={`${item.lender?.address.street} ${item.lender?.address.houseNumber}`}
               isBorrowed={true}
             />
@@ -55,7 +55,7 @@ export const LoansHistory: React.FC = () => {
       
       {lentItems.length > 0 ? (
         lentItems.map((item: Loan) => (
-          <div key={item._id} className="flex flex-wrap grow shrink gap-1.5 items-start self-stretch my-auto h-60 w-[184px]">
+          <div key={item._id} className="flex flex-wrap shrink gap-1.5 items-start self-stretch my-auto h-60 w-[220px]">
             <ItemCard 
               title={item.item}
               daysAgo={getTimeDifference(item.LoanDate || new Date)}
