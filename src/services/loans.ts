@@ -69,7 +69,6 @@ export const offerHelp = async (loanId: string, lenderId: string, lenderName:str
 };
 
 export const lendItem = async (loanId: string, lenderId: string): Promise<Loan> => {
-    debugger
     const url = `/loans/${loanId}`;
     const response = await http.patch(url, { lender:{_id:lenderId} , LoanDate: new Date() });
     return response.data;
