@@ -4,7 +4,7 @@ import Select, { SingleValue } from 'react-select';
 import { UserInCommunity } from '@/types/general.type'
 
 interface AddUserToCommunityProps {
-    isOpen: boolean;
+    isOpen: boolean; 
     onClose: () => void;
     options: UserInCommunity[];
     handleAddUserSubmit: (userId:string) => void;

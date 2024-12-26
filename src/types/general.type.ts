@@ -100,10 +100,13 @@ export interface UserInCommunity {
     first_name: string;
     last_name: string;
     profile_picture_url: string;
-    role: UsersRolesInCommunity;
 }
 
 export enum UsersRolesInCommunity{
-    Member = 1,
-    Admin = 2,
+    Member = 2,
+    Admin = 1,
+}
+
+export interface NeighborhoodInCommunity{
+    _id: string;
 }

@@ -1,17 +1,15 @@
+"use client"
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getCommunities } from '@/services/communities';
-import { Community  } from '@/types/community.type';
-import { Neighborhood  } from '@/types/neighborhood.types';
+import { getCommunities, addUserToCommunity } from '@/services/communities';
+import { Community } from '@/types/community.type';
 import http from '../http';
 
-export const useCommunities = () => {
-    return useQuery<(Community|Neighborhood)[]>({
-        queryKey: ['communities'],
-        queryFn: async () => {
-            const response = await getCommunities();
-            return Array.isArray(response.data) ? response.data : [];
-        },
-        retry: 1,
+
+export const useCommunities = (userId: string) => {
+    return useQuery<Community[]>({
+        queryKey: ['communities', userId],
+        queryFn: () => getCommunities(userId),
+        retry: 1
     });
 };
 
@@ -23,13 +21,28 @@ export const useCreateCommunity = () => {
             const response = await http.post('/communities', communityData);
             return response.data;
         },
-        onSuccess: () => {
+        onSuccess: (result: any) => {
             queryClient.invalidateQueries({ queryKey: ['communities'] });
         },
         onError: (error) => {
             console.error('Failed to create an community:', error);
         },
     });
+};
+
+export const useAddUserToCommunity = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation<void, Error, { userId: string; communityId: string }>({
+        mutationFn: async ({ userId, communityId }) => addUserToCommunity(userId, communityId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['communities'] });
+        },
+        onError: (error) => {
+            console.error('Failed to create an community:', error);
+        },
+    }
+    );
 };
 
 

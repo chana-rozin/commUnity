@@ -13,6 +13,8 @@ import FormPopUp from '@/components/PopUp/AuthPopUp';
 import { z } from "zod";
 import { User } from '../../types/user.type'
 import { Preference } from '@/types/general.type';
+import { logout as logoutService } from "@/services/logout";
+
 
 
 
@@ -33,6 +35,16 @@ const signUp: React.FC = () => {
     const [rememberMe, setRememberMe] = useState(false);
     const [googleImage, setGoogleImage] = useState<string | null>(null);
     const router = useRouter();
+    // const { clearUser } = useUserStore();
+
+    // useEffect(() => {
+    //     async function logout(){
+    //         const success = await logoutService();
+    //     if (success)
+    //         clearUser();
+    //     }
+    //     logout();
+    // }, [])
 
     async function loginWithGoogle() {
         try {
@@ -139,7 +151,7 @@ const signUp: React.FC = () => {
                 ai_training_data: false,
                 general_usage_data: false
             };
-            const image = user.imageUrl?user.imageUrl: "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
+            const image = user.imageUrl ? user.imageUrl : "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
             let newUser: User = {
                 first_name: user.firstName,
                 last_name: user.lastName,
@@ -147,8 +159,8 @@ const signUp: React.FC = () => {
                 location: user.location,
                 address: user.address,
                 phone_number: user.phone,
-                profile_picture_url: image ,
-                neighborhood: { _id:`${user.address.neighborhood},${user.address.city},${user.address.country}`},
+                profile_picture_url: image,
+                neighborhood: { _id: `${user.address.neighborhood},${user.address.city},${user.address.country}` },
                 communities: [],
                 preferences: preferences,
                 savedPostsIds: [],
@@ -179,10 +191,10 @@ const signUp: React.FC = () => {
     return (
         <div className="overflow-hidden py-10 px-9 bg-white max-md:px-5">
             <div className="flex gap-5 max-md:flex-col">
-                    <OpeningImage />
+                <OpeningImage />
                 {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} userExists={userExists} setRememberMe={setRememberMe} rememberMe={rememberMe} setEmail={setEmail} /> : step === 2 ?
                     <Step2 handleStep={handleStep} /> : step === 3 ? <Step3 handleStep={handleStep} googleImage={googleImage} /> : <Step4 handleStep={handleStep} signUp={signUp} />}
-                <FormPopUp onSubmit={checkVerificationCode} inputRole={"קוד אימות"} isResend='לא קיבלת קוד? שלח שוב' resend={sendVerificationCode} inputError={userGiveWrongCode} setInputError={setUserGiveWrongCode} title='נשלח קוד אימות לכתובת המייל' isOpen={verificationPopUp} onClose={() => { setVerificationPopUp(false) }} data={email} formObj={{input: z.string()}} />
+                <FormPopUp onSubmit={checkVerificationCode} inputRole={"קוד אימות"} isResend='לא קיבלת קוד? שלח שוב' resend={sendVerificationCode} inputError={userGiveWrongCode} setInputError={setUserGiveWrongCode} title='נשלח קוד אימות לכתובת המייל' isOpen={verificationPopUp} onClose={() => { setVerificationPopUp(false) }} data={email} formObj={{ input: z.string() }} />
             </div>
         </div>
     );

@@ -2,18 +2,25 @@ import { useEffect, useState } from 'react';
 import { Community } from '@/types/community.type'
 import AddUserToCommunity from './AddUserToCommunity'
 import { FaArrowRightLong } from "react-icons/fa6";
-import SearchBar from '@/components/Events/SearchBar'
+import SearchBar from './SearchBar'
+import UpdateCommunity from './UpdateCommunity';
+import { CiSearch } from "react-icons/ci";
+import { useAddUserToCommunity } from '@/services/mutations/communities'
+
 
 import React from 'react'
 import { UserInCommunity } from '@/types/general.type';
 interface CommunityCompProps {
-  community: null | Community
+  community: Community
   setCommunityToPresent: React.Dispatch<React.SetStateAction<Community | null>>;
   handleExitCommunity: (communityId: string) => void;
+  addUserOptions: UserInCommunity[]
 }
-const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityToPresent, handleExitCommunity }) => {
-  const [addUserFormOpen, setAddUserFormOpen] = useState(false)
+const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityToPresent, handleExitCommunity, addUserOptions }) => {
+  const [addUserFormOpen, setAddUserFormOpen] = useState(false);
+  const [updateCommunityFormOpen, setUpdateCommunityFormOpen] = useState(false);
   const [membersToPresent, setMembersToPresent] = useState(community?.members);
+  const addUserToCommunityF = useAddUserToCommunity();
   useEffect(() => {
 
   }, [])
@@ -37,29 +44,47 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
   }
   function handleAddUserSubmit(userId: string) {
 
+    if(!community?._id){
+      return;
+    }
+      const communityId = community._id;
+    addUserToCommunityF.mutate({userId:userId, communityId:communityId},{
+      onSuccess: (data:any) => {
+        setAddUserFormOpen(false);
+        
+        setMembersToPresent([...membersToPresent])
+      },
+      onError: (error) => {
+        console.error(error)
+      }
+    })
   }
   return (
     <div>
-      {addUserFormOpen && <AddUserToCommunity isOpen={addUserFormOpen} onClose={onAddUserFormClose} handleAddUserSubmit={handleAddUserSubmit} options={community.members} />}
+      {updateCommunityFormOpen&&<UpdateCommunity community={community} isOpen={updateCommunityFormOpen} setIsOpen={setUpdateCommunityFormOpen} />}
+      {addUserFormOpen && <AddUserToCommunity isOpen={addUserFormOpen} onClose={onAddUserFormClose} handleAddUserSubmit={handleAddUserSubmit} options={addUserOptions} />}
       <FaArrowRightLong onClick={handleBack} className='cursor-pointer' />
       <h1 className='flex items-center justify-center '>{community.name}</h1>
       <div className='flex'>
-        <SearchBar
+        <SearchBar 
+          main={community.main}
           searchIcon="/path/to/search-icon.svg"
           onSearch={handleSearchChange}
           onAddEvent={() => setAddUserFormOpen(true)}
         />
         <button
           type="submit"
-          className="text-white p-3 rounded-full shadow-lg justify-end cursor-pointer bg-neutral-100 text-indigo-900"
-        >בואו נתחיל
+          className="g-neutral-100 text-indigo-900 p-3 rounded-full shadow-lg justify-end cursor-pointer bg-neutral-100 text-indigo-900"
+          onClick={()=>setUpdateCommunityFormOpen(true)}
+        > 
+        עדכון פרטי קבוצה
         </button>
-        <button
-          onClick={() => handleExitCommunity(community._id)}
+        {!community.main&&<button
+          onClick={() => handleExitCommunity(community?._id||"")}
           className="hover:bg-[#901B22] bg-[#cf222e] text-white p-3 rounded-full shadow-lg justify-end cursor-pointer"
         >
           יציאה מהקבוצה
-        </button>
+        </button>}
       </div>
       {membersToPresent?.map((member) => {
         return (

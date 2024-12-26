@@ -1,33 +1,73 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import GenericPopup from '../PopUp/GenericPopUp';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AddCommunityFormSchema, AddCommunityForm } from './AddCommunityForm'
+import { CommunityFormSchema, CommunityForm } from './Forms'
 import { ImageUpload } from '../uploadImage/uploadImage';
+import { Community } from '@/types/community.type';
+import useUserStore from "@/stores/userStore";
+import { useCreateCommunity } from '@/services/mutations/communities';
+import { toast } from "react-toastify";
+
+
 interface AddCommunityProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  handleAddFormSubmit: () => void;
 }
 
-const AddCommunity: React.FC<AddCommunityProps> = ({ isOpen, handleAddFormSubmit, setIsOpen }) => {
+const AddCommunity: React.FC<AddCommunityProps> = ({ isOpen, setIsOpen }) => {
+
   const [imageUrl, setImageUrl] = useState<any>("");
+  const { user, setUser } = useUserStore();
+  const [error, setError] = useState<string>('');
+  const createCommunityMutation = useCreateCommunity();
+
   const {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<AddCommunityFormSchema>({ resolver: zodResolver(AddCommunityForm) });
-  const [showPassword, setShowPassword] = React.useState(false);
-  const communityFields = [
-    { name: "name", label: "שם הקהילה", disabled: false },
-    { name: "description", label: "תיאור", disabled: false }
-  ] as const;
+  } = useForm<CommunityFormSchema>({ resolver: zodResolver(CommunityForm) });
   function onClose() {
     setIsOpen(false);
   }
+  const onSubmit: SubmitHandler<CommunityFormSchema> = (data: any) => {
+    if (!user || !user._id) {
+      return;
+    }
+    const newCommunity: Community = {
+      main: false,
+      neighborhood: { _id: user.neighborhood._id },
+      name: data.name,
+      description: data.description,
+      imageUrl: imageUrl,
+      members: [{
+        _id: user._id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        profile_picture_url: user.profile_picture_url
+      }]
+    }
+
+    createCommunityMutation.mutate(newCommunity, {
+      onSuccess: (res:any) => {
+        console.log('Local onSuccess called:', res);
+        const updatedUser = { ...user };
+        updatedUser.communities.push({
+          _id: res._id,
+          name: newCommunity.name,
+        });
+        setUser(updatedUser);
+        onClose();
+      },
+      onError: (err:any) => {
+        setError(err);
+        console.error(err instanceof Error ? err.message : "Failed to create post");
+      },
+    });
+  }
   return (
     <GenericPopup title={'הוספת קהילה חדשה'} content={
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col mt-11 gap-4 max-md:mt-10">
           <div className="flex flex-col w-full">
             <label htmlFor="name" className="text-base text-right text-neutral-700">שם הקבוצה</label>
@@ -58,13 +98,14 @@ const AddCommunity: React.FC<AddCommunityProps> = ({ isOpen, handleAddFormSubmit
         </div>
         <br />
         <p className="text-base text-right text-neutral-700">העלאת תמונת פרופיל קבוצתית</p>
-      <ImageUpload  setImageUrl={setImageUrl}/>
+        <ImageUpload setImageUrl={setImageUrl} />
         <br />
         <button
           type="submit"
           className={"gap-1 px-4 py-2 text-base font-medium text-center rounded-md w-full bg-indigo-600 text-white"}
         >הוספה
         </button>
+        {error && <span>{error}</span>}
 
       </form>} isOpen={isOpen} onClose={onClose} />
   )
