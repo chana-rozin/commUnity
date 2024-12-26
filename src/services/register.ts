@@ -3,6 +3,7 @@ import { generateToken } from '@/services/tokens'
 import { NextResponse } from 'next/server';
 import { CommunityImageUrl } from '@/services/defaultData'
 export async function communityRegister(body: any) {
+    debugger
     const neighborhoodQuery = {
         city: body.address.city,
         name: body.address.neighborhood,
@@ -13,11 +14,14 @@ export async function communityRegister(body: any) {
     if (userNeighborhood.length > 0) {
         body.neighborhood = userNeighborhood[0]._id;
         const communityQuery = {
-            neighborhood: userNeighborhood[0]._id
+            neighborhood: userNeighborhood[0]._id,
+            main: true
         }
         if (!userNeighborhood[0].streets.includes(body.address.street)) {
+            let streets = userNeighborhood[0].streets;
+            streets.push(body.address.street);
             const updateNeighborhoodQuery: any = {
-                streets: { $push: body.address.street }
+                streets: streets
             }
             const updateNeighborhoodStreets = await updateDocumentById("neighborhood", userNeighborhood[0]._id.toString(), updateNeighborhoodQuery);
             if (!updateNeighborhoodStreets) {

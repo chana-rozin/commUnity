@@ -7,15 +7,15 @@ interface AddUserToCommunityProps {
     isOpen: boolean; 
     onClose: () => void;
     options: UserInCommunity[];
-    handleAddUserSubmit: (userId:string) => void;
+    handleAddUserSubmit: (userId:UserInCommunity) => void;
 }
 const AddUserToCommunity: React.FC<AddUserToCommunityProps> = ({ isOpen, onClose, options, handleAddUserSubmit }) => {
-    let option = options.map(option =>
-        ({value: option._id, label: `${option.first_name} ${option.last_name}`})
+    let option = options.map((option:UserInCommunity) =>
+        ({value: option, label: `${option.first_name} ${option.last_name}`})
     )
     useEffect(()=>{
     },[])
-    const [selectedOption, setSelectedOption] = React.useState<SingleValue<{ value: string; label: string }>>(null);
+    const [selectedOption, setSelectedOption] = React.useState<SingleValue<{ value: UserInCommunity; label: string }>>(null);
     const [error, setError] = React.useState<null|string>(null);
     const handleChange = (selected: any) => {
         setError(null);
