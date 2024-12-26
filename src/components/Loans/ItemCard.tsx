@@ -5,11 +5,11 @@ import { MdLocationOn } from 'react-icons/md';
 export interface ItemCardProps {
   title: string;
   daysAgo: string;
-  userName: string;
+  userName: string | undefined;
   address: string;
   isBorrowed: boolean;
   buttonContent?: string;
-  ButtonIcon?: IconType; 
+  ButtonIcon?: IconType;
   onButtonClick?: () => void;
 }
 
@@ -47,10 +47,10 @@ export const ItemCard: React.FC<ItemCardProps> = ({
               <div className="text-base font-semibold text-neutral-950">
                 {userName ? userName : "עוד לא נמצא:("}
               </div>
-              <div className="flex items-center gap-1 text-xs font-medium leading-none text-neutral-500">
-            <MdLocationOn className="w-4 h-4 text-neutral-500" />
-            <span>{address}</span>
-          </div>
+              {userName && <div className="flex items-center gap-1 text-xs font-medium leading-none text-neutral-500">
+                <MdLocationOn className="w-4 h-4 text-neutral-500" />
+                <span>{address}</span>
+              </div>}
             </div>
           </div>
         </div>
