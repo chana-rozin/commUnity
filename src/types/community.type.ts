@@ -1,8 +1,12 @@
+import { UserInCommunity, NeighborhoodInCommunity } from "./general.type";
 export interface Community{
-    _id: string;
+    _id?: string;
+    main: Boolean;
+    neighborhood: NeighborhoodInCommunity;
     name: string;
-    adminId: string[];
-    membersId: string[];
+    description: string;
+    members: UserInCommunity[]
+    imageUrl: string;
 }
 
 /*

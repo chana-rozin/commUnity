@@ -6,7 +6,6 @@ const neighborhoodSchema = new Schema({
     city: { type: String , required: true },
     country: { type: String, required: true},
     streets: [{ type: String}],
-    membersId: [{ type: Schema.Types.ObjectId, ref: 'user' }]
 })
 neighborhoodSchema.index({ name: 1, city: 1, country: 1 }, { unique: true });
 export default neighborhoodSchema;
