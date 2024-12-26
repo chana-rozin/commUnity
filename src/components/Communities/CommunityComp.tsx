@@ -5,6 +5,7 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import SearchBar from './SearchBar'
 import UpdateCommunity from './UpdateCommunity';
 import { CiSearch } from "react-icons/ci";
+import { toast } from "react-toastify";
 import { useAddUserToCommunity } from '@/services/mutations/communities'
 
 
@@ -42,20 +43,19 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
   function onAddUserFormClose() {
     setAddUserFormOpen(false)
   }
-  function handleAddUserSubmit(userId: string) {
+  function handleAddUserSubmit(user: UserInCommunity) {
 
-    if(!community?._id){
+    if(!community?._id){  
       return;
     }
       const communityId = community._id;
-    addUserToCommunityF.mutate({userId:userId, communityId:communityId},{
+    addUserToCommunityF.mutate({userId:user._id, communityId:communityId},{
       onSuccess: (data:any) => {
         setAddUserFormOpen(false);
-        
-        setMembersToPresent([...membersToPresent])
+        toast.success(`${user.first_name} ${user.last_name} נוסף בהצלחה לקבוצת ${community.name}`);
       },
       onError: (error) => {
-        console.error(error)
+        toast.error(`שגיאה קרתה בהוספת ${user.first_name} ${user.last_name} לקבוצת ${community.name} , נסה שוב מאוחר יותר`);
       }
     })
   }
