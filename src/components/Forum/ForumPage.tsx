@@ -50,7 +50,7 @@ const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId }) => {
 
   return (
     <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
-      <NewPostInput />
+      <NewPostInput  selectedCommunityId={selectedCommunityId}/>
       {posts && posts.length === 0 ? (
         <div>No posts to display.</div>
       ) : (
@@ -77,5 +77,4 @@ const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId }) => {
     </div>
   );
 };
-
 export default ForumPage;

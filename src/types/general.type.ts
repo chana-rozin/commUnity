@@ -95,3 +95,18 @@ export enum SubjectInNotificationType {
     loan= 2,
     event= 3
 }
+export interface UserInCommunity {
+    _id: string;
+    first_name: string;
+    last_name: string;
+    profile_picture_url: string;
+}
+
+export enum UsersRolesInCommunity{
+    Member = 2,
+    Admin = 1,
+}
+
+export interface NeighborhoodInCommunity{
+    _id: string;
+}

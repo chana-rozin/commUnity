@@ -14,11 +14,6 @@ export const ProfileAside: React.FC<{ categories: { name: string, href: string, 
     if(!user) return null;
 
     const links = [
-        {
-            href: `/forum/${user?.neighborhood._id}`,
-            text: user?.neighborhood.name,
-            isActive: neighborhoodId === user!.neighborhood._id,
-        },
         ...(user?.communities ? user.communities.map((community: CommunityInUser) => ({
             href: `/forum/${community._id}`,
             text: community.name,

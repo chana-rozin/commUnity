@@ -14,7 +14,7 @@ export const ActiveLoan: React.FC<Loan> = ({
 }) => {
   const user = useUserStore((state) => state.user);
   const isLender = user?._id === lender?._id;
-  const roleText = isLender ? "המשאיל" : "השואל";
+  const roleText = isLender ?"השואל": "המשאיל";
 
   return (
     <div className="flex w-full items-center justify-between pb-2.5 border-b border-solid border-b-neutral-100 min-h-[61px]">
@@ -24,7 +24,7 @@ export const ActiveLoan: React.FC<Loan> = ({
           {item}
         </div>
         <div className="text-xs leading-none text-gray-400">
-          {`${roleText}: ${isLender ? borrower._id : lender?._id}`}
+          {`${roleText}: ${isLender ? `${borrower.first_name} ${borrower.last_name}` : lender?`${lender?.first_name} ${lender?.last_name}`:"עדיין לא נמצא"}`}
         </div>
       </div>
 

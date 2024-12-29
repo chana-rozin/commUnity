@@ -85,7 +85,7 @@ export const useLendItem = () => {
             return loansService.lendItem(loanId, user._id);
         },
         onSuccess: (_, { user }) => {
-            if (user?.neighborhood._id) {
+            if (user?._id) {
                 queryClient.invalidateQueries({
                     queryKey: loanQueryKeys.openLoansByCommunity(user.neighborhood._id)
                 });
