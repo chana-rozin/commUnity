@@ -6,7 +6,10 @@ import { Post } from "@/types/post.type";
 import { ImageUpload } from "@/components/uploadImage/uploadImage";
 import { FaImages } from "react-icons/fa6"
 
-export const NewPostInput: React.FC = () => {
+interface NewPostInputProps {
+  selectedCommunityId?: string;
+}
+export const NewPostInput: React.FC<NewPostInputProps> = ({selectedCommunityId}) => {
   const [text, setText] = React.useState("");
   const [images, setImages] = React.useState<string[]>([]);
   const [showImageUpload, setShowImageUpload] = React.useState(false);
@@ -34,7 +37,7 @@ export const NewPostInput: React.FC = () => {
       creator: {
         _id: user._id
       },
-      communitiesIds: [user?.neighborhood._id || ""] 
+      communitiesIds: [selectedCommunityId || user?.neighborhood._id || ""] 
     };
 
 
