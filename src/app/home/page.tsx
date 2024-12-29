@@ -54,7 +54,7 @@ const HomePage = () => {
             </div>
           </div>
           {/* Posts Section */}
-          <ForumPage  selectedCommunityId={user?.neighborhood._id}/>
+          <ForumPage  selectedCommunityId={user?.communities[0] ? user?.communities[0]._id: user?.neighborhood._id }/>
         </div>
       </div>
     </main>
