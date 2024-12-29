@@ -89,6 +89,7 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
     const commId:string = community._id||"";
     updateCommunity.mutate({data:data,communityId: commId}),{
       onSuccess: (data: any) => {
+        setCommunityToPresent(null)
         toast.success('הקבוצה עודכנה בהצלחה');
       },
       onError: (error:any) => {
