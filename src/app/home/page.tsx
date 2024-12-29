@@ -16,7 +16,7 @@ const HomePage = () => {
 
   return (
     <main>
-      <div className="flex flex-wrap gap-4 items-start mt-5 w-full">
+      <div className="flex flex-row gap-4 items-start mt-5 w-full">
         {/* Right Column - Profile Section */}
         <aside className="flex flex-col min-h-[909px] w-[211px] max-w-full" role="complementary">
           <ProfileAside categories={categories} />
@@ -54,7 +54,7 @@ const HomePage = () => {
             </div>
           </div>
           {/* Posts Section */}
-          <ForumPage  selectedCommunityId={user?.neighborhood._id}/>
+          <ForumPage  selectedCommunityId={user?.communities[0] ? user?.communities[0]._id: user?.neighborhood._id }/>
         </div>
       </div>
     </main>
