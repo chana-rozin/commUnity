@@ -76,7 +76,7 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
         debugger
         const updatedUser = { ...user };
         setDeleteAlert(false);
-        updatedUser.communities = updatedUser.communities.filter((com: CommunityInUser) => com._id!== communityId);
+        updatedUser.communities = updatedUser.communities.filter((com: CommunityInUser) => com._id !== communityId);
         setUser(updatedUser);
         setCommunityToPresent(null)
       },
@@ -85,70 +85,73 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
       }
     })
   }
-  async function hanleUpdateCommunity(data:any){
-    const commId:string = community._id||"";
-    updateCommunity.mutate({data:data,communityId: commId}),{
-      onSuccess: (data: any) => {
-        setCommunityToPresent(null);
-        setUpdateCommunityFormOpen(false);
-        toast.success('הקבוצה עודכנה בהצלחה');
-      },
-      onError: (error:any) => {
-        toast.error(`קרתה תקלה בעדכון הקבוצה!`)
+  async function hanleUpdateCommunity(data: any) {
+    const communityId: string = community._id || "";
+    updateCommunity.mutate(
+      { data, communityId },
+      {
+        onSuccess: () => {
+          setCommunityToPresent(null);
+          setUpdateCommunityFormOpen(false);
+          toast.success('הקבוצה עודכנה בהצלחה');
+        },
+        onError: (error) => {
+          toast.error(`קרתה תקלה בעדכון הקבוצה!`)
+        },
       }
-    };
-  }
-  return (
-    <div>
-      {updateCommunityFormOpen && <UpdateCommunity community={community} isOpen={updateCommunityFormOpen} setIsOpen={setUpdateCommunityFormOpen} updateCommunity={hanleUpdateCommunity} />}
-      {addUserFormOpen && <AddUserToCommunity isOpen={addUserFormOpen} onClose={onAddUserFormClose} handleAddUserSubmit={handleAddUserSubmit} options={addUserOptions} />}
-      {deleteAlert&&<SweetAlert
-        warning
-        showCancel
-        confirmBtnText="כן!"
-        cancelBtnText="!לא"
-        title={`לצאת מהקבוצה ${community.name} ?`}
-        onConfirm={()=>handleExitCommunity()}
-        onCancel={()=>setDeleteAlert(false)}
-        focusCancelBtn
-      />}
-      {confirmMessage}
+    );
+  };
+return (
+  <div>
+    {updateCommunityFormOpen && <UpdateCommunity community={community} isOpen={updateCommunityFormOpen} setIsOpen={setUpdateCommunityFormOpen} updateCommunity={hanleUpdateCommunity} />}
+    {addUserFormOpen && <AddUserToCommunity isOpen={addUserFormOpen} onClose={onAddUserFormClose} handleAddUserSubmit={handleAddUserSubmit} options={addUserOptions} />}
+    {deleteAlert && <SweetAlert
+      warning
+      showCancel
+      confirmBtnText="כן!"
+      cancelBtnText="!לא"
+      title={`לצאת מהקבוצה ${community.name} ?`}
+      onConfirm={() => handleExitCommunity()}
+      onCancel={() => setDeleteAlert(false)}
+      focusCancelBtn
+    />}
+    {confirmMessage}
 
-      <FaArrowRightLong onClick={handleBack} className='cursor-pointer' />
-      <h1 className='flex items-center justify-center '>{community.name}</h1>
-      <div className='flex'>
-        <SearchBar
-          main={community.main}
-          searchIcon="/path/to/search-icon.svg"
-          onSearch={handleSearchChange}
-          onAddEvent={() => setAddUserFormOpen(true)}
-        />
-        <button
-          type="submit"
-          className="g-neutral-100 text-indigo-900 p-3 rounded-full shadow-lg justify-end cursor-pointer bg-neutral-100 text-indigo-900"
-          onClick={() => setUpdateCommunityFormOpen(true)}
-        >
-          עדכון פרטי קבוצה
-        </button>
-        {!community.main && <button
-          onClick={() => setDeleteAlert(true)}
-          className="hover:bg-[#901B22] bg-[#cf222e] text-white p-3 rounded-full shadow-lg justify-end cursor-pointer"
-        >
-          יציאה מהקבוצה
-        </button>}
-      </div>
-      {membersToPresent?.map((member) => {
-        return (
-          <section className="flex flex-wrap gap-8 items-start self-stretch w-full text-sm max-md:max-w-full mt-7 border-b border-solid border-b-slate-200 cursor-pointer p-4 rounded-md">
-            <img src={member.profile_picture_url} alt="profile" className="w-10 h-10 rounded-full object-cover" />
-            <h2 className=" inline">
-              {`${member.first_name} ${member.last_name}`}
-            </h2>
-          </section>
-        )
-      })}
+    <FaArrowRightLong onClick={handleBack} className='cursor-pointer' />
+    <h1 className='flex items-center justify-center '>{community.name}</h1>
+    <div className='flex'>
+      <SearchBar
+        main={community.main}
+        searchIcon="/path/to/search-icon.svg"
+        onSearch={handleSearchChange}
+        onAddEvent={() => setAddUserFormOpen(true)}
+      />
+      <button
+        type="submit"
+        className="g-neutral-100 text-indigo-900 p-3 rounded-full shadow-lg justify-end cursor-pointer bg-neutral-100 text-indigo-900"
+        onClick={() => setUpdateCommunityFormOpen(true)}
+      >
+        עדכון פרטי קבוצה
+      </button>
+      {!community.main && <button
+        onClick={() => setDeleteAlert(true)}
+        className="hover:bg-[#901B22] bg-[#cf222e] text-white p-3 rounded-full shadow-lg justify-end cursor-pointer"
+      >
+        יציאה מהקבוצה
+      </button>}
     </div>
-  )
+    {membersToPresent?.map((member) => {
+      return (
+        <section className="flex flex-wrap gap-8 items-start self-stretch w-full text-sm max-md:max-w-full mt-7 border-b border-solid border-b-slate-200 cursor-pointer p-4 rounded-md">
+          <img src={member.profile_picture_url} alt="profile" className="w-10 h-10 rounded-full object-cover" />
+          <h2 className=" inline">
+            {`${member.first_name} ${member.last_name}`}
+          </h2>
+        </section>
+      )
+    })}
+  </div>
+)
 }
 
 export default CommunityComp
