@@ -1,28 +1,28 @@
 "use client"
-import React from 'react';
+import React, {useEffect} from 'react';
 import { AuthButton } from '../../components/register/step1/AuthButton'
 import { AuthTab } from '../../components/register/step1/AuthTab'
 import OpeningImage from '../../components/OpeningImage/OpeningImage'
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { auth } from '@/services/firebaseConfig'
 import { useRouter } from 'next/navigation';
-import { z, ZodObject } from "zod";
+import { z } from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { form, formTypesSchema } from "@/schemas/loginFormSchema";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { MdOutlineVisibility } from "react-icons/md";
 import { MdOutlineVisibilityOff } from "react-icons/md";
 import http from '../../services/http'
 import useUserStore from '@/stores/userStore';
 import FormPopUp from '@/components/PopUp/AuthPopUp'
+import { logout as logoutService } from "@/services/logout";
 
 
 
-const loginFormSchema = z
-    .object({
+
+const loginFormSchema = z.object({
         email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
         password: z.string().min(8, { message: 'Be at least 8 characters long' }).regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' }).regex(/[0-9]/, { message: 'Contain at least one number.' }).regex(/[^a-zA-Z0-9]/, { message: 'Contain at least one special character.', }).trim()
-    })
+})
 
 type LoginTypesSchema = z.infer<typeof loginFormSchema>;
 
@@ -48,21 +48,25 @@ const Login: React.FC = () => {
     const [newPassError, setNewPassError] = React.useState<string | null>(null);
     const [forgetPasswordError, setForgetPasswordError] = React.useState<string | null>(null);
     const router = useRouter();
-
-    const {
-        register,
-        handleSubmit,
-        watch,
-        formState: { errors }
-    } = useForm<LoginTypesSchema>({ resolver: zodResolver(loginFormSchema) });
+    const { register, handleSubmit, watch, formState: { errors }} = useForm<LoginTypesSchema>({ resolver: zodResolver(loginFormSchema) });
     const [showPassword, setShowPassword] = React.useState(false);
     const emailValue = watch("email");
-
     const baseStyles = "gap-1 px-4 py-2 text-base font-medium text-center rounded-md w-full";
     const variantStyles = {
         primary: "bg-indigo-600 text-white",
         secondary: "bg-neutral-100 text-indigo-900"
     };
+    // const { clearUser } = useUserStore();
+
+    // useEffect(() => {
+    //         async function logout(){
+    //             const success = await logoutService();
+    //         if (success)
+    //             clearUser();
+    //         }
+    //         logout();
+    //     }, [])
+
     async function loginWithGoogle() {
         try {
             const result = await signInWithPopup(auth, googleProvider);
@@ -91,6 +95,7 @@ const Login: React.FC = () => {
             }
         }
     }
+
     async function loginWithEmail(email: string, password: string) {
         try {
             const userExist = await http.post(`/login/email`, {
@@ -114,9 +119,11 @@ const Login: React.FC = () => {
             }
         }
     }
+
     const togglePassword = () => {
         setShowPassword(!showPassword);
     };
+
     function goToSignUp() {
         router.push('/register');
     }
@@ -124,6 +131,7 @@ const Login: React.FC = () => {
     const handleRememberMeBtn = (event: any) => {
         setRemember(event.target.checked); // Update state based on the checkbox value
     };
+
     const onSubmit: SubmitHandler<any> = async (data) => {
         debugger
         loginWithEmail(data.email, data.password);
@@ -157,6 +165,7 @@ const Login: React.FC = () => {
             console.error('Error: email value is required.');
         }
     }
+
     async function sendVerificationCode(email: string) {
         try {
             setVerificationPopUp(true);
@@ -167,6 +176,7 @@ const Login: React.FC = () => {
 
         }
     }
+
     async function checkVerificationCode(email: string, code: string) {
         try {
             const result = await http.post('/verify-email/check', { email: email, code: code })
@@ -185,6 +195,7 @@ const Login: React.FC = () => {
             setVerifyError('הקוד שגוי , נסה שוב!');
         }
     }
+
     async function handlePasswordChange(email: string, password: string) {
         try {
             const result = await http.post('/passwords', { email: email, password: password });

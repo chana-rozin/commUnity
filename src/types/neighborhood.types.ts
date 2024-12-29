@@ -2,8 +2,8 @@ export interface Neighborhood{
     _id: string;
     name: string;
     city: string;
+    country: string;
     streets: string[];
-    membersId: string[];
 }
 
 /*
