@@ -14,11 +14,13 @@ export const ProfileAside: React.FC<{ categories: { name: string, href: string, 
     if(!user) return null;
 
     const links = [
-        ...(user?.communities ? user.communities.map((community: CommunityInUser) => ({
+        ...(user?.communities ? user.communities.map((community: CommunityInUser) => {
+            debugger
+            return ({
             href: `/forum/${community._id}`,
             text: community.name,
             isActive: communityId === community._id,
-        })) : []),
+        })}) : []),
     ];
 
     const { first_name, last_name, address, profile_picture_url } = user;
