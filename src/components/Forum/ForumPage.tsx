@@ -77,5 +77,4 @@ const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId }) => {
     </div>
   );
 };
-
 export default ForumPage;
