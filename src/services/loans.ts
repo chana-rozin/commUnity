@@ -41,6 +41,7 @@ export const createLoan = async (loan: any): Promise<any> => {
 
 export const offerHelp = async (loanId: string, lenderId: string, lenderName:string, item:string, borrowerId: string): Promise<Notifications> => {
     const url = `/notifications`;
+    const [firstName, lastName] = lenderName.split(" ");
 
     const notificationData = {
         receiverId: borrowerId,
@@ -53,6 +54,8 @@ export const offerHelp = async (loanId: string, lenderId: string, lenderName:str
 
     const response = await http.post(url, notificationData);
     const createdNotification = response.data.notification;
+    console.log("createdNotification", createdNotification);
+    debugger
 
     // Send Pusher message with the created notification
     await http.post('/pusher/send', {
@@ -79,10 +82,13 @@ export const returnLoan = async (loanId: string): Promise<Loan> => {
 
 export const remindBorrower = async (loanId: string, item: string, lenderId: string, lenderName:string, borrowerId: string): Promise<Notifications> => {
     const url = `/notifications`;
+    const [firstName, lastName] = lenderName.split(" ");
     const notificationData = {
         receiverId: borrowerId,
         message: `⚠️ תזכורת: הפריט ${item} טרם הוחזר ל${lenderName}`,
-        sender: {_id: lenderId},
+        sender: {_id: lenderId,  
+            first_name: firstName,
+            last_name: lastName},
         urgencyLevel: 2,
         type: 1,
         subject: { _id: loanId, type: 2 },

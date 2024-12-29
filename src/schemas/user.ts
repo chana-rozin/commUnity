@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
     notifications: [{
             _id: { type: String, required: true },
             message: { type: String, required: true },
-            sender: { type: Schema.Types.ObjectId, required: true },
+            sender: { type: Schema.Types.ObjectId, ref:"user", required: true },
             urgencyLevel: {
                 type: Number,
                 enum: [1,2,3],  // Use enum values dynamically

@@ -1,7 +1,6 @@
 "use client"
 import ForumPage from '../../components/Forum/ForumPage';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
-import { LoansNotificationsCard } from '@/components/LoansNotificationsCard/LoansNotificationsCard';
 import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
 import GeneralNotificationsCard from '@/components/GeneralNotificationsCard/GeneralNotificationsCard';
 import useUserStore from '@/stores/userStore';
@@ -56,20 +55,6 @@ const HomePage = () => {
           </div>
           {/* Posts Section */}
           <ForumPage />
-        </div>
-        {/* Left Column */}
-        <div className="flex flex-col flex-1 shrink basis-0 min-w-[260px]">
-          <div className="flex flex-col p-5 w-full  bg-white rounded-2xl mb-4">
-            <GeneralNotificationsCard />
-          </div>
-          {/* Loans Section */}
-          <div className="flex flex-col p-5  w-full bg-white rounded-2xl">
-            <LoansNotificationsCard />
-          </div>
-          {/* Events Section */}
-          <div className="flex flex-col p-5 mt-4 w-full bg-white rounded-2xl">
-            <EventsNotificationsCard />
-          </div>
         </div>
       </div>
     </main>

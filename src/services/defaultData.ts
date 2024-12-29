@@ -1,0 +1,1 @@
+export const CommunityImageUrl:string = 'https://imgproxy.attic.sh/unsafe/rs:fit:768:768:1:1/t:1:FF00FF:false:false/pngo:false:true:256/aHR0cHM6Ly9hdHRp/Yy5zaC9pNzVhcmJu/N20xMTZ6ajNhNjBx/eHdzc2I4ZGlx.png'

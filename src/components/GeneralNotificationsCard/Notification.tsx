@@ -1,9 +1,13 @@
-import React from 'react';
+
+"use client"
+import React, { useCallback, memo } from 'react';
 import { BiBell, BiTime, BiCalendarExclamation } from 'react-icons/bi';
 import { lendItem } from "@/services/loans";
 import { deleteNotification } from "@/services/users"
 import {
-    Notifications, UrgencyLevel, NotificationType,
+    Notifications,
+    UrgencyLevel,
+    NotificationType,
     SubjectInNotificationType
 } from '@/types/general.type';
 import useUserStore from '@/stores/userStore';
@@ -13,7 +17,7 @@ interface NotificationWrapperProps {
     children: React.ReactNode;
 }
 
-const NotificationWrapper: React.FC<NotificationWrapperProps> = ({ urgencyLevel, children }) => {
+const NotificationWrapper = memo(({ urgencyLevel, children }: NotificationWrapperProps) => {
     const getUrgencyStyles = () => {
         switch (urgencyLevel) {
             case UrgencyLevel.High:
@@ -32,24 +36,35 @@ const NotificationWrapper: React.FC<NotificationWrapperProps> = ({ urgencyLevel,
             {children}
         </div>
     );
-};
+});
+
+NotificationWrapper.displayName = 'NotificationWrapper';
+
+interface NotificationIconProps {
+    type: SubjectInNotificationType;
+    className?: string;
+}
+
+const NotificationIcon = memo(({ type, className = "h-5 w-5" }: NotificationIconProps) => {
+    switch (type) {
+        case SubjectInNotificationType.loan:
+            return <BiTime className={className} />;
+        case SubjectInNotificationType.babysitting:
+            return <BiCalendarExclamation className={className} />;
+        default:
+            return <BiBell className={className} />;
+    }
+});
+
+NotificationIcon.displayName = 'NotificationIcon';
 
 interface ReminderNotificationProps {
     notification: Notifications;
 }
 
-const ReminderNotification: React.FC<ReminderNotificationProps> = ({ notification }) => {
-    const getIcon = () => {
-        switch (notification.subject.type) {
-            case SubjectInNotificationType.loan:
-                return <BiTime className="h-5 w-5" />;
-            case SubjectInNotificationType.babysitting:
-                return <BiCalendarExclamation className="h-5 w-5" />;
-            default:
-                return <BiBell className="h-5 w-5" />;
-        }
-    };
-
+const ReminderNotification = memo(({ notification }: ReminderNotificationProps) => {
+    const deleteNotificationFromStore = useUserStore((state) => state.deleteNotification);
+    
     const getTitle = () => {
         switch (notification.subject.type) {
             case SubjectInNotificationType.loan:
@@ -61,10 +76,27 @@ const ReminderNotification: React.FC<ReminderNotificationProps> = ({ notificatio
         }
     };
 
+    const handleAccept = useCallback(async () => {
+        try {
+            if (!notification._id) {
+                console.error('No notification ID found');
+                return;
+            }
+
+            deleteNotificationFromStore(notification._id);
+            await deleteNotification(notification._id);
+        } catch (error) {
+            console.error('Failed to delete notification:', error);
+            // TODO: Add error handling UI feedback
+        }
+    }, [notification._id, deleteNotificationFromStore]);
+
     return (
         <NotificationWrapper urgencyLevel={notification.urgencyLevel}>
-            <div className="flex items-start gap-4">
-                <div className="text-indigo-600">{getIcon()}</div>
+            <div className="flex flex-col items-start gap-4">
+                <div className="text-indigo-600">
+                    <NotificationIcon type={notification.subject.type} />
+                </div>
                 <div className="flex-1">
                     <h3 className="text-lg font-semibold mb-1">
                         {getTitle()}
@@ -73,73 +105,80 @@ const ReminderNotification: React.FC<ReminderNotificationProps> = ({ notificatio
                         {notification.message}
                     </div>
                 </div>
+                <div className="flex gap-2 justify-end">
+                    <button
+                        className="p-3 text-xs font-medium rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 transition"
+                        onClick={handleAccept}
+                    >
+                        תודה!, אשתדל לזכור:)
+                    </button>
+                </div>
             </div>
         </NotificationWrapper>
     );
-};
+});
+
+ReminderNotification.displayName = 'ReminderNotification';
 
 interface RequestNotificationProps {
     notification: Notifications;
 }
 
-const RequestNotification: React.FC<RequestNotificationProps> = ({ notification }) => {
+const RequestNotification = memo(({ notification }: RequestNotificationProps) => {
     const deleteNotificationFromStore = useUserStore((state) => state.deleteNotification);
 
-    const handleAccept = async () => {
-        switch (notification.subject.type) {
-            case SubjectInNotificationType.loan:
-                await lendItem(notification.subject._id, notification.sender._id);
+    const handleAccept = useCallback(async () => {
+        try {
+            switch (notification.subject.type) {
+                case SubjectInNotificationType.loan:
+                    await lendItem(notification.subject._id, notification.sender._id);
+                    break;
+                case SubjectInNotificationType.babysitting:
+                    // TODO: Implement accept logic
+                    return;
+                default:
+                    return;
+            }
+
+            if (notification._id) {
                 deleteNotificationFromStore(notification._id);
                 await deleteNotification(notification._id);
-                break;
-            case SubjectInNotificationType.babysitting:
-                return; //TODO: Implement accept logic
-            default:
-                return;
+            }
+        } catch (error) {
+            console.error('Failed to accept request:', error);
+            // TODO: Add error handling UI feedback
         }
-    };
+    }, [notification, deleteNotificationFromStore]);
 
-    const handleReject = async () => {
+    const handleReject = useCallback(async () => {
         try {
-            if (!notification?._id) {
+            if (!notification._id) {
                 console.error('No notification ID found');
                 return;
             }
-            deleteNotificationFromStore(notification._id);// updates user store
-            await deleteNotification(notification._id);//deletes from server
 
+            deleteNotificationFromStore(notification._id);
+            await deleteNotification(notification._id);
         } catch (error) {
             console.error('Failed to delete notification:', error);
+            // TODO: Add error handling UI feedback
         }
-    };
+    }, [notification._id, deleteNotificationFromStore]);
 
-    const getRequestTypeInfo = () => {
-        switch (notification.subject.type) {
-            case SubjectInNotificationType.loan:
-                return {
-                    icon: <BiTime className="h-5 w-5" />,
-                    title: 'בקשת השאלה',
-                    acceptText: 'אשר השאלה',
-                    rejectText: 'דחה בקשה'
-                };
-            case SubjectInNotificationType.babysitting:
-                return {
-                    icon: <BiCalendarExclamation className="h-5 w-5" />,
-                    title: 'בקשת בייביסיטינג',
-                    acceptText: 'אשר בייביסיטינג',
-                    rejectText: 'דחה בקשה'
-                };
-            default:
-                return {
-                    icon: <BiBell className="h-5 w-5" />,
-                    title: 'בקשה חדשה',
-                    acceptText: 'אשר',
-                    rejectText: 'דחה'
-                };
-        }
+    const requestInfo = {
+        icon: <NotificationIcon type={notification.subject.type} />,
+        title: notification.subject.type === SubjectInNotificationType.loan
+            ? 'בקשת השאלה'
+            : notification.subject.type === SubjectInNotificationType.babysitting
+                ? 'בקשת בייביסיטינג'
+                : 'בקשה חדשה',
+        acceptText: notification.subject.type === SubjectInNotificationType.loan
+            ? 'אשר השאלה'
+            : notification.subject.type === SubjectInNotificationType.babysitting
+                ? 'אשר בייביסיטינג'
+                : 'אשר',
+        rejectText: 'דחה בקשה'
     };
-
-    const requestInfo = getRequestTypeInfo();
 
     return (
         <NotificationWrapper urgencyLevel={notification.urgencyLevel}>
@@ -170,6 +209,8 @@ const RequestNotification: React.FC<RequestNotificationProps> = ({ notification 
             </div>
         </NotificationWrapper>
     );
-};
+});
+
+RequestNotification.displayName = 'RequestNotification';
 
 export { ReminderNotification, RequestNotification };
