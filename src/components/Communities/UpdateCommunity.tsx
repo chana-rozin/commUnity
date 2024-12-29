@@ -9,8 +9,9 @@ interface UpdateCommunityProps {
     community: Community;
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    updateCommunity: (data: any) => void; // Replace with the actual function to update community
 }
-const UpdateCommunity: React.FC<UpdateCommunityProps> = ({ community, isOpen, setIsOpen }) => {
+const UpdateCommunity: React.FC<UpdateCommunityProps> = ({ community, isOpen, setIsOpen, updateCommunity }) => {
     const [imageUrl, setImageUrl] = useState(community.imageUrl);
     function onClose() {
         setIsOpen(false);
@@ -25,9 +26,18 @@ const UpdateCommunity: React.FC<UpdateCommunityProps> = ({ community, isOpen, se
             description: community.description // Replace with the actual default description
         }
     });
+    const onSubmit: SubmitHandler<CommunityFormSchema> = async (data) => {
+        console.log('onSubmit');
+        console.log(data);
+        const updatedData:any = {}
+        if(imageUrl!==){
+            
+        }
+        updateCommunityFormSchema({})
+    }
     return (
         <GenericPopup title={'עדכון הפרטים'} content={
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col mt-11 gap-4 max-md:mt-10">
                     <div className="flex flex-col w-full">
                         <label htmlFor="name" className="text-base text-right text-neutral-700">שם הקבוצה</label>

@@ -54,7 +54,7 @@ const MyCommunitiesPage: React.FC = () => {
                             )
                         })
                         }</div> :
-                    <CommunityComp community={cummunityToPresent} setCommunityToPresent={setCommunityToPresent} handleExitCommunity={handleExitCommunity} addUserOptions={addUserOptions}/>
+                    <CommunityComp community={cummunityToPresent} setCommunityToPresent={setCommunityToPresent} addUserOptions={addUserOptions}/>
                 }
             </div>
         </div>
