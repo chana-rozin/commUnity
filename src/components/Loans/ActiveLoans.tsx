@@ -6,6 +6,7 @@ import { useActiveLoansByUser, useReturnLoan, useRemindBorrower } from '@/servic
 import useUserStore from '@/stores/userStore'; 
 import { getTimeDifference } from "@/utils/dates";
 import { Loan } from '@/types/loan.type';
+import Loading from '@/components/animations/Loading';
 
 
 export const ActiveLoans: React.FC = ({}) => {
@@ -16,7 +17,7 @@ export const ActiveLoans: React.FC = ({}) => {
   const borrowedItems = activeLoans?.filter(loan => loan.borrower._id === user?._id) || [];
   const lentItems = activeLoans?.filter(loan => loan.lender?._id === user?._id) || [];
   console.log(borrowedItems);
-  if (isLoading) return <div>טוען פריטים...</div>;
+  if (isLoading) return <Loading height='Low'/>;
   if (error) return <div>שגיאה בטעינת הלוואות</div>;
   
   return (
