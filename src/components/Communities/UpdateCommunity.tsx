@@ -30,10 +30,20 @@ const UpdateCommunity: React.FC<UpdateCommunityProps> = ({ community, isOpen, se
         console.log('onSubmit');
         console.log(data);
         const updatedData:any = {}
-        if(imageUrl!==){
+        if(imageUrl!==community.imageUrl){
+            updatedData.imageUrl = imageUrl;
             
         }
-        updateCommunityFormSchema({})
+        if(data.description!==community.description){
+            updatedData.description = data.description;
+        }
+        if(data.name!==community.name){
+            updatedData.name = data.name;
+        }
+        if(Object.keys(updatedData).length === 0){
+            return;
+        }
+        await updateCommunity(updatedData);
     }
     return (
         <GenericPopup title={'עדכון הפרטים'} content={

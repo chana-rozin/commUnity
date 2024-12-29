@@ -85,9 +85,20 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
       }
     })
   }
+  async function hanleUpdateCommunity(data:any){
+    const commId:string = community._id||"";
+    updateCommunity.mutate({data:data,communityId: commId}),{
+      onSuccess: (data: any) => {
+        toast.success('הקבוצה עודכנה בהצלחה');
+      },
+      onError: (error:any) => {
+        toast.error(`קרתה תקלה בעדכון הקבוצה!`)
+      }
+    };
+  }
   return (
     <div>
-      {updateCommunityFormOpen && <UpdateCommunity community={community} isOpen={updateCommunityFormOpen} setIsOpen={setUpdateCommunityFormOpen} />}
+      {updateCommunityFormOpen && <UpdateCommunity community={community} isOpen={updateCommunityFormOpen} setIsOpen={setUpdateCommunityFormOpen} updateCommunity={hanleUpdateCommunity} />}
       {addUserFormOpen && <AddUserToCommunity isOpen={addUserFormOpen} onClose={onAddUserFormClose} handleAddUserSubmit={handleAddUserSubmit} options={addUserOptions} />}
       {deleteAlert&&<SweetAlert
         warning

@@ -23,7 +23,24 @@ export async function POST(request: Request,{ params }: { params: Promise<{ id: 
     let user = foreignKey(body);
     let communityToUpdate = community;
     communityToUpdate.members.push(user);
-    
+    const updateUser = await getDocumentById("user", body);
+    if(!updateUser){
+        return NextResponse.json(
+            { message: "Failed to found user" },
+            { status: 404 } // Internal Server Error
+        );
+    }  
+    updateUser.communities.push(foreignKey(id));
+    const query:any ={
+        communities: updateUser.communities
+    }
+    const updateUserResult = await updateDocumentById("user", body, query);
+    if(!updateUserResult){
+        return NextResponse.json(
+            { message: "Failed to update user communities" },
+            { status: 500 } // Internal Server Error
+        );
+    }
 
     // Update the post in the database
     const result = await updateDocumentById("community", id, communityToUpdate);
