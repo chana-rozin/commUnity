@@ -7,11 +7,25 @@ import {
 } from "@/services/mongoDB/mongodb";
 
 // Fetch all communities
-export async function GET(request: Request) {
-    const communities = await getAllDocuments("communities"); // Retrieve all communities
-    return NextResponse.json(communities); // Return data as JSON
-}
-
+export async function GET(
+    request: Request,
+    { params }: { params: { userId: string } }
+  ) {
+    try {
+      // Get communities where the user is a member
+      const query = {
+        membersId: { $in: [params.userId] }
+      };
+      const communities = await getAllDocuments("community", query);
+      return NextResponse.json(communities);
+    } catch (error) {
+      console.error("Error fetching user communities:", error);
+      return NextResponse.json(
+        { message: "Failed to fetch communities" },
+        { status: 500 }
+      );
+    }
+  }
 // Create a new community
 export async function POST(request: Request) {
     const body = await request.json(); // Parse request body
