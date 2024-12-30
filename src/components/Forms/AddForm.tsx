@@ -53,8 +53,8 @@ const CommunitySelect = ({
             <input
               type="checkbox"
               id={community._id}
-              checked={selectedCommunities.includes(community._id)}
-              onChange={() => handleToggle(community._id)}
+              checked={selectedCommunities.includes(community._id || '')}
+              onChange={() => handleToggle(community._id || '')}
               className="h-4 w-4 text-indigo-600 rounded border-gray-300"
             />
             <label htmlFor={community._id} className="mr-2 text-sm text-gray-700">
