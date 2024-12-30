@@ -57,7 +57,7 @@ const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId }) => {
           בקהילה זו לא נוספו עוד פוסטים😕
         </div>
               ) : (
-        <div className="flex flex-col gap-4 flex-grow overflow-auto">
+        <div className="flex flex-col gap-2 flex-grow overflow-auto">
           {posts
             ?.slice()
             .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
