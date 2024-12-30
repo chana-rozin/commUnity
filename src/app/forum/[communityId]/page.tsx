@@ -14,8 +14,8 @@ const CommunityForumPage: React.FC = () => {
   ];
 
   return (
-    <main>
-      <div className="flex flex-wrap gap-4 items-start w-full">
+    <main className="flex flex-col flex-grow">
+      <div className="flex flex-wrap gap-4 items-start w-full flex-grow">
         {/* Middle Column */}
         <div className="flex flex-col flex-grow">
           <div className="relative flex items-center justify-between overflow-hidden mb-2 flex-wrap p-6 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl min-h-[164px] shadow-lg">
