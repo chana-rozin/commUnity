@@ -1,10 +1,11 @@
+import { UserInLoan } from './general.type'
 export interface Loan{
     _id: string;
-    lenderID: string;
-    borrowerID: string;
+    lender?: UserInLoan;
+    borrower: UserInLoan;
     item: string;
     createdDate: Date;
-    LoanDate: Date;
+    LoanDate: Date | null;
     active: boolean;
     AuthorizedIds: string[];
 }

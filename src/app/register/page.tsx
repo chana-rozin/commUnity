@@ -1,46 +1,89 @@
 "use client"
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react'
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
-import { auth } from '../../services/firebaseConfig'
+import { auth } from '@/services/firebaseConfig'
 import http from '../../services/http'
 import Step1 from '../../components/register/step1/step1'
 import Step2 from '../../components/register/step2/step2'
 import Step3 from '../../components/register/step3/step3'
+import Step4 from '../../components/register/step4/step4'
+import OpeningImage from '../../components/OpeningImage/OpeningImage'
+import FormPopUp from '@/components/PopUp/AuthPopUp';
+import { z } from "zod";
+import { User } from '../../types/user.type'
+import { Preference } from '@/types/general.type';
+import { logout as logoutService } from "@/services/logout";
+
 
 
 
 import VerificationCodePopUp from '../../components/register/verificationCodePopUp'
 const googleProvider = new GoogleAuthProvider();
+import useUserStore from '@/stores/userStore';
+import { useRouter } from 'next/navigation';
 
 
-
-const AuthPage: React.FC = () => {
-
-
+const signUp: React.FC = () => {
     const [email, setEmail] = useState('');
     const [verificationPopUp, setVerificationPopUp] = useState(false);
     const [step, setStep] = useState(1);
     const [user, setUser] = useState<any>(null);
-    const [userGiveWrongCode, setUserGiveWrongCode] = useState(false)
+    const [userGiveWrongCode, setUserGiveWrongCode] = useState<null | string>(null);
+    const [signUpBy, setSignUpBy] = useState<string>();
+    const [userExists, setUserExists] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
+    const [googleImage, setGoogleImage] = useState<string | null>(null);
+    const router = useRouter();
+    // const { clearUser } = useUserStore();
+
+    // useEffect(() => {
+    //     async function logout(){
+    //         const success = await logoutService();
+    //     if (success)
+    //         clearUser();
+    //     }
+    //     logout();
+    // }, [])
 
     async function loginWithGoogle() {
         try {
+            debugger
+            setSignUpBy('google');
             const result = await signInWithPopup(auth, googleProvider);
-            const user = result.user;
+            let user: any = result.user;
+            const userExist = await http.post(`/register/${user.email}`)
+            setUserExists(false)
+            setGoogleImage(user.photoURL)
             setUser(user);
             console.log("User signed in:", user);
             setStep(2);
-        } catch (error) {
+        } catch (error: any) {
+            if (error.status === 409) {
+                setUserExists(true);
+                return;
+            }
             console.error("Error signing in:", error);
         }
     }
 
     async function loginWithEmailAndPassword(email: string, password: string) {
-        setVerificationPopUp(true);
-        setEmail(email);
-        setUser({email: email, password: password});
-        sendVerificationCode(email);
+        debugger
+        try {
+            setSignUpBy('email')
+            const userExist = await http.post(`/register/${email}`)
+            setUserExists(false);
+            setVerificationPopUp(true);
+            setEmail(email);
+            setUser({ email: email, password: password });
+            sendVerificationCode(email);
+        } catch (error: any) {
+            if (error.status === 409) {
+                setUserExists(true);
+                return;
+            }
+            console.error("Error signing in:", error);
+        }
     }
 
     async function sendVerificationCode(email: string) {
@@ -53,74 +96,109 @@ const AuthPage: React.FC = () => {
         }
     }
 
-    async function checkVerificationCode(email: string, code: string) {
+    async function checkVerificationCode(userEmail: string, userCode: string) {
         debugger
         try {
-            const result = await http.post('/verify-email/check', { email: email, code: code })
-            if(result.status === 200) {
+            const result = await http.post('/verify-email/check', { email: userEmail, code: userCode })
+            if (result.status === 200) {
                 setStep(2);
                 setVerificationPopUp(false);
-            }else{
-                setUserGiveWrongCode(true);
+            } else {
+                setUserGiveWrongCode(result.data.message);
             }
             console.log(result);
-            
+
         }
-        catch (error) {
+        catch (error: any) {
             console.error('Error sending verification code:', error);
-            setUserGiveWrongCode(true);
+            setUserGiveWrongCode(error.message);
         }
     }
 
-    async function handleStep(data: object) {
-        setStep((prev:number)=>{
-            return prev+1
-        });
-        setUser((prev:object)=>{
-            return {...prev,...data}
-        })
+    async function handleStep(data: object | null, more: boolean = true) {
+        if (more) {
+            if (step === 4) {
+                signUp();
+            }
+            setStep((prev: number) => {
+                return prev + 1
+            });
+        } else {
+
+            setStep((prev: number) => {
+                return prev - 1
+            });
+        }
+        if (data !== null) {
+            setUser((prev: object) => {
+                return { ...prev, ...data }
+            })
+        }
         return;
     }
 
-    return (
-        <div className="overflow-hidden py-10 pr-9 pl-16 bg-white max-md:px-5">
-            <div className="flex gap-5 max-md:flex-col">
-                <div className="flex flex-col w-[55%] max-md:ml-0 max-md:w-full">
-                    <div className="flex flex-col grow pt-9 w-full bg-violet-200 rounded-[29px] max-md:mt-10 max-md:max-w-full">
-                        <img
-                            loading="lazy"
-                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/14eeaecd4f86cd90fe9fdf0fa65bd9406c9378edb4720d15456e6c9de723554f?placeholderIfAbsent=true&apiKey=7db810be59414fad871df25414a5c08b"
-                            alt=""
-                            className="object-contain self-end mr-20 w-7 aspect-[1.04] fill-violet-950 max-md:mr-2.5"
-                        />
-                        <div className="flex z-10 flex-col pl-9 mt-5 max-md:pl-5 max-md:max-w-full">
-                            <div className="ml-3.5 text-4xl leading-[52px] text-neutral-950 w-[504px] max-md:ml-2.5">
-                                Find a job through <span>your community</span>
-                            </div>
-                            <div className="flex relative flex-col items-end px-20 pt-8 mt-14 min-h-[622px] pb-[519px] max-md:px-5 max-md:pb-24 max-md:mt-10 max-md:mr-0 max-md:max-w-full">
-                                <img
-                                    loading="lazy"
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/10981eef531602d3195110b5fbd05e04c9634e30b640e35b9731f0eccd72859c?placeholderIfAbsent=true&apiKey=7db810be59414fad871df25414a5c08b"
-                                    alt="Community illustration"
-                                    className="object-cover absolute inset-0 size-full"
-                                />
-                                <img
-                                    loading="lazy"
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/91b072e0810434fb0c49002aac4ad24a27c5aa2f78e4a9e07dae616f6469cf22?placeholderIfAbsent=true&apiKey=7db810be59414fad871df25414a5c08b"
-                                    alt=""
-                                    className="object-contain mb-0 aspect-[1.07] fill-violet-950 w-[78px] max-md:mb-2.5"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} /> : step === 2 ?
+    async function signUp() {
+        debugger
+        try {
+            console.log(user);
 
-                    <Step2 handleStep={handleStep}/> : step === 3 ? <Step3 /> : <></>}
-                {verificationPopUp && <VerificationCodePopUp sendVerificationCode={sendVerificationCode} email={email} checkVerificationCode={checkVerificationCode} userGiveWrongCode={userGiveWrongCode} setUserGiveWrongCode={setUserGiveWrongCode}/>}
+            const preferences: Preference =
+            {
+                email_notifications: true,
+                minyan_notifications: true,
+                event_notifications: true,
+                sound_alerts: false,
+                ai_training_data: false,
+                general_usage_data: false
+            };
+            const image = user.imageUrl ? user.imageUrl : "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
+            let newUser: User = {
+                first_name: user.firstName,
+                last_name: user.lastName,
+                email: user.email,
+                location: user.location,
+                address: user.address,
+                phone_number: user.phone,
+                profile_picture_url: image,
+                neighborhood: { _id: `${user.address.neighborhood},${user.address.city},${user.address.country}` },
+                communities: [],
+                preferences: preferences,
+                savedPostsIds: [],
+                savedEventsIds: [],
+                notifications: []
+            }
+            var result;
+            if (signUpBy === "google") {
+                const userWithToken = { ...newUser, accessToken: user.accessToken }
+                result = await http.post('/register/google', userWithToken);
+            } else {
+                const userWithPass = { ...newUser, password: user.password }
+                result = await http.post('/register/email', userWithPass);
+            }
+            if (result.status !== 201) {
+                throw new Error('Failed to add user to the database');
+            }
+            else {
+                debugger
+                useUserStore.getState().setUser(result.data, rememberMe);
+                router.push('/home');
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    return (
+        <div className="overflow-hidden py-10 px-9 bg-white max-md:px-5">
+            <div className="flex gap-5 max-md:flex-col">
+                <OpeningImage />
+                {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} userExists={userExists} setRememberMe={setRememberMe} rememberMe={rememberMe} setEmail={setEmail} /> : step === 2 ?
+                    <Step2 handleStep={handleStep} /> : step === 3 ? <Step3 handleStep={handleStep} googleImage={googleImage} /> : <Step4 handleStep={handleStep} signUp={signUp} />}
+                <FormPopUp onSubmit={checkVerificationCode} inputRole={"קוד אימות"} isResend='לא קיבלת קוד? שלח שוב' resend={sendVerificationCode} inputError={userGiveWrongCode} setInputError={setUserGiveWrongCode} title='נשלח קוד אימות לכתובת המייל' isOpen={verificationPopUp} onClose={() => { setVerificationPopUp(false) }} data={email} formObj={{ input: z.string() }} />
             </div>
         </div>
     );
 };
 
-export default AuthPage;
+
+export default signUp;

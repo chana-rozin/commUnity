@@ -1,11 +1,15 @@
+import { Address } from "./general.type";
+
 export interface Babysitting{
     _id: string;
-    requesterId: string;
-    babysitterId: string;
+    requester: {_id: string, first_name: string, last_name: string};
+    babysitter?: {_id: string, first_name: string, last_name: string};
     date: Date;
-    location: string;
+    time: {start: string, end: string}
+    address: Address;
     childrenNumber: number;
-    ages: number[];
+    ageRange: string;
+    notes: string;
     AuthorizedIds: string[];
 }
 

@@ -8,11 +8,16 @@ export const getPosts = async (): Promise<any>=>{
 
 export const getPostById = async (postId: string): Promise<any>=>{
     const url = `/posts/${postId}`; 
-    console.log("Fetching URL:", url);   
     const response = await http.get(url);
-    console.log("Response:",response);
     return response.data;
 }
+
+export const getPostsByCommunityId = async (communityId: string): Promise<any>=>{
+  const url = `/posts?communities=${communityId}`;    
+  const response = await http.get(url);
+  return response.data;
+}
+
 
 export const createPost = async (post: any): Promise<any>=>{
     const url = `/posts`;    
@@ -20,9 +25,9 @@ export const createPost = async (post: any): Promise<any>=>{
     return response;
 }
 
-export const likePost = async (postId: string, creatorId: string) => {
+export const likePost = async (postId: string, creator: string) => {
     try {
-      const response = await http.post(`/posts/${postId}/likes`, creatorId );
+      const response = await http.post(`/posts/${postId}/likes`, creator );
       return response;
     } catch (error) {
       console.error("Error liking post:", error);
@@ -30,9 +35,9 @@ export const likePost = async (postId: string, creatorId: string) => {
     }
 };
 
-export const unLikePost = async (postId: string, creatorId: string) => {
+export const unLikePost = async (postId: string, creator: string) => {
     try {
-      const response = await http.delete(`/posts/${postId}/likes`, {data: creatorId,} );
+      const response = await http.delete(`/posts/${postId}/likes`, {data: creator} );
       return response;
     } catch (error) {
       console.error("Error liking post:", error);

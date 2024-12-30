@@ -1,13 +1,22 @@
-import * as React from 'react';
-import { InputField } from './input';
+import React, { useEffect } from 'react';
+import { useState } from 'react';
 import { RegistrationFormData } from './types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { formSchema, formTypes } from './formSchema'
+import SearchableSelectWithAPI from '@/components/map/map'
+import { Location, Address } from '@/types/general.type';
 interface props {
     handleStep: (data: object) => void;
 }
 export const RegistrationForm: React.FC<props> = ({ handleStep }) => {
+    const [address, setAddress] = useState<any>(null);
+    useEffect(()=>{
+        if(address){
+            setAddressError(null)
+        }
+    },[address])
+    const [addressError, setAddressError] = useState<string|null>(null);
     const formFields: Array<{ id: keyof RegistrationFormData; placeholder: string }> = [
         { id: 'firstName', placeholder: 'שם פרטי' },
         { id: 'lastName', placeholder: 'שם משפחה' },
@@ -21,17 +30,49 @@ export const RegistrationForm: React.FC<props> = ({ handleStep }) => {
     } = useForm<formSchema>({ resolver: zodResolver(formTypes) });
 
     const onSubmit: SubmitHandler<formSchema> = async (data) => {
+        if(!address){
+            setAddressError('נא להכניס כתובת מגורים');
+            return;
+        }
+        const location:Location = {
+            type: "Point",
+            coordinates: [parseFloat(address.value.lon), parseFloat( address.value.lat)]
+        }
         console.log('onSubmit');
         console.log(data);
-        handleStep(data);
+        debugger
+        if(!address.value.address.house_number){
+            setAddressError('נא להכניס כתובת עם מספר בית/בנין');
+            return;
+        }
+        const dataToSave = {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            address: {
+                country: address.value.address.country,
+                city: address.value.address.city,
+                houseNumber: address.value.address.house_number,
+                street: address.value.address.road,
+                neighborhood: address.value.address.suburb},
+            location : location,
+            phone: data.phone
+        }
+        console.log(dataToSave);
+        
+        handleStep(dataToSave);
     }
 
     return (
-        <form className="flex flex-col mt-20 max-w-full text-sm leading-none min-h-[234px] text-neutral-500 w-[430px] max-md:mt-10" onSubmit={handleSubmit(onSubmit)}>
+        <form className="flex flex-col max-w-full text-sm leading-none min-h-[234px] text-neutral-500 w-[430px]" onSubmit={handleSubmit(onSubmit)}>
+            <h1 className="mt-9 text-3xl font-bold text-right text-neutral-950">
+                איזה כיף שאת/ה כאן!
+            </h1>
+            <p className="self-start mt-0 text-base text-right text-neutral-950">
+                רק עוד כמה פרטים קטנים ואנחנו שם!
+            </p>
             <div className="flex flex-col w-full max-md:max-w-full">
                 <div className="flex flex-col mt-4 w-full max-md:max-w-full">
                     <div className="flex flex-col w-full max-md:max-w-full">
-                        <label htmlFor={'firstName'} className="sr-only">שם פרטי</label>
                         <input
                             {...register("firstName")}
                             type='text'
@@ -45,7 +86,6 @@ export const RegistrationForm: React.FC<props> = ({ handleStep }) => {
                 </div>
                 <div className="flex flex-col mt-4 w-full max-md:max-w-full">
                     <div className="flex flex-col w-full max-md:max-w-full">
-                        <label htmlFor={'lastName'} className="sr-only">שם משפחה</label>
                         <input
                             {...register("lastName")}
                             type='text'
@@ -59,32 +99,24 @@ export const RegistrationForm: React.FC<props> = ({ handleStep }) => {
                 </div>
                 <div className="flex flex-col mt-4 w-full max-md:max-w-full">
                     <div className="flex flex-col w-full max-md:max-w-full">
-                        <label htmlFor={'address'} className="sr-only">כתובת מגורים</label>
-                        <input
-                            {...register("address")}
-                            type='text'
-                            id='address'
-                            placeholder='כתובת מגורים'
-                            className="overflow-hidden flex-1 shrink gap-1 self-stretch px-3 py-3 w-full bg-white rounded-md border border-solid border-stone-300 min-h-[42px] max-md:max-w-full text-sm leading-none text-neutral-500"
-                            aria-label='כתובת מגורים'
-                        />
-                    </div>
-                    {errors.address && <span>{errors.address.message}</span>}
-                </div>
-                <div className="flex flex-col mt-4 w-full max-md:max-w-full">
-                    <div className="flex flex-col w-full max-md:max-w-full">
-                        <label htmlFor={'phone'} className="sr-only">מס\' פלאפון</label>
                         <input
                             {...register("phone")}
                             type='tel'
                             id='phone'
-                            placeholder="מס\' פלאפון"
+                            placeholder="מספר פלאפון"
                             className="overflow-hidden flex-1 shrink gap-1 self-stretch px-3 py-3 w-full bg-white rounded-md border border-solid border-stone-300 min-h-[42px] max-md:max-w-full text-sm leading-none text-neutral-500"
-                            aria-label="מס\' פלאפון"
+                            aria-label="מספר פלאפון"
                         />
                     </div>
                     {errors.phone && <span>{errors.phone.message}</span>}
                 </div>
+                <div className="flex flex-row mt-4 w-full max-md:max-w-full">
+                    <div className="flex flex-col w-full max-md:max-w-full">
+                        <SearchableSelectWithAPI setAddress={setAddress} inputPlaceholder={"כתובת מגורים"}/>
+                        {addressError && <span>{addressError}</span>}
+                    </div>
+                </div>
+
             </div>
             <button
                 type="submit"

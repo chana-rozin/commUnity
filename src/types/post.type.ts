@@ -1,12 +1,12 @@
-import { ImageFile, Comment } from './general.type'
+import { Comment, Creator } from './general.type'
 export interface Post{
     _id: string;
-    creatorId: string;
-    communityId: string;
+    creator: Creator;
+    communitiesIds: string[];
     createdDate: Date;
     title: string;
     content: string;
-    images: ImageFile[];
+    images: string[];
     comments: Comment[];
     likedBy: string[];
 }

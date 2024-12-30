@@ -19,3 +19,8 @@
     text-wrap: balance;
   }
 }
+
+body {
+  padding-right: 3rem !important;
+  overflow: visible !important;
+}

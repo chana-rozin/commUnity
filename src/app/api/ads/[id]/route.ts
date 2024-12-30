@@ -3,17 +3,27 @@ import mongoose from "mongoose";
 import {
     updateDocumentById,
     deleteDocumentById,
-} from "@/services/mongodb";
-import Ad from "@/models/ad"; // Import the adSchema
+    getDocumentById,
+} from "@/services/mongoDB/mongodb";
 
+
+export async function GET(request: Request,
+    { params }: { params: Promise<{ id: string }> }) {
+        
+    let { id } = await params;
+    const ads = await getDocumentById("ad",id); // Retrieve all ads
+    return NextResponse.json(ads); // Return data as JSON
+}
 // Update an ad by ID
-export async function PUT(
+export async function PATCH(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
     let { id } = await params;
     const body = await request.json(); // Parse request body
     delete body._id; // Delete id from body to avoid conflicts
+    delete body.createdAt;
+
 
     if (!id) {
         return NextResponse.json(
@@ -23,14 +33,8 @@ export async function PUT(
     }
 
     try {
-        // Create a temporary document for validation
-        const updatedAd = new Ad(body);
-
-        // Validate the document (throws an error if validation fails)
-        await updatedAd.validate();
-
         // Update the ad in the database
-        const result = await updateDocumentById("ads", id, body);
+        const result = await updateDocumentById("ad", id, body);
 
         if (!result) {
             return NextResponse.json(
@@ -71,7 +75,7 @@ export async function DELETE(
     }
 
     // Delete the ad from the database
-    const result = await deleteDocumentById("ads", id);
+    const result = await deleteDocumentById("ad", id);
 
     if (!result) {
         return NextResponse.json(

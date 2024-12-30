@@ -1,79 +1,83 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import EventCard from './EventCard';
-import SearchBar from './SearchBar';
-import { getEvents } from '@/services/events';
-import { Event } from '@/types/event.type';
+import React, { useState } from "react";
+import EventCard from "./EventCard";
+import SearchBar from "./SearchBar";
+import useUserStore from "@/stores/userStore";
+import { useEvents, useCreateEvent } from '@/services/mutations/events';
+import { Event } from "@/types/event.type";
+import { z } from "zod";
+import { AddForm } from "../Forms/AddForm";
+import Loading from '@/components/animations/Loading'
+ 
+const eventSchema = z.object({
+  name: z.string().min(1, "יש להזין שם אירוע"),
+  description: z.string().min(1, "יש להזין תיאור"),
+  date: z.date(),
+  location: z.string().min(1, "יש להזין מיקום"),
+  createdDate: z.date(),
+  active: z.boolean(),
+  AuthorizedIds: z.array(z.string()),
+});
 
 const EventsPage: React.FC = () => {
-  const [events, setEvents] = useState<Event[]>([]);
+  const { user } = useUserStore();
+  const { data: events = [], isLoading, error } = useEvents();
+  const createEventMutation = useCreateEvent();
+
   const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isAddFormOpen, setIsAddFormOpen] = useState(false);
 
-  const fetchEvents = async () => {
-    try {
-      const response = await getEvents();
-      const fetchedEvents = Array.isArray(response.data) ? response.data : [];
-      setEvents(fetchedEvents);
-      setFilteredEvents(fetchedEvents); // Initialize filtered events
-    } catch (error) {
-      console.error("Error fetching events:", error);
-      setEvents([]);
-      setFilteredEvents([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSearch = (query: string) => {
-    const lowercasedQuery = query.toLowerCase();
-    const filtered = events.filter((event) =>
-      event.name.toLowerCase().includes(lowercasedQuery) ||
-      event.description.toLowerCase().includes(lowercasedQuery)
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    setFilteredEvents(
+      events.filter((event) =>
+        event.name.toLowerCase().includes(query.toLowerCase())
+      )
     );
-    setFilteredEvents(filtered);
   };
 
-  const handleFilter = () => {
-    console.log("Filter action triggered");
-    // Add filter functionality here (e.g., show a modal or dropdown)
+  const handleCreateEvent = (data: Partial<any>) => {
+    createEventMutation.mutate(data);
+    setIsAddFormOpen(false);
   };
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
+  if (isLoading) return <Loading height={'low'}/>;
+  if (error) return <p className="text-red-500">Error loading events: {error.message}</p>;
 
   return (
-    <main className="flex flex-col px-4 max-w-[791px]">
-      <div className="flex flex-col items-end w-full bg-violet-50 min-h-[886px] max-md:max-w-full">
-        <nav className="flex items-center pr-4 text-sm font-medium leading-none whitespace-nowrap text-neutral-700">
-          <button className="self-stretch p-2 my-auto">מודעות</button>
-          <button className="self-stretch p-2 my-auto bg-violet-50 shadow-sm text-violet-950">
-            אירועים
-          </button>
-          <button className="self-stretch p-2 my-auto">שמורים</button>
-        </nav>
-        <section className="flex flex-col justify-center items-end py-4 pr-4 w-full bg-indigo-100 rounded-2xl">
-          <div className="flex flex-col items-end w-full max-w-[775px] max-md:max-w-full">
-            <SearchBar
-              searchIcon="https://cdn.builder.io/api/v1/image/assets/TEMP/b9591596270d6b187f64a7a1612ff1f48bb7b06db896c63e1f4f62c8de0f707c?placeholderIfAbsent=true&apiKey=74b2142c0bce4595b7b12dcbcfab8364"
-              filterIcon="https://cdn.builder.io/api/v1/image/assets/TEMP/de030c42bb66754d21cdc4c95a880e99a4a4894f72c431a4fecfb47dce304ab3?placeholderIfAbsent=true&apiKey=74b2142c0bce4595b7b12dcbcfab8364"
-              onSearch={handleSearch}
-              onFilter={handleFilter}
-            />
-            <div className="flex flex-wrap gap-6 items-start px-2.5 mt-5 max-w-full min-h-[428px] w-[731px]">
-              {loading ? (
-                <p>Loading events...</p>
-              ) : filteredEvents.length === 0 ? (
-                <p>No events to display.</p>
-              ) : (
-                filteredEvents.map((event, index) => (
-                  <EventCard key={index} {...event} />
-                ))
-              )}
-            </div>
-          </div>
-        </section>
+    <main className="flex flex-col items-center px-4 w-full">
+      {/* Search and Add Event Bar */}
+      <div className="w-full max-w-[791px] px-2.5 mt-5">
+        <SearchBar
+          searchIcon="/path/to/search-icon.svg"
+          onSearch={handleSearchChange}
+          onAddEvent={() => setIsAddFormOpen(true)}
+        />
+      </div>
+
+      {/* AddForm */}
+      {isAddFormOpen && (
+        <AddForm
+          schema={eventSchema}
+          initialValues={{}}
+          hiddenFields={{
+            createdDate: new Date(),
+            active: true,
+            AuthorizedIds: user?.neighborhood?._id ? [user.neighborhood._id] : [],
+          }}
+          onSubmit={handleCreateEvent}
+          title="הוספת אירוע חדש"
+          isOpen={true}
+          onClose={() => setIsAddFormOpen(false)}
+        />
+      )}
+
+      {/* Event Cards */}
+      <div className="flex flex-wrap justify-center gap-6 w-full max-w-[791px] px-2.5 mt-5">
+        {(searchQuery ? filteredEvents : events).map((event) => (
+          <EventCard key={event._id} {...event} />
+        ))}
       </div>
     </main>
   );

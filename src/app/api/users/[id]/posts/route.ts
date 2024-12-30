@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { patchDocumentById, getDocumentById } from "@/services/mongodb";
+import { updateDocumentById, getDocumentById } from "@/services/mongoDB/mongodb";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
     debugger
@@ -11,7 +11,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         const body = await request.json(); // Parse request body
 
         // Fetch the user document
-        const userToUpdate = await getDocumentById('users', id);
+        const userToUpdate = await getDocumentById('user', id);
         if (!userToUpdate) {
             return NextResponse.json(
                 { message: "User not found" },
@@ -22,7 +22,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         user.savedPostsIds.push(body);
         
         // Update the post in the database
-        const result = await patchDocumentById("users", id, user);
+        const result = await updateDocumentById("user", id, user);
 
         if (!result) {
             throw new Error('Update failed');
@@ -47,13 +47,13 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         let { id } = await params;
         if (!id) {
             return NextResponse.json(
-                { message: "Post ID is required" },
+                { message: "User ID is required" },
                 { status: 400 } // Bad Request
             );
         }
 
         const body = await request.json(); // Parse request body
-        const userDocument = await getDocumentById('users', id);
+        const userDocument = await getDocumentById('user', id);
 
         if (!userDocument) {
             return NextResponse.json(
@@ -67,7 +67,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         user.savedPostsIds = savedPostsIds;
 
         // Update the post in the database
-        const result = await patchDocumentById("users", id, user);
+        const result = await updateDocumentById("user", id, user);
 
         if (!result) {
             return NextResponse.json(
