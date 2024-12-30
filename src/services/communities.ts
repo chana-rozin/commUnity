@@ -1,15 +1,10 @@
 import http from "./http";
 import { community } from "./mongoDB/models";
 
-<<<<<<< HEAD
-export const getCommunities = async (userId: string): Promise<any> => {
-    const response = await http.get(`/users/${userId}/communities`);
-=======
 export const getCommunities = async (userId:string): Promise<any> => {
     if(userId === "") return [];
     const url = `/communities?user_id=${userId}`;
     const response = await http.get(url);
->>>>>>> f88845f88655018811694faec068d8b54c973a23
     return response.data;
   };
 
