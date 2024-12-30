@@ -8,6 +8,7 @@ import { FaPlus } from "react-icons/fa";
 import AddBabysittingRequest from "./AddForm";
 import { NoLoansSection } from "@/components/Loans/NoLoansSection";
 import { pusherClient } from "@/services/pusher";
+import Loading from "@/components/animations/Loading";
 
 function BabysittingPage() {
     const { user } = useUserStore();
@@ -43,7 +44,7 @@ function BabysittingPage() {
         };
     }, [communitiesIds, refetch]);
 
-    if (isLoading) return <div>טוען בקשות בייביסיטר</div>;
+    if (isLoading) return <Loading height='low'/>;
     if (error) return <div>שגיאה בטעינת בקשות בייביסיטר</div>;
 
     return (

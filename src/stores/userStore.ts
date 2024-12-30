@@ -39,6 +39,7 @@ const useUserStore = create<UserState>()(
                         notifications: [...(state.user.notifications || []), notification]
                     } : null
                 })),
+
             deleteNotification: (notificationId: string) =>
                 set((state) => ({
                     user: state.user
@@ -64,6 +65,7 @@ const useUserStore = create<UserState>()(
             ),
             onRehydrateStorage: () => (state) => {
                 if (!state?.loginTime) return;
+                console.log('Rehydrated state:', state?.user?.notifications);
 
                 const currentTime = Date.now();
                 const elapsedTime = currentTime - state.loginTime;

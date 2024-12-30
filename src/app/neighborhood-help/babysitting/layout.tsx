@@ -35,7 +35,7 @@ export default function BabysittingLayout({ children }: { children: React.ReactN
     }
 
     return (
-        <div className="flex flex-col w-full max-w-[750px] max-md:pl-5">
+        <div className="flex flex-col w-full flex-grow ">
             <TabsController defaultTab={currentTab} tabs={tabs} />
             {children}
         </div>

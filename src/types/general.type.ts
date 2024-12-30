@@ -29,6 +29,7 @@ export interface Comment {
 
 export interface Notifications {
     _id: string;
+    receiverId?: string;
     message: string; 
     sender: SenderInNotification;
     urgencyLevel: UrgencyLevel;
@@ -93,5 +94,21 @@ export enum NotificationType {
 export enum SubjectInNotificationType { 
     babysitting = 1,
     loan= 2,
-    event= 3
+    event= 3,
+    community = 4
+}
+export interface UserInCommunity {
+    _id: string;
+    first_name: string;
+    last_name: string;
+    profile_picture_url: string;
+}
+
+export enum UsersRolesInCommunity{
+    Member = 2,
+    Admin = 1,
+}
+
+export interface NeighborhoodInCommunity{
+    _id: string;
 }

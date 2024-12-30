@@ -2,6 +2,7 @@ import React from "react";
 import { useForm, Controller, SubmitHandler, Path } from 'react-hook-form';
 import { z, ZodType, ZodObject, TypeOf } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Community } from "@/types/community.type";
 
 // Field Labels in Hebrew
 const fieldLabels: Record<string, string> = {
@@ -27,6 +28,42 @@ interface AddFormProps<T extends ZodType> {
     isOpen: boolean;
     onClose: () => void;
 }
+
+const CommunitySelect = ({ 
+    communities, 
+    selectedCommunities, 
+    onChange 
+  }: {
+    communities: Community[];
+    selectedCommunities: string[];
+    onChange: (selected: string[]) => void;
+  }) => {
+    const handleToggle = (communityId: string) => {
+      const updated = selectedCommunities.includes(communityId)
+        ? selectedCommunities.filter(id => id !== communityId)
+        : [...selectedCommunities, communityId];
+      onChange(updated);
+    };
+  
+    return (
+      <div className="space-y-2">
+        {communities.map((community) => (
+          <div key={community._id} className="flex items-center">
+            <input
+              type="checkbox"
+              id={community._id}
+              checked={selectedCommunities.includes(community._id || '')}
+              onChange={() => handleToggle(community._id || '')}
+              className="h-4 w-4 text-indigo-600 rounded border-gray-300"
+            />
+            <label htmlFor={community._id} className="mr-2 text-sm text-gray-700">
+              {community.name}
+            </label>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
 export function AddForm<T extends ZodType>({ schema, onSubmit, initialValues = {}, hiddenFields = {}, title, isOpen, onClose,}: AddFormProps<T>) {
     if (!isOpen) return null;

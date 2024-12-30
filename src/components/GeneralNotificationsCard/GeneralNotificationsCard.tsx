@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo } from "react";
+"use client"
+import React, { useEffect, useMemo, useState} from "react";
 import { ReminderNotification, RequestNotification } from "./Notification";
 import { Notifications, NotificationType } from "@/types/general.type";
 import useUserStore from "@/stores/userStore";
@@ -16,6 +17,7 @@ const GeneralNotificationsCard: React.FC = () => {
         const channel = pusherClient.subscribe(`user-${user._id}`);
 
         const handleNotification = (data: { message: Notifications }) => {
+            console.log("data.message: ",JSON.stringify(data.message));
             if (data.message) {
                 addNotification(data.message);
             }
@@ -26,7 +28,8 @@ const GeneralNotificationsCard: React.FC = () => {
             'loan-request',
             'loan-reminder',
             'babysit-request',
-            'babysit-reminder'
+            'babysit-reminder',
+            'community-invite',
         ];
 
         // Bind all events
