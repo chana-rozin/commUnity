@@ -93,5 +93,3 @@ export const useUpdateCommunity= ()=>{
     );
 }
 
-
->>>>>>> f88845f88655018811694faec068d8b54c973a23
