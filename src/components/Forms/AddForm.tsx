@@ -2,7 +2,7 @@ import React from "react";
 import { useForm, Controller, SubmitHandler, Path } from 'react-hook-form';
 import { z, ZodType, ZodObject, TypeOf } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Community } from '@/types/community.type';
+import { Community } from "@/types/community.type";
 
 // Field Labels in Hebrew
 const fieldLabels: Record<string, string> = {
@@ -27,7 +27,6 @@ interface AddFormProps<T extends ZodType> {
     title: string;
     isOpen: boolean;
     onClose: () => void;
-    children?: React.ReactNode;
 }
 
 const CommunitySelect = ({ 
@@ -174,7 +173,6 @@ export function AddForm<T extends ZodType>({ schema, onSubmit, initialValues = {
                     {Object.entries(schemaFields).map(([field, fieldType]) =>
                         renderInput(field, fieldType)
                     )}
-                     {children}
                     <div>
                         <button
                             type="submit"

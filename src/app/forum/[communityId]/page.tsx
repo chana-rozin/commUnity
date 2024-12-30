@@ -45,11 +45,7 @@ const CommunityForumPage: React.FC = () => {
             </div>
           </div>
           {/* Posts Section */}
-          <ForumPage
-            selectedCommunityId={
-              user?.communities[0] ? user?.communities[0]._id : user?.neighborhood._id
-            }
-          />
+          <ForumPage selectedCommunityId={communityId as string}/>
         </div>
       </div>
     </main>

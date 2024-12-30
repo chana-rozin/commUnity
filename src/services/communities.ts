@@ -6,7 +6,7 @@ export const getCommunities = async (userId:string): Promise<any> => {
     const url = `/communities?user_id=${userId}`;
     const response = await http.get(url);
     return response.data;
-  };
+}
 
 export const getCommunity = async (communityId: string): Promise<any> => {
     const url = `/communities/${communityId}`;

@@ -2,10 +2,21 @@ export interface Event {
     _id: string;
     name: string;
     description: string;
-    date: Date;  // Changed from string to Date
+    date: string;
     location: string;
-    createdDate: Date;  // Changed from string to Date
+    createdDate: string;
     active: boolean;
-    AuthorizedIds: string[];
-    authorizedType: 'community' | 'neighborhood';
+    AuthorizedIds: string[]; 
 }
+
+/*
+אירוע:
+שם
+תיאור
+תאריך
+תאריך פרסום
+פעיל
+הרשאות צפייה- רשימת תזים של קבוצות שיכולות לצפות באירוע
+מיקום
+
+*/
