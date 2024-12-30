@@ -1,4 +1,4 @@
-
+"use client"
 // Function to get user communities
 // const getUserCommunities = async (userId: string): Promise<Community[]> => {
 //   const response = await http.get(`/users/${userId}/communities`);
@@ -15,7 +15,6 @@ export const useUserCommunities = (userId: string | undefined) => {
   });
 };
 
-"use client"
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getCommunities, addUserToCommunity, deleteUserFromCommunity, updateCommunity } from '@/services/communities';
 import { Community } from '@/types/community.type';
