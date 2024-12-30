@@ -7,6 +7,7 @@ import {
 //Get a post by ID
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    debugger
     let { id } = await params;
 
     if (!id) {
@@ -16,19 +17,22 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         );
     }
     const populate = [
-        { path: 'members._id', select: 'first_name last_name profile_picture_url' }
+        { path: 'members', select: 'first_name last_name profile_picture_url' }
     ];
     // Retrieve the post from the database
-    const community = await getDocumentById('post', id, populate);
+    const community = await getDocumentById('community', id, populate);
 
     if (!community) {
         return NextResponse.json(
-            { message: "Post not found" },
+            { message: "Community not found" },
             { status: 404 } // Not Found
         );
     }
+    const communityToSend = community._doc;
 
-    return NextResponse.json(community);
+    communityToSend._id = communityToSend._id.toString();
+
+    return NextResponse.json(communityToSend);
 }
 
 //Patch a post by ID
