@@ -1,33 +1,30 @@
 'use client';
 import React from 'react';
 import ForumPage from '@/components/Forum/ForumPage';
-import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
-import { LoansNotificationsCard } from '@/components/LoansNotificationsCard/LoansNotificationsCard';
-import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
 import { useParams } from 'next/navigation';
 import useUserStore from '@/stores/userStore';
 
 const CommunityForumPage: React.FC = () => {
   const { communityId } = useParams();
-  const { user, setUser } = useUserStore();
+  const { user } = useUserStore();
 
-  const categories = [{ name: "ראשי", href: "/home", isActive: user?.neighborhood._id==communityId }, { name: "שמורים", href: "/saved", isActive: false }]
+  const categories = [
+    { name: "ראשי", href: "/home", isActive: user?.neighborhood._id == communityId },
+    { name: "שמורים", href: "/saved", isActive: false }
+  ];
 
   return (
-    <main>
-      <div className="flex flex-wrap gap-4 items-start mt-5 w-full">
-
+    <main className="flex flex-col flex-grow">
+      <div className="flex flex-wrap gap-4 items-start w-full flex-grow">
         {/* Middle Column */}
-        <div className="flex flex-col min-w-[240px] w-[775px]">
+        <div className="flex flex-col flex-grow">
           <div className="relative flex items-center justify-between overflow-hidden mb-2 flex-wrap p-6 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl min-h-[164px] shadow-lg">
             {/* Background Pattern */}
             <div className="absolute inset-0 bg-pattern opacity-10 pointer-events-none z-0"></div>
 
             {/* Text Content */}
             <div className="flex flex-col z-10">
-              <h2 className="text-2xl font-bold">
-                היי {user?.first_name}!
-              </h2>
+              <h2 className="text-2xl font-bold">היי {user?.first_name}!</h2>
               <p className="mt-2 text-base font-medium">
                 יש לנו כמה הפתעות בשבילך 🎉
               </p>
@@ -48,13 +45,11 @@ const CommunityForumPage: React.FC = () => {
             </div>
           </div>
           {/* Posts Section */}
-          <ForumPage selectedCommunityId={communityId as string} />
+          <ForumPage selectedCommunityId={communityId as string}/>
         </div>
       </div>
     </main>
   );
-
-
 };
 
 export default CommunityForumPage;

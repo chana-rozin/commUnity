@@ -54,8 +54,6 @@ export const offerHelp = async (loanId: string, lenderId: string, lenderName:str
 
     const response = await http.post(url, notificationData);
     const createdNotification = response.data.notification;
-    console.log("createdNotification", createdNotification);
-    debugger
 
     // Send Pusher message with the created notification
     await http.post('/pusher/send', {
@@ -63,7 +61,6 @@ export const offerHelp = async (loanId: string, lenderId: string, lenderName:str
         event: "loan-request",
         message: createdNotification
     });
-    console.log("notification response id:",createdNotification._id);
 
     return createdNotification;
 };

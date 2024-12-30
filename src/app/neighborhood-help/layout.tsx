@@ -10,8 +10,8 @@ export default function NeighborhoodHelpLayout({ children }: { children: React.R
     const categories = [{ name: "השאלות", href: "/neighborhood-help/loans", isActive: currentCategory === "loans" }, { name: "שמרטפות", href: "/neighborhood-help/babysitting/requests", isActive: currentCategory === "babysitting" }];
 
     return (
-        <div className="flex flex-wrap gap-4 items-start mt-5 w-full">
-            <aside className="flex flex-col w-[211px] max-w-full" role="complementary">
+        <div className="flex gap-4 items-start mt-5 w-full">
+            <aside className="flex flex-col min-h-[909px] w-[200px] flex-shrink-0" role="complementary">
                 <ProfileAside categories={categories} />
             </aside>
             {children}
