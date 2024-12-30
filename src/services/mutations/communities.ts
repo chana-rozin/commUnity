@@ -25,7 +25,7 @@ export const useUserCommunities = (userId: string | undefined) => {
 =======
 "use client"
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getCommunities, addUserToCommunity } from '@/services/communities';
+import { getCommunities, addUserToCommunity, deleteUserFromCommunity, updateCommunity } from '@/services/communities';
 import { Community } from '@/types/community.type';
 import http from '../http';
 
@@ -69,6 +69,37 @@ export const useAddUserToCommunity = () => {
     }
     );
 };
+
+export const useDeleteUserFromCommunity = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation<void, Error, { userId: string; communityId: string }>({
+        mutationFn: async ({ userId, communityId }) => deleteUserFromCommunity(userId, communityId),
+        onSuccess: () => {
+            debugger
+            queryClient.invalidateQueries({ queryKey: ['communities'] });
+        },
+        onError: (error) => {
+            console.error('Failed to create an community:', error);
+        },
+    }
+    );
+};
+
+export const useUpdateCommunity= ()=>{
+    const queryClient = useQueryClient();
+
+    return useMutation<void, Error, { data: any; communityId: string }>({
+        mutationFn: async ({ data, communityId }) => updateCommunity(communityId, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['communities'] });
+        },
+        onError: (error) => {
+            console.error('Failed to create an community:', error);
+        },
+    }
+    );
+}
 
 
 >>>>>>> f88845f88655018811694faec068d8b54c973a23

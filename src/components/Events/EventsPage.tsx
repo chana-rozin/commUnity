@@ -9,6 +9,7 @@ import { z } from "zod";
 import { AddForm } from "../Forms/AddForm";
 import { useUserCommunities } from '@/services/mutations/communities';
 import { CommunitySelect } from '../Forms/CommunitySelect';
+import Loading from '@/components/animations/Loading'
 
 const eventSchema = z.object({
   name: z.string().min(1, "יש להזין שם אירוע"),
@@ -38,7 +39,7 @@ const EventsPage: React.FC = () => {
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
     setFilteredEvents(
-      events.filter((event) => 
+      events.filter((event) =>
         event.name.toLowerCase().includes(query.toLowerCase())
       )
     );
@@ -58,7 +59,7 @@ const EventsPage: React.FC = () => {
 };
   console.log('User Communities:', userCommunities);
 
-  if (isLoading) return <p>Loading events...</p>;
+  if (isLoading) return <Loading height={'low'}/>;
   if (error) return <p className="text-red-500">Error loading events: {error.message}</p>;
 
   return (
