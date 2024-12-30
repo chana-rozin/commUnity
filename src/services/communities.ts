@@ -34,3 +34,14 @@ export const addUserToCommunity = async (userId:string, communityId:string): Pro
     const response = await http.post(url, userId);
     return response.data;
 }
+export const deleteUserFromCommunity = async (userId:string, communityId:string): Promise<any> => {
+    const url = `communities/${communityId}/users/${userId}`;
+    const response = await http.delete(url);
+    return response.data;
+}
+
+export const updateCommunity = async (communityId: string, data: any): Promise<any> => {
+    const url = `/communities/${communityId}`;
+    const response = await http.patch(url, data);
+    return response.data;
+}

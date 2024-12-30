@@ -6,6 +6,7 @@ import { FaPlus } from "react-icons/fa";
 import AddCommunity from "@/components/Communities/AddCommunity";
 import useUserStore from "@/stores/userStore";
 import { useCommunities, useCreateCommunity } from "@/services/mutations/communities";
+import Loading from '@/components/animations/Loading'
 
 const MyCommunitiesPage: React.FC = () => {
     const { user, setUser } = useUserStore();
@@ -21,7 +22,7 @@ const MyCommunitiesPage: React.FC = () => {
 
     }
     if (isLoading) {
-        return <div>טעינה...</div>
+        return <Loading height='low'/>
     }
     if (error) return <div>הייתה שגיאה בטעינת הקהילות: {error.message}</div>;
     return (
@@ -54,7 +55,7 @@ const MyCommunitiesPage: React.FC = () => {
                             )
                         })
                         }</div> :
-                    <CommunityComp community={cummunityToPresent} setCommunityToPresent={setCommunityToPresent} handleExitCommunity={handleExitCommunity} addUserOptions={addUserOptions}/>
+                    <CommunityComp community={cummunityToPresent} setCommunityToPresent={setCommunityToPresent} addUserOptions={addUserOptions}/>
                 }
             </div>
         </div>
