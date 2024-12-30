@@ -13,6 +13,7 @@ import {
 import useUserStore from '@/stores/userStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { loanQueryKeys } from '@/services/mutations/loans';
+import {useBabysit} from "@/services/mutations/babysitting";
 
 interface NotificationWrapperProps {
     urgencyLevel: UrgencyLevel;
@@ -154,7 +155,7 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
                     await lendItem(notification.subject._id, notification.sender._id);
                     break;
                 case SubjectInNotificationType.babysitting:
-                    // TODO: Implement accept logic
+                    await useBabysit(notification.subject._id, notification.sender._id);
                     return;
                 case SubjectInNotificationType.community:
                     await acceptInvitation(user?._id?user._id:"", notification.subject._id);
