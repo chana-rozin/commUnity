@@ -6,6 +6,7 @@ import { usePosts, useLikePost, useSavePost } from '@/services/mutations/forum';
 import { NewPostInput } from './NewPostInput';
 import Link from 'next/link';
 import useUserStore from "@/stores/userStore";
+import Loading from "../animations/Loading";
 
 interface ForumPageProps {
   selectedCommunityId?: string;
@@ -45,7 +46,7 @@ const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId }) => {
   if (!user) {
     return <div>Loading user...</div>;
   }
-  if (isLoading) return <div>Loading posts...</div>;
+  if (isLoading) return <Loading height='low'/>;;
   if (error) return <div>Error loading posts</div>;
 
   return (

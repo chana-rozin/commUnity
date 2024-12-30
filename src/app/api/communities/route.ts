@@ -36,6 +36,7 @@ export async function GET(request: Request) {
 
 // Create a new post
 export async function POST(request: Request) {
+    debugger
     try {
         const body = await request.json(); // Parse request body
         if (!body) {
@@ -69,7 +70,7 @@ export async function POST(request: Request) {
         const query: any = {
             communities: updateUser.communities
         }
-        const updateUserResult = await updateDocumentById("user", body, query);
+        const updateUserResult = await updateDocumentById("user", body.members[0]._id, query);
         if (!updateUserResult) {
             return NextResponse.json(
                 { message: "Failed to update user communities" },
