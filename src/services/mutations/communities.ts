@@ -103,3 +103,8 @@ export const useSendInvitation = () => {
         },
     });
 };
+
+export const invalidData=()=>{
+    const queryClient = useQueryClient();
+    queryClient.invalidateQueries({ queryKey: ['communities'] });
+}
