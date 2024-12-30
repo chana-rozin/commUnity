@@ -14,8 +14,7 @@ const eventSchema = new Schema({
     }],
     authorizedType: {
         type: String,
-        enum: ['community', 'neighborhood'],
-        required: true
+        enum: ['community', 'neighborhood'],  // Enforce values to either 'community' or 'neighborhood'
     },
 })
 
