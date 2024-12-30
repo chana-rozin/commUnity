@@ -65,7 +65,7 @@ const CommunitySelect = ({
     );
   };
 
-export function AddForm<T extends ZodType>({ schema, onSubmit, initialValues = {}, hiddenFields = {}, title, isOpen, onClose, children,}: AddFormProps<T>) {
+export function AddForm<T extends ZodType>({ schema, onSubmit, initialValues = {}, hiddenFields = {}, title, isOpen, onClose,}: AddFormProps<T>) {
     if (!isOpen) return null;
 
     const { control, handleSubmit, formState: { errors } } = useForm<TypeOf<T>>({
