@@ -2,6 +2,7 @@
 import React, { useCallback, memo } from 'react';
 import { BiBell, BiTime, BiCalendarExclamation } from 'react-icons/bi';
 import { lendItem } from "@/services/loans";
+import { acceptInvitation } from '@/services/communities'
 import { deleteNotification } from "@/services/users"
 import {
     Notifications,
@@ -155,6 +156,9 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
                 case SubjectInNotificationType.babysitting:
                     // TODO: Implement accept logic
                     return;
+                case SubjectInNotificationType.community:
+                    await acceptInvitation(user?._id?user._id:"", notification.subject._id);
+                    break;
                 default:
                     return;
             }

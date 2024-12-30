@@ -1,15 +1,27 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getBabysittingByCommunitiesId, createBabysitting, babysit, deleteBabysitting } from "@/services/babysitting";
+import { getOpenRequestsByCommunities, createBabysitting, babysit, deleteBabysitting, offerBabysit, getRequestsByUser } from "@/services/babysitting";
 import { Babysitting } from "@/types/babysitting.type";
 import { toast } from "react-toastify";
 import { User } from "@/types/user.type";
 import http from "../http";
+import { Notifications } from '@/types/general.type';
 
 export const useBabysittingRequests = (authorizedIds: string[]) => {
     return useQuery<Babysitting[]>({
         queryKey: ["babysittingRequests", authorizedIds],
         queryFn: async () => {
-            return getBabysittingByCommunitiesId(authorizedIds);
+            return getOpenRequestsByCommunities(authorizedIds, true);
+        },
+        retry: 1,
+    });
+};
+
+
+export const useRequestsByUser = (authorizedIds: string[], userId: string) => {
+    return useQuery<Babysitting[]>({
+        queryKey: ["babysittingRequestsByUser", authorizedIds, userId], // Include userId in the query key
+        queryFn: async () => {
+            return getRequestsByUser(userId, authorizedIds, true); // Add userId to the API call
         },
         retry: 1,
     });
@@ -79,6 +91,22 @@ export const useDeleteBabysittingRequest = () => {
         onError: (error) => {
             console.error("Failed to delete babysitting request:", error);
             toast.error("שגיאה במחיקת הבקשה");
+        },
+    });
+};
+
+export const useOfferBabysit = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation<Notifications, Error, { requestId: string, babysitterId: string, babysitterName: string, requestData: string, requesterId: string }>({
+        mutationFn: async ({ requestId, babysitterId, babysitterName, requestData, requesterId }) => {
+            return offerBabysit(requestId, babysitterId, babysitterName, requestData, requesterId);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["babysittingRequests"] });
+        },
+        onError: (error) => {
+            console.error('Failed to send offer babysitting notification', error);
         },
     });
 };
