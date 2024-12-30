@@ -38,8 +38,8 @@ export const CommunitySelect: React.FC<CommunitySelectProps> = ({
                     <input
                         type="checkbox"
                         id={`community-${community._id}`}
-                        checked={selectedCommunities.includes(community._id)}
-                        onChange={() => handleToggle(community._id)}
+                        checked={selectedCommunities.includes(community._id || '')}
+                        onChange={() => handleToggle(community._id || '')}
                         className="h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
                     />
                     <label 
