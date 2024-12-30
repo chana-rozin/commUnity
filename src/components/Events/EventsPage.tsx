@@ -7,8 +7,10 @@ import { useEvents, useCreateEvent } from '@/services/mutations/events';
 import { Event } from "@/types/event.type";
 import { z } from "zod";
 import { AddForm } from "../Forms/AddForm";
+import { useUserCommunities } from '@/services/mutations/communities';
+import { CommunitySelect } from '../Forms/CommunitySelect';
 import Loading from '@/components/animations/Loading'
- 
+
 const eventSchema = z.object({
   name: z.string().min(1, "יש להזין שם אירוע"),
   description: z.string().min(1, "יש להזין תיאור"),
@@ -22,11 +24,17 @@ const eventSchema = z.object({
 const EventsPage: React.FC = () => {
   const { user } = useUserStore();
   const { data: events = [], isLoading, error } = useEvents();
+  const { 
+    data: userCommunities = [], 
+    isLoading: communitiesLoading,
+    error: communitiesError 
+  } = useUserCommunities(user?._id);
   const createEventMutation = useCreateEvent();
 
   const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
+  const [selectedCommunities, setSelectedCommunities] = useState<string[]>([]);
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
@@ -37,10 +45,19 @@ const EventsPage: React.FC = () => {
     );
   };
 
-  const handleCreateEvent = (data: Partial<any>) => {
-    createEventMutation.mutate(data);
+  const handleCreateEvent = (data: Partial<Event>) => {
+    const eventData: Partial<Event> = {
+      ...data,
+      AuthorizedIds: selectedCommunities.length > 0 
+        ? selectedCommunities 
+        : (user?.neighborhood?._id ? [user.neighborhood._id] : []),
+      authorizedType: 'community' as const  // This ensures the correct type
+    };
+    createEventMutation.mutate(eventData);
     setIsAddFormOpen(false);
-  };
+    setSelectedCommunities([]);
+};
+  console.log('User Communities:', userCommunities);
 
   if (isLoading) return <Loading height={'low'}/>;
   if (error) return <p className="text-red-500">Error loading events: {error.message}</p>;
@@ -58,20 +75,37 @@ const EventsPage: React.FC = () => {
 
       {/* AddForm */}
       {isAddFormOpen && (
-        <AddForm
-          schema={eventSchema}
-          initialValues={{}}
-          hiddenFields={{
-            createdDate: new Date(),
-            active: true,
-            AuthorizedIds: user?.neighborhood?._id ? [user.neighborhood._id] : [],
-          }}
-          onSubmit={handleCreateEvent}
-          title="הוספת אירוע חדש"
-          isOpen={true}
-          onClose={() => setIsAddFormOpen(false)}
+    <AddForm
+      schema={eventSchema}
+      initialValues={{}}
+      hiddenFields={{
+        createdDate: new Date(),
+        active: true,
+        AuthorizedIds: [],
+      }}
+      onSubmit={handleCreateEvent}
+      title="הוספת אירוע חדש"
+      isOpen={true}
+      onClose={() => setIsAddFormOpen(false)}
+    >
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          שתף עם קהילות
+        </label>
+        <CommunitySelect
+          communities={userCommunities}
+          selectedCommunities={selectedCommunities}
+          onChange={setSelectedCommunities}
+          isLoading={communitiesLoading}
         />
-      )}
+        {communitiesError && (
+          <p className="text-red-500 text-sm mt-1">
+            Error loading communities. Please try again.
+          </p>
+        )}
+      </div>
+    </AddForm>
+  )}
 
       {/* Event Cards */}
       <div className="flex flex-wrap justify-center gap-6 w-full max-w-[791px] px-2.5 mt-5">

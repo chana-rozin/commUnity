@@ -3,6 +3,8 @@ import { getEvents, saveEvent, unSaveEvent, getEventsByCommunityId } from '@/ser
 import { Event } from '@/types/event.type';
 import { User } from '@/types/user.type';
 import http from '../http';
+import { getCommunities } from '@/services/communities';
+import { Community } from '@/types/community.type';
 
 export const useEvents = () => {
   return useQuery<Event[]>({
@@ -12,6 +14,14 @@ export const useEvents = () => {
       return Array.isArray(response.data) ? response.data : [];
     },
     retry: 1,
+  });
+};
+
+export const useUserCommunities = (userId: string | undefined) => {
+  return useQuery<Community[]>({
+    queryKey: ['userCommunities', userId],
+    queryFn: () => getCommunities(userId as string),
+    enabled: !!userId,
   });
 };
 
