@@ -42,7 +42,7 @@ const OpenPostSection: React.FC<OpenPostSectionProps> = ({ _id, creator, created
   }, []);
 
   return (
-    <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
+    <div className="flex flex-col flex-grow min-w-[240px] w-full max-md:max-w-full">
       <PostComp
         creator={creator}
         createdDate={createdDate}
