@@ -1,6 +1,5 @@
 import http from "./http";
-import { community } from "./mongoDB/models";
-
+import { Notifications } from "@/types/general.type";
 export const getCommunities = async (userId:string): Promise<any> => {
     if(userId === "") return [];
     const url = `/communities?user_id=${userId}`;
@@ -43,5 +42,34 @@ export const deleteUserFromCommunity = async (userId:string, communityId:string)
 export const updateCommunity = async (communityId: string, data: any): Promise<any> => {
     const url = `/communities/${communityId}`;
     const response = await http.patch(url, data);
+    return response.data;
+}
+
+export const sendInvitation = async (communityId: string, communityName: string, senderId: string, receiverId: string): Promise<Notifications> => {
+    const url = `/notifications`;
+    const notificationData = {
+        receiverId: receiverId,
+        message: `הנך מוזמן להצטרף לקהילה ${communityName}! `,
+        sender: {_id: senderId},
+        urgencyLevel: 1,
+        type: 3,
+        subject: { _id: communityId, type: 4 },
+    };
+    const response = await http.post(url, notificationData);
+    const createdNotification = response.data.notification;
+
+    await http.post('/pusher/send', {
+        channel: `user-${receiverId}`,
+        event: "loan-reminder",
+        message: createdNotification
+    });
+    console.log("notification response id:",createdNotification._id);
+
+    return response.data;
+};
+
+
+export const acceptInvitation = async (receiverId:string, communitiesId:string)=>{
+    const response =  await addUserToCommunity(receiverId, communitiesId);
     return response.data;
 }

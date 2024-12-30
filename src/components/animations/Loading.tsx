@@ -15,8 +15,8 @@ const Loading: React.FC<props> = ({height}) => {
         <div className={`${style.container} ${height==='low'?style.low:style.high}`}>
             <Puff
                 visible={true}
-                height="80"
-                width="80"
+                height="60"
+                width="60"
                 color="#3f51b5"
                 ariaLabel="puff-loading"
             />

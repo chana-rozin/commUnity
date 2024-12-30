@@ -28,7 +28,8 @@ const GeneralNotificationsCard: React.FC = () => {
             'loan-request',
             'loan-reminder',
             'babysit-request',
-            'babysit-reminder'
+            'babysit-reminder',
+            'community-invite',
         ];
 
         // Bind all events
