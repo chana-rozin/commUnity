@@ -6,6 +6,7 @@ import { FaPlus } from "react-icons/fa";
 import AddCommunity from "@/components/Communities/AddCommunity";
 import useUserStore from "@/stores/userStore";
 import { useCommunities, useCreateCommunity } from "@/services/mutations/communities";
+import Loading from '@/components/animations/Loading'
 
 const MyCommunitiesPage: React.FC = () => {
     const { user, setUser } = useUserStore();
@@ -21,7 +22,7 @@ const MyCommunitiesPage: React.FC = () => {
 
     }
     if (isLoading) {
-        return <div>טעינה...</div>
+        return <Loading height='low'/>
     }
     if (error) return <div>הייתה שגיאה בטעינת הקהילות: {error.message}</div>;
     return (
@@ -42,7 +43,7 @@ const MyCommunitiesPage: React.FC = () => {
                         </button>
                         {communities && communities.length > 0 && communities.map((c: Community) => {
                             return (
-                                <section onClick={() => handleclick(c)} className="flex flex-wrap gap-8 items-start self-stretch w-full text-sm max-md:max-w-full mt-7 border-b border-solid border-b-slate-200 cursor-pointer p-4 rounded-md">
+                                <section onClick={() => handleclick(c)} className="flex flex-wrap gap-8 items-start self-stretch w-full text-sm max-md:max-w-full mt-7 cursor-pointer p-4 rounded-md">
                                     <img src={c.imageUrl} alt="profile" className="w-10 rounded-full object-cover" />
                                     <h2 className=" inline">
                                         {c.name}
@@ -54,7 +55,7 @@ const MyCommunitiesPage: React.FC = () => {
                             )
                         })
                         }</div> :
-                    <CommunityComp community={cummunityToPresent} setCommunityToPresent={setCommunityToPresent} handleExitCommunity={handleExitCommunity} addUserOptions={addUserOptions}/>
+                    <CommunityComp community={cummunityToPresent} setCommunityToPresent={setCommunityToPresent} usersInNeighborhood={addUserOptions}/>
                 }
             </div>
         </div>

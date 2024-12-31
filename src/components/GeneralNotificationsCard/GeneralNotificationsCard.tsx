@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState} from "react";
 import { ReminderNotification, RequestNotification } from "./Notification";
 import { Notifications, NotificationType } from "@/types/general.type";
 import useUserStore from "@/stores/userStore";
-import { pusherClient } from '@/services/pusher';
+import pusherClient from "@/services/pusher";
 import { NoLoansSection } from "../Loans/NoLoansSection";
 
 const GeneralNotificationsCard: React.FC = () => {
@@ -28,7 +28,8 @@ const GeneralNotificationsCard: React.FC = () => {
             'loan-request',
             'loan-reminder',
             'babysit-request',
-            'babysit-reminder'
+            'babysit-reminder',
+            'community-invite',
         ];
 
         // Bind all events

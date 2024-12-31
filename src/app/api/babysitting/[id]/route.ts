@@ -2,12 +2,14 @@ import { NextResponse } from "next/server";
 import {
     updateDocumentById,
     deleteDocumentById,
-    foreignKey
+    foreignKey,
+    getAllDocuments,
+    getDocumentById
 } from "@/services/mongoDB/mongodb";
 import { useParams } from "next/navigation";
 
 
-export async function PATCH(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
     let { id } = await params;
     const body = await request.json(); // Parse request body
     if (!body) {
@@ -18,7 +20,7 @@ export async function PATCH(request: Request,{ params }: { params: Promise<{ id:
     }
     delete body._id
     delete body.requester;
-    if(body.babysitter){
+    if (body.babysitter) {
         body.babysitter = foreignKey(body.babysitter);
     }
     if (!id) {
@@ -41,6 +43,25 @@ export async function PATCH(request: Request,{ params }: { params: Promise<{ id:
     return NextResponse.json(
         { message: "Request updated successfully" }
     );
+}
+
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    try {
+        let { id } = await params;
+
+        const populate = [
+            { path: 'requester', select: '_id first_name last_name profile_picture_url' },
+            { path: 'babysitter', select: '_id first_name last_name profile_picture_url' }
+        ];
+
+        const result = await getDocumentById("babysitting", id, populate);
+        console.log(result);
+        return NextResponse.json(result); // Return data as JSON
+
+    }
+    catch (error) {
+        return NextResponse.json({ message: "Error getting user's requests" }, { status: 400 });
+    }
 }
 // Update a babysitter request by ID
 // export async function PUT(request: Request) {
@@ -71,7 +92,7 @@ export async function PATCH(request: Request,{ params }: { params: Promise<{ id:
 // }
 
 // Delete a babysitter request by ID
-export async function DELETE(request: Request,{ params }: { params: Promise<{ id: string }>}) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
 
     if (!id) {

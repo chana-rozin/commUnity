@@ -13,12 +13,11 @@ const UserModeLayout: React.FC<LayoutProps> = ({ children }) => {
     return (
         <>
             <Navbar />
-            <div className="grid grid-cols-[4fr_1fr] gap-3">
+            <div className="grid grid-cols-[4fr_1fr] gap-4">
                 {/* Main Content - 80% */}
                 <div className="col-span-1">
                     {children}
                 </div>
-
                 {/* Sidebar - 20% */}
                 <div className="flex flex-col flex-1 shrink basis-0 min-w-[260px] gap-3 mt-5">
                     <div className="flex flex-col p-5 w-full bg-white rounded-2xl">

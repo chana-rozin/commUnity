@@ -1,8 +1,8 @@
-
 "use client"
 import React, { useCallback, memo } from 'react';
 import { BiBell, BiTime, BiCalendarExclamation } from 'react-icons/bi';
 import { lendItem } from "@/services/loans";
+import { acceptInvitation } from '@/services/communities'
 import { deleteNotification } from "@/services/users"
 import {
     Notifications,
@@ -11,6 +11,8 @@ import {
     SubjectInNotificationType
 } from '@/types/general.type';
 import useUserStore from '@/stores/userStore';
+import { useQueryClient } from '@tanstack/react-query';
+import { loanQueryKeys } from '@/services/mutations/loans';
 
 interface NotificationWrapperProps {
     urgencyLevel: UrgencyLevel;
@@ -64,7 +66,7 @@ interface ReminderNotificationProps {
 
 const ReminderNotification = memo(({ notification }: ReminderNotificationProps) => {
     const deleteNotificationFromStore = useUserStore((state) => state.deleteNotification);
-    
+
     const getTitle = () => {
         switch (notification.subject.type) {
             case SubjectInNotificationType.loan:
@@ -126,6 +128,25 @@ interface RequestNotificationProps {
 
 const RequestNotification = memo(({ notification }: RequestNotificationProps) => {
     const deleteNotificationFromStore = useUserStore((state) => state.deleteNotification);
+    const { user, setUser } = useUserStore();
+
+    const queryClient = useQueryClient();
+
+    const refreshData = useCallback(() => {
+        // Refresh active loans
+        if (user?._id) {
+            queryClient.invalidateQueries({
+                queryKey: loanQueryKeys.activeByUser(user._id)
+            });
+        }
+
+        // Refresh help requests
+        if (user?.neighborhood?._id) {
+            queryClient.invalidateQueries({
+                queryKey: loanQueryKeys.openLoansByCommunity(user.neighborhood._id)
+            });
+        }
+    }, [queryClient, user]);
 
     const handleAccept = useCallback(async () => {
         try {
@@ -136,6 +157,9 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
                 case SubjectInNotificationType.babysitting:
                     // TODO: Implement accept logic
                     return;
+                case SubjectInNotificationType.community:
+                    const response = await acceptInvitation(user?._id ? user._id : "", notification.subject._id, user, setUser);
+                    break;
                 default:
                     return;
             }
@@ -144,11 +168,12 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
                 deleteNotificationFromStore(notification._id);
                 await deleteNotification(notification._id);
             }
+
+            refreshData();
         } catch (error) {
             console.error('Failed to accept request:', error);
-            // TODO: Add error handling UI feedback
         }
-    }, [notification, deleteNotificationFromStore]);
+    }, [notification, deleteNotificationFromStore, refreshData]);
 
     const handleReject = useCallback(async () => {
         try {
@@ -159,11 +184,13 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
 
             deleteNotificationFromStore(notification._id);
             await deleteNotification(notification._id);
+
+            // Refresh data after rejection
+            refreshData();
         } catch (error) {
             console.error('Failed to delete notification:', error);
-            // TODO: Add error handling UI feedback
         }
-    }, [notification._id, deleteNotificationFromStore]);
+    }, [notification._id, deleteNotificationFromStore, refreshData]);
 
     const requestInfo = {
         icon: <NotificationIcon type={notification.subject.type} />,

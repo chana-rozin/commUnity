@@ -7,6 +7,7 @@ import { getTimeDifference } from "@/utils/dates";
 import useUserStore from "@/stores/userStore";
 import { Loan } from "@/types/loan.type";
 import { AddForm } from "../Forms/AddForm";
+import Loading from '@/components/animations/Loading'
 import { z } from "zod";
 
 const loanSchema = z.object({
@@ -26,7 +27,7 @@ export const HelpRequests: React.FC = () => {
 
   const [isAddFormOpen, setAddFormOpen] = useState(false);
 
-  if (isLoading) return <p>טוען בקשות עזרה...</p>;
+  if (isLoading) return <Loading  height="low"/>;
   if (error) return <p className="text-red-500">שגיאה בטעינת בקשות עזרה</p>;
 
   const handleCreateLoan = (data: Partial<any>) => {
