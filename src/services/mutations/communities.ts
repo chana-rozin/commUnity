@@ -1,3 +1,4 @@
+
 "use client"
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getCommunities, addUserToCommunity, deleteUserFromCommunity, updateCommunity, sendInvitation } from '@/services/communities';
@@ -20,6 +21,7 @@ export const useUserCommunities = (userId: string | undefined) => {
     retry: 1, // Only retry once if the query fails
   });
 };
+
 
 
 export const useCommunities = (userId: string) => {
@@ -108,3 +110,4 @@ export const invalidData=()=>{
     const queryClient = useQueryClient();
     queryClient.invalidateQueries({ queryKey: ['communities'] });
 }
+
