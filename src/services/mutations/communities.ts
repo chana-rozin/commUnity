@@ -1,7 +1,5 @@
-<<<<<<< HEAD
-// src/services/mutations/communities.ts
-
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getCommunities, addUserToCommunity } from '@/services/communities';
 import { Community } from '@/types/community.type';
 import http from '../http';
 
@@ -21,13 +19,6 @@ export const useUserCommunities = (userId: string | undefined) => {
   });
 };
 
-// You can add more community-related mutations here in the future
-=======
-"use client"
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getCommunities, addUserToCommunity } from '@/services/communities';
-import { Community } from '@/types/community.type';
-import http from '../http';
 
 
 export const useCommunities = (userId: string) => {
@@ -71,4 +62,4 @@ export const useAddUserToCommunity = () => {
 };
 
 
->>>>>>> f88845f88655018811694faec068d8b54c973a23
+
