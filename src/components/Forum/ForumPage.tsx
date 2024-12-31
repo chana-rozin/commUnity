@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { pusherClient } from "@/services/pusher";
+import pusherClient from "@/services/pusher";
 import { PostComp } from './Post';
 import { usePosts, useLikePost, useSavePost } from '@/services/mutations/forum';
 import { NewPostInput } from './NewPostInput';
