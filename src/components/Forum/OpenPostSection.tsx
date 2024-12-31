@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { pusherClient } from '@/services/pusher';
+import pusherClient from "@/services/pusher";
 import { PostComp } from './Post';
 import { CommentComp } from './Comment';
 import NewCommentInput from './NewCommentInput';
@@ -55,7 +55,7 @@ const OpenPostSection: React.FC<OpenPostSectionProps> = ({ _id, creator, created
         onLike={(isLiked) => onLike(_id, isLiked)}
         onSave={() => onSave(_id)}
       />
-      <div className="flex flex-col justify-between items-center px-3 mt-4 w-full bg-white rounded-2xl min-h-[20px]">
+      <div className="flex flex-col justify-between items-start px-3 mt-4 w-full bg-white rounded-2xl min-h-[20px]">
         <div className="flex flex-col px-0.5 w-full max-w-[737px]">
           {allComments.length > 0 ? (
             allComments.map((comment, index) => (
