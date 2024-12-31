@@ -66,7 +66,7 @@ interface ReminderNotificationProps {
 
 const ReminderNotification = memo(({ notification }: ReminderNotificationProps) => {
     const deleteNotificationFromStore = useUserStore((state) => state.deleteNotification);
-    
+
     const getTitle = () => {
         switch (notification.subject.type) {
             case SubjectInNotificationType.loan:
@@ -128,7 +128,8 @@ interface RequestNotificationProps {
 
 const RequestNotification = memo(({ notification }: RequestNotificationProps) => {
     const deleteNotificationFromStore = useUserStore((state) => state.deleteNotification);
-    const user = useUserStore((state) => state.user);
+    const { user, setUser } = useUserStore();
+
     const queryClient = useQueryClient();
 
     const refreshData = useCallback(() => {
@@ -138,7 +139,7 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
                 queryKey: loanQueryKeys.activeByUser(user._id)
             });
         }
-        
+
         // Refresh help requests
         if (user?.neighborhood?._id) {
             queryClient.invalidateQueries({
@@ -157,7 +158,7 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
                     // TODO: Implement accept logic
                     return;
                 case SubjectInNotificationType.community:
-                    await acceptInvitation(user?._id?user._id:"", notification.subject._id);
+                    const response = await acceptInvitation(user?._id ? user._id : "", notification.subject._id, user, setUser);
                     break;
                 default:
                     return;
@@ -167,7 +168,7 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
                 deleteNotificationFromStore(notification._id);
                 await deleteNotification(notification._id);
             }
-            
+
             refreshData();
         } catch (error) {
             console.error('Failed to accept request:', error);
@@ -183,7 +184,7 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
 
             deleteNotificationFromStore(notification._id);
             await deleteNotification(notification._id);
-            
+
             // Refresh data after rejection
             refreshData();
         } catch (error) {
