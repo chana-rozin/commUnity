@@ -3,7 +3,7 @@ import { ActiveLoan } from "./ActiveLoan";
 import { useActiveLoansByUser } from "@/services/mutations/loans";
 import useUserStore from "@/stores/userStore";
 import { NoLoansSection } from "../Loans/NoLoansSection";
-import { pusherClient } from '@/services/pusher';
+import pusherClient from "@/services/pusher";
 
 export function LoansNotificationsCard() {
   const user = useUserStore((state) => state.user);

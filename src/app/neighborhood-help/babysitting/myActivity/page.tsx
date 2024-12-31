@@ -7,7 +7,7 @@ import useUserStore from "@/stores/userStore";
 import { FaPlus } from "react-icons/fa";
 import AddBabysittingRequest from "../requests/AddForm";
 import { NoLoansSection } from "@/components/Loans/NoLoansSection";
-import { pusherClient } from "@/services/pusher";
+import pusherClient from "@/services/pusher";
 import { Babysitting } from "@/types/babysitting.type";
 
 function BabysittingPage() {

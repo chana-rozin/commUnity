@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { pusherClient } from '@/services/pusher';
+import pusherClient from "@/services/pusher";
 import { PostComp } from './Post';
 import { CommentComp } from './Comment';
 import NewCommentInput from './NewCommentInput';
