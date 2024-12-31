@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Community } from '@/types/community.type'
 import AddUserToCommunity from './AddUserToCommunity'
-import { FaArrowRightLong } from "react-icons/fa6";
+import { MdKeyboardArrowRight } from "react-icons/md";
 import SearchBar from './SearchBar'
 import UpdateCommunity from './UpdateCommunity';
 import useUserStore from "@/stores/userStore";
@@ -137,25 +137,32 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
       />}
       {confirmMessage}
 
-      <FaArrowRightLong onClick={handleBack} className='cursor-pointer' />
-      <h1 className='flex items-center justify-center '>{community.name}</h1>
-      <div className='flex'>
+      <div className="flex items-center gap-3 mt-2">
+        <MdKeyboardArrowRight
+          onClick={handleBack}
+          className="mr-2 mt-1 text-3xl text-gray-600 hover:text-indigo-600 cursor-pointer transition-colors"
+        />
+        <h1 className="text-3xl font-bold text-gray-800">{community.name}</h1>
+      </div>
+      <div className="flex items-center justify-center gap-4 mb-8">
         <SearchBar
           main={community.main}
           searchIcon="/path/to/search-icon.svg"
           onSearch={handleSearchChange}
           onAddEvent={() => setAddUserFormOpen(true)}
+          placeholder="חפש חבר קהילה.."
         />
         <button
           type="submit"
-          className="g-neutral-100 text-indigo-900 p-3 rounded-full shadow-lg justify-end cursor-pointer bg-neutral-100 text-indigo-900"
+          className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-500 transition-all"
           onClick={() => setUpdateCommunityFormOpen(true)}
         >
           עדכון פרטי קבוצה
         </button>
         {!community.main && <button
+          type="button"
           onClick={() => setDeleteAlert(true)}
-          className="hover:bg-[#901B22] bg-[#cf222e] text-white p-3 rounded-full shadow-lg justify-end cursor-pointer"
+          className="px-4 py-2 text-sm font-medium text-indigo-600 bg-violet-50 border border-violet-300 rounded-md transition-colors hover:text-red-600 hover:bg-red-50 hover:border-red-600"
         >
           יציאה מהקבוצה
         </button>}
