@@ -43,7 +43,7 @@ const MyCommunitiesPage: React.FC = () => {
                         </button>
                         {communities && communities.length > 0 && communities.map((c: Community) => {
                             return (
-                                <section onClick={() => handleclick(c)} className="flex flex-wrap gap-8 items-start self-stretch w-full text-sm max-md:max-w-full mt-7 border-b border-solid border-b-slate-200 cursor-pointer p-4 rounded-md">
+                                <section onClick={() => handleclick(c)} className="flex flex-wrap gap-8 items-start self-stretch w-full text-sm max-md:max-w-full mt-7 cursor-pointer p-4 rounded-md">
                                     <img src={c.imageUrl} alt="profile" className="w-10 rounded-full object-cover" />
                                     <h2 className=" inline">
                                         {c.name}
@@ -55,7 +55,7 @@ const MyCommunitiesPage: React.FC = () => {
                             )
                         })
                         }</div> :
-                    <CommunityComp community={cummunityToPresent} setCommunityToPresent={setCommunityToPresent} addUserOptions={addUserOptions}/>
+                    <CommunityComp community={cummunityToPresent} setCommunityToPresent={setCommunityToPresent} usersInNeighborhood={addUserOptions}/>
                 }
             </div>
         </div>

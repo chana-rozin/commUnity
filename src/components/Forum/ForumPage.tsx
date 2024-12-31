@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { pusherClient } from "@/services/pusher";
+import pusherClient from "@/services/pusher";
 import { PostComp } from './Post';
 import { usePosts, useLikePost, useSavePost } from '@/services/mutations/forum';
 import { NewPostInput } from './NewPostInput';
@@ -53,9 +53,11 @@ const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId }) => {
     <div className="flex flex-col flex-grow min-w-[240px] w-full max-md:max-w-full">
       <NewPostInput selectedCommunityId={selectedCommunityId} />
       {posts && posts.length === 0 ? (
-        <div>No posts to display.</div>
-      ) : (
-        <div className="flex flex-col gap-4 flex-grow overflow-auto">
+        <div className="flex-grow flex items-center justify-center text-gray-500 mt-8">
+          בקהילה זו לא נוספו עוד פוסטים😕
+        </div>
+              ) : (
+        <div className="flex flex-col flex-grow overflow-auto">
           {posts
             ?.slice()
             .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())

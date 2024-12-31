@@ -1,7 +1,8 @@
 "use client"
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getCommunities, addUserToCommunity, deleteUserFromCommunity, updateCommunity } from '@/services/communities';
+import { getCommunities, addUserToCommunity, deleteUserFromCommunity, updateCommunity, sendInvitation } from '@/services/communities';
 import { Community } from '@/types/community.type';
+import { Notifications } from '@/types/general.type';
 import http from '../http';
 
 //Function to get user communities
@@ -90,4 +91,20 @@ export const useUpdateCommunity= ()=>{
         },
     }
     );
+}
+
+export const useSendInvitation = () => {
+    return useMutation<Notifications, Error, { communityId: string, communityName: string, senderId: string,receiverId: string }>({
+        mutationFn: async ({ communityId, communityName, senderId, receiverId }) => {
+            return sendInvitation(communityId,communityName,senderId, receiverId);
+        },
+        onError: (error) => {
+            console.error('Failed to send reminder notification', error);
+        },
+    });
+};
+
+export const invalidData=()=>{
+    const queryClient = useQueryClient();
+    queryClient.invalidateQueries({ queryKey: ['communities'] });
 }
