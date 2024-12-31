@@ -4,8 +4,6 @@ import { Notifications } from "@/types/general.type";
 import { User } from '@/types/user.type'
 import { invalidData } from "@/services/mutations/communities";
 
-export const getCommunities = async (userId:string): Promise<any> => {
-    if(userId === "") return [];
 
 export const getCommunities = async (userId: string): Promise<any> => {
     if (userId === "") return [];
@@ -89,3 +87,4 @@ export const acceptInvitation = async (receiverId: string, communityId: string, 
     invalidData();
     return community;
 }
+
