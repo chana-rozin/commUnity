@@ -22,6 +22,12 @@ export async function POST(request: Request,{ params }: { params: Promise<{ id: 
     }
     let user = foreignKey(body);
     let communityToUpdate = community;
+    if(communityToUpdate.members.includes(user)){
+        return NextResponse.json(
+            { message: "User is already a member of the community" },
+            { status: 400 } // Bad Request
+        );
+    }
     communityToUpdate.members.push(user);
     const updateUser = await getDocumentById("user", body);
     if(!updateUser){

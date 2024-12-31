@@ -75,16 +75,7 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
         toast.error(`שגיאה התרחשה במהלך שליחת ההזמנה להצטרפות ל ${user.first_name} ${user.last_name}, נסה שוב מאוחר יותר!`)
       }
     })
-    // const communityId = community._id;
-    // addUserToCommunityF.mutate({ userId: user._id, communityId: communityId }, {
-    //   onSuccess: (data: any) => {
-    //     setAddUserFormOpen(false);
-    //     toast.success(`${user.first_name} ${user.last_name} נוסף בהצלחה לקבוצת ${community.name}`);
-    //   },
-    //   onError: (error) => {
-    //     toast.error(`שגיאה קרתה בהוספת ${user.first_name} ${user.last_name} לקבוצת ${community.name} , נסה שוב מאוחר יותר`);
-    //   }
-    // })
+    
   }
   function handleExitCommunity() {
     if (!community?._id || !user?._id) {

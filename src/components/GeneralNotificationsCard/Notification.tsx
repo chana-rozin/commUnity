@@ -158,7 +158,7 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
                     // TODO: Implement accept logic
                     return;
                 case SubjectInNotificationType.community:
-                    const response = await acceptInvitation(user?._id ? user._id : "", notification.subject._id, user, setUser);
+                    await acceptInvitation(user?._id ? user._id : "", notification.subject._id, user, setUser);
                     break;
                 default:
                     return;
