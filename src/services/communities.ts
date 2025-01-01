@@ -1,7 +1,12 @@
 import http from "./http";
+import { community } from "./mongoDB/models";
 import { Notifications } from "@/types/general.type";
-export const getCommunities = async (userId:string): Promise<any> => {
-    if(userId === "") return [];
+import { User } from '@/types/user.type'
+import { invalidData } from "@/services/mutations/communities";
+
+
+export const getCommunities = async (userId: string): Promise<any> => {
+    if (userId === "") return [];
     const url = `/communities?user_id=${userId}`;
     const response = await http.get(url);
     return response.data;
@@ -20,20 +25,21 @@ export const createCommunity = async (community: any): Promise<any> => {
 }
 
 export const getCommunitiesByUser = async (user: any): Promise<any> => {
-    console.log('type1: ',typeof user.communitiesIds);
+    console.log('type1: ', typeof user.communitiesIds);
     const communitiesIdsStr = user.communitiesIds.join(',');
-    console.log("communitiesIdsStr: ",communitiesIdsStr);
+    console.log("communitiesIdsStr: ", communitiesIdsStr);
     const response = await http.get(`/users/${user._id}/communities?ids=${communitiesIdsStr}`);
     console.log("response.data: ", response.data)
     return response.data;
 }
 
-export const addUserToCommunity = async (userId:string, communityId:string): Promise<any> => {
+export const addUserToCommunity = async (userId: string, communityId: string): Promise<any> => {
     const url = `communities/${communityId}/users`;
     const response = await http.post(url, userId);
     return response.data;
 }
-export const deleteUserFromCommunity = async (userId:string, communityId:string): Promise<any> => {
+
+export const deleteUserFromCommunity = async (userId: string, communityId: string): Promise<any> => {
     const url = `communities/${communityId}/users/${userId}`;
     const response = await http.delete(url);
     return response.data;
@@ -50,7 +56,7 @@ export const sendInvitation = async (communityId: string, communityName: string,
     const notificationData = {
         receiverId: receiverId,
         message: `הנך מוזמן להצטרף לקהילה ${communityName}! `,
-        sender: {_id: senderId},
+        sender: { _id: senderId },
         urgencyLevel: 1,
         type: 3,
         subject: { _id: communityId, type: 4 },
@@ -63,13 +69,22 @@ export const sendInvitation = async (communityId: string, communityName: string,
         event: "loan-reminder",
         message: createdNotification
     });
-    console.log("notification response id:",createdNotification._id);
+    console.log("notification response id:", createdNotification._id);
 
     return response.data;
 };
 
 
-export const acceptInvitation = async (receiverId:string, communitiesId:string)=>{
-    const response =  await addUserToCommunity(receiverId, communitiesId);
-    return response.data;
+export const acceptInvitation = async (receiverId: string, communityId: string, user: User | null, setUser: (user: User, shouldPersist?: boolean) => void) => {
+    const response = await addUserToCommunity(receiverId, communityId);
+    const community = await getCommunity(communityId);
+    const updatedUser: any = { ...user };
+    updatedUser?.communities?.push({
+        _id: community._id,
+        name: community.name,
+    });
+    setUser(updatedUser);
+    invalidData();
+    return community;
 }
+

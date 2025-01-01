@@ -129,7 +129,8 @@ interface RequestNotificationProps {
 
 const RequestNotification = memo(({ notification }: RequestNotificationProps) => {
     const deleteNotificationFromStore = useUserStore((state) => state.deleteNotification);
-    const user = useUserStore((state) => state.user);
+    const { user, setUser } = useUserStore();
+
     const queryClient = useQueryClient();
     const babysitMutation = useBabysit();
 
@@ -165,8 +166,8 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
                         })
                         break;
                     }
-                case SubjectInNotificationType.community: {
-                    await acceptInvitation(user?._id ? user._id : "", notification.subject._id);
+                case SubjectInNotificationType.community:
+                    const response = await acceptInvitation(user?._id ? user._id : "", notification.subject._id, user, setUser);
                     break;
                 }
                 default:
