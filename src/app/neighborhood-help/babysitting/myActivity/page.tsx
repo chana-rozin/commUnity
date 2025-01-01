@@ -74,7 +74,7 @@ function BabysittingPage() {
                         ))}
                     </main>
                 ) : (
-                    <section>
+                    <section className="w-full">
                         <NoLoansSection
                             title="אין לך בקשות פעילות"
                             description="כרגע אין לך בקשות לבייביסטר"
@@ -96,7 +96,7 @@ function BabysittingPage() {
                         ))}
                     </main>
                 ) : (
-                    <section>
+                    <section className="w-full">
                         <NoLoansSection
                             title="אין שמרטפות"
                             description="כרגע לא קבעת שמרטפות"
@@ -104,38 +104,6 @@ function BabysittingPage() {
                     </section>
                 )}
             </section>
-            {/* <div className="flex overflow-hidden flex-wrap gap-5 justify-start content-start items-center px-4 py-6 w-full bg-indigo-100 rounded-2xl min-h-[669px] max-md:max-w-full">
-                {myRequests?.length || 0 > 0 ? (
-                    <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {myRequests?.map((request) => (
-                            <RequestCard key={request._id} request={request} />
-                        ))}
-                    </main>
-                ) : (
-                    <section>
-                        <NoLoansSection
-                            title="אין לך בקשות פעילות"
-                            description="כרגע אין לך בקשות לבייביסטר"
-                        />
-                    </section>
-                )}
-            </div>
-            <div className="flex overflow-hidden flex-wrap gap-5 justify-start content-start items-center px-4 py-6 w-full bg-indigo-100 rounded-2xl min-h-[669px] max-md:max-w-full">
-                {myBabysits?.length || 0 > 0 ? (
-                    <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {myBabysits?.map((request) => (
-                            <RequestCard key={request._id} request={request} />
-                        ))}
-                    </main>
-                ) : (
-                    <section>
-                        <NoLoansSection
-                            title="אין שמרטפות"
-                            description="כרגע לא קבעת שמרטפות"
-                        />
-                    </section>
-                )}
-            </div> */}
         </section>
     );
 }

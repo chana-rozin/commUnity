@@ -70,7 +70,7 @@ function BabysittingPage() {
                         ))}
                     </main>
                 ) : (
-                    <section>
+                    <section className="w-full">
                         <NoLoansSection
                             title="אין בקשות פעילות"
                             description="כרגע אין בקשות לבייביסטר באזורך"
