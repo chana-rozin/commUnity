@@ -13,7 +13,7 @@ import {
 import useUserStore from '@/stores/userStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { loanQueryKeys } from '@/services/mutations/loans';
-import {useBabysit} from "@/services/mutations/babysitting";
+import { useBabysit } from "@/services/mutations/babysitting";
 
 interface NotificationWrapperProps {
     urgencyLevel: UrgencyLevel;
@@ -67,7 +67,7 @@ interface ReminderNotificationProps {
 
 const ReminderNotification = memo(({ notification }: ReminderNotificationProps) => {
     const deleteNotificationFromStore = useUserStore((state) => state.deleteNotification);
-    
+
     const getTitle = () => {
         switch (notification.subject.type) {
             case SubjectInNotificationType.loan:
@@ -131,6 +131,7 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
     const deleteNotificationFromStore = useUserStore((state) => state.deleteNotification);
     const user = useUserStore((state) => state.user);
     const queryClient = useQueryClient();
+    const babysitMutation = useBabysit();
 
     const refreshData = useCallback(() => {
         // Refresh active loans
@@ -139,7 +140,7 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
                 queryKey: loanQueryKeys.activeByUser(user._id)
             });
         }
-        
+
         // Refresh help requests
         if (user?.neighborhood?._id) {
             queryClient.invalidateQueries({
@@ -151,15 +152,23 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
     const handleAccept = useCallback(async () => {
         try {
             switch (notification.subject.type) {
-                case SubjectInNotificationType.loan:
+                case SubjectInNotificationType.loan: {
                     await lendItem(notification.subject._id, notification.sender._id);
                     break;
+                }
                 case SubjectInNotificationType.babysitting:
-                    await useBabysit(notification.subject._id, notification.sender._id);
-                    return;
-                case SubjectInNotificationType.community:
-                    await acceptInvitation(user?._id?user._id:"", notification.subject._id);
+                    {
+                        console.log("babysitting notification id: ", notification._id);
+                        await babysitMutation.mutateAsync({
+                            requestId: notification.subject._id,
+                            userId: notification.sender._id,
+                        })
+                        break;
+                    }
+                case SubjectInNotificationType.community: {
+                    await acceptInvitation(user?._id ? user._id : "", notification.subject._id);
                     break;
+                }
                 default:
                     return;
             }
@@ -168,7 +177,7 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
                 deleteNotificationFromStore(notification._id);
                 await deleteNotification(notification._id);
             }
-            
+
             refreshData();
         } catch (error) {
             console.error('Failed to accept request:', error);
@@ -184,7 +193,7 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
 
             deleteNotificationFromStore(notification._id);
             await deleteNotification(notification._id);
-            
+
             // Refresh data after rejection
             refreshData();
         } catch (error) {

@@ -60,6 +60,7 @@ export const useBabysit = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["babysittingRequests"] });
             toast.success("הבקשה עודכנה בהצלחה");
+            console.log("request updated");
         },
         onError: (error) => {
             console.error("Failed to update babysitting request:", error);
