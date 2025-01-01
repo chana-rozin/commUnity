@@ -166,7 +166,7 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
                         })
                         break;
                     }
-                case SubjectInNotificationType.community:
+                case SubjectInNotificationType.community:{
                     const response = await acceptInvitation(user?._id ? user._id : "", notification.subject._id, user, setUser);
                     break;
                 }
