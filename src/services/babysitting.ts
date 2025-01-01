@@ -39,16 +39,16 @@ export const deleteBabysitting = async (requestId: string): Promise<any> => {
     return response.data;
 }
 
-export const offerBabysit = async (requestId: string, babysitterId: string, babysitterName: string, request: string, requesterId: string): Promise<Notifications> => {
+export const offerBabysit = async (requestId: string, babysitterId: string, babysitterName: string, requestData: string, requesterId: string): Promise<Notifications> => {
     const url = `/notifications`;
 
     const notificationData = {
         receiverId: requesterId,
-        message: `הצעה: ${babysitterName} מעוניין/ת לשמרטף לך ב-${request}`,
+        message: `הצעה: ${babysitterName} מעוניין/ת לשמרטף לך ב-${requestData}`,
         sender: {_id: babysitterId},
         urgencyLevel: 1,
         type: 3,
-        subject: { _id: requestId, type: 2 },
+        subject: { _id: requestId, type: 1 },
     };
 
     const response = await http.post(url, notificationData);

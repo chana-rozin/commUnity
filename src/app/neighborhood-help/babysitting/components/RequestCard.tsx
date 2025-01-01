@@ -74,7 +74,6 @@ export function RequestCard({ request }: RequestCardProps) {
                     </div>
 
                 </div>
-                <div className="flex gap-4 mt-1 w-80 max-w-full min-h-[42px]" />
                 <div className="flex gap-3 justify-end mt-1 w-full text-base font-medium leading-none text-neutral-100">
                     <div className="flex gap-5 ">
                         {request.requester._id == user?._id
