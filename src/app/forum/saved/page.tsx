@@ -1,27 +1,16 @@
-"use client"
-import ForumPage from '../../components/Forum/ForumPage';
-import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
+'use client';
+import React from 'react';
+import ForumPage from '@/components/Forum/ForumPage';
+import { useParams } from 'next/navigation';
 import useUserStore from '@/stores/userStore';
-import { useRouter } from 'next/navigation';
 
-
-const HomePage = () => {
-  const router = useRouter();
-  const { user, setUser } = useUserStore();
-  const categories = [{ name: "ראשי", href: "/home", isActive: true }, { name: "שמורים", href: "forum/saved", isActive: false }]
-
+const SavedPostsPage: React.FC = () => {
+  const { communityId } = useParams();
+  const { user } = useUserStore();
 
   return (
-    <main>
-      <div className="flex gap-4 items-start mt-5 w-full">
-        {/* Right Column - Profile Section */}
-        <aside
-          className="flex flex-col min-h-[909px] w-[200px] flex-shrink-0"
-          role="complementary"
-        >
-          <ProfileAside categories={categories} />
-        </aside>
-
+    <main className="flex flex-col flex-grow">
+      <div className="flex flex-wrap gap-4 items-start w-full flex-grow">
         {/* Middle Column */}
         <div className="flex flex-col flex-grow">
           <div className="relative flex items-center justify-between overflow-hidden mb-2 flex-wrap p-6 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl min-h-[164px] shadow-lg">
@@ -32,7 +21,7 @@ const HomePage = () => {
             <div className="flex flex-col z-10">
               <h2 className="text-2xl font-bold">היי {user?.first_name}!</h2>
               <p className="mt-2 text-base font-medium">
-                יש לנו כמה הפתעות בשבילך 🎉
+                 כאן תמצא את הפוסטים השמורים שלך 🎉
               </p>
             </div>
 
@@ -51,15 +40,11 @@ const HomePage = () => {
             </div>
           </div>
           {/* Posts Section */}
-          <ForumPage
-            selectedCommunityId={
-              user?.communities[0] ? user?.communities[0]._id : user?.neighborhood._id
-            }
-          />
+          <ForumPage saved={true}/>
         </div>
       </div>
     </main>
   );
 };
 
-export default HomePage;
+export default SavedPostsPage;
