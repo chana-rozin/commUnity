@@ -30,9 +30,7 @@ const AddBabysittingRequest: React.FC<{ onClose: () => void, isOpen: boolean; }>
 
     const { user } = useUserStore();
     const createRequestMutation = useCreateBabysittingRequest();
-
-    const communities = [user!.neighborhood, ...(user?.communities ? user.communities : [])];
-
+    
     const onSubmit = (newRequest: Partial<Babysitting>) => {
         console.log("onSubmit", JSON.stringify(newRequest));
         createRequestMutation.mutate({
@@ -168,7 +166,7 @@ const AddBabysittingRequest: React.FC<{ onClose: () => void, isOpen: boolean; }>
                                     {...field}
                                     id="AuthorizedIds"
                                     isMulti
-                                    options={communities.map((community) => ({
+                                    options={user?.communities.map((community) => ({
                                         value: community._id,
                                         label: community.name,
                                     }))}
@@ -180,7 +178,7 @@ const AddBabysittingRequest: React.FC<{ onClose: () => void, isOpen: boolean; }>
                                     value={field.value
                                         ? field.value.map((id: string) => {
                                             // Find the community object for each selected `id`
-                                            const selectedCommunity = communities.find(
+                                            const selectedCommunity = user?.communities.find(
                                                 (community) => community._id === id
                                             );
                                             // Ensure that `selectedCommunity` is correctly structured
