@@ -8,11 +8,6 @@ const CommunityForumPage: React.FC = () => {
   const { communityId } = useParams();
   const { user } = useUserStore();
 
-  const categories = [
-    { name: "ראשי", href: "/home", isActive: user?.neighborhood._id == communityId },
-    { name: "שמורים", href: "/saved", isActive: false }
-  ];
-
   return (
     <main className="flex flex-col flex-grow">
       <div className="flex flex-wrap gap-4 items-start w-full flex-grow">

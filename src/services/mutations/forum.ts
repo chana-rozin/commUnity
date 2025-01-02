@@ -5,15 +5,6 @@ import { User } from "@/types/user.type";
 import { Comment } from '@/types/general.type';
 import http from '../http';
 
-// export const usePosts = () => {
-//   return useQuery<Post[]>({ queryKey: ['posts'], queryFn: async () => {
-//       const response = await getPosts();
-//       return Array.isArray(response.data) ? response.data : [];
-//     },
-//     retry: 1,
-//   });
-// };
-
 export const usePosts = (communityId: string) => {
   return useQuery<Post[]>({
     queryKey: ['posts', communityId], 
