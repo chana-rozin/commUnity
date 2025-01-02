@@ -24,7 +24,7 @@ export function RequestCard({ request }: RequestCardProps) {
         const time = `${request.time.start}-${request.time.end}`;
         if (!user?._id)
             return;
-        offerBabysit({ requestId: request._id, babysitterId: user._id, babysitterName: `${user?.first_name} ${user?.last_name}`, requestData: `${formattedDate} ${time}`, requesterId: request.requester._id });
+        offerBabysit({ requestId: request._id, babysitterId: user._id, babysitterName: `${user?.first_name} ${user?.last_name}`, requestData: `${formatDate(request.date)} ${time}`, requesterId: request.requester._id });
     };
 
     const deleteRequest = () => {
