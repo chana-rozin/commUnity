@@ -7,7 +7,7 @@ import { getPostById } from '@/services/posts';
 import { NewPostInput } from './NewPostInput';
 import Link from 'next/link';
 import useUserStore from "@/stores/userStore";
-import { Post } from '@/types/post.type'; 
+import { Post } from '@/types/post.type';
 import Loading from "../animations/Loading";
 
 interface ForumPageProps {
@@ -27,7 +27,7 @@ const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId, saved }) => 
     const fetchSavedPosts = async () => {
       if (saved && user?.savedPostsIds) {
         const fetchedPosts = await Promise.all(user.savedPostsIds.map(postId => getPostById(postId)));
-        setPosts(fetchedPosts); 
+        setPosts(fetchedPosts);
       }
     };
 
@@ -36,7 +36,7 @@ const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId, saved }) => 
     } else {
       if (!communityId) return;
 
-      setPosts(communityPosts); 
+      setPosts(communityPosts);
 
       const channel = pusherClient.subscribe(`forum_${communityId}`);
       channel.bind("new-post", () => {
@@ -68,7 +68,7 @@ const ForumPage: React.FC<ForumPageProps> = ({ selectedCommunityId, saved }) => 
 
   return (
     <div className="flex flex-col flex-grow min-w-[240px] w-full max-md:max-w-full">
-      <NewPostInput selectedCommunityId={selectedCommunityId} />
+      {!saved && <NewPostInput selectedCommunityId={selectedCommunityId} />}
       {posts && posts.length === 0 ? (
         <div className="flex-grow flex items-center justify-center text-gray-500 mt-8">
           {saved ? "אין לך עדיין פוסטים שמורים.." : "בקהילה זו לא נוספו עוד פוסטים😕"}
