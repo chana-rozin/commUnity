@@ -1,7 +1,6 @@
 import { updateDocumentById, getAllDocuments } from "@/services/mongoDB/mongodb";
 import { NextResponse } from "next/server";
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
-    debugger
     let { id } = await params;
     if (!id) {
         return NextResponse.json(

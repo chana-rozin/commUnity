@@ -3,25 +3,11 @@ import { ActiveLoan } from "./ActiveLoan";
 import { useActiveLoansByUser } from "@/services/mutations/loans";
 import useUserStore from "@/stores/userStore";
 import { NoLoansSection } from "../Loans/NoLoansSection";
-import { pusherClient } from '@/services/pusher';
+import pusherClient from "@/services/pusher";
 
 export function LoansNotificationsCard() {
   const user = useUserStore((state) => state.user);
   const { data: activeLoans, isLoading, error } = useActiveLoansByUser(user?._id || "");
-  const [notifications, setNotifications] = useState<string[]>([]);
-
-  useEffect(() => {
-    const channel = pusherClient.subscribe(`user-${user?._id}`);
-
-    // Listen for loan reminders
-    channel.bind("loan-reminder", (data: { message: string }) => {
-      setNotifications((prev) => [...prev, data.message]);
-    });
-
-    return () => {
-      pusherClient.unsubscribe(`user-${user?._id}`);
-    };
-  }, [user?._id]);
 
   const borrowedItems = activeLoans?.filter((loan) => loan.borrower._id === user?._id) || [];
   const lentItems = activeLoans?.filter((loan) => loan.lender?._id === user?._id) || [];
@@ -37,17 +23,6 @@ export function LoansNotificationsCard() {
           </div>
         </div>
       </div>
-
-      {/* Notifications */}
-      {notifications.length > 0 && (
-        <div className="bg-yellow-100 p-2 rounded-md mb-4">
-          {notifications.map((note, index) => (
-            <p key={index} className="text-yellow-700 text-sm">
-              {note}
-            </p>
-          ))}
-        </div>
-      )}
 
       {/* Active Loans */}
       <div className="flex flex-col mt-4">

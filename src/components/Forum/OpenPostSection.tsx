@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { pusherClient } from '@/services/pusher';
+import pusherClient from "@/services/pusher";
 import { PostComp } from './Post';
 import { CommentComp } from './Comment';
 import NewCommentInput from './NewCommentInput';
@@ -42,7 +42,7 @@ const OpenPostSection: React.FC<OpenPostSectionProps> = ({ _id, creator, created
   }, []);
 
   return (
-    <div className="flex flex-col min-w-[240px] w-[775px] max-md:max-w-full">
+    <div className="flex flex-col flex-grow min-w-[240px] w-full max-md:max-w-full">
       <PostComp
         creator={creator}
         createdDate={createdDate}
@@ -55,17 +55,23 @@ const OpenPostSection: React.FC<OpenPostSectionProps> = ({ _id, creator, created
         onLike={(isLiked) => onLike(_id, isLiked)}
         onSave={() => onSave(_id)}
       />
-      <div className="flex flex-col justify-center items-center px-3 mt-4 w-full bg-white rounded-2xl min-h-[434px]">
+      <div className="flex flex-col justify-between items-start px-3 mt-4 w-full bg-white rounded-2xl min-h-[20px]">
         <div className="flex flex-col px-0.5 w-full max-w-[737px]">
-          {allComments.map((comment, index) => (
-            <CommentComp
-              key={comment._id}
-              creator={comment.creator}
-              createdDate={comment.createdDate}
-              content={comment.content}
-              previousDate={index > 0 ? allComments[index - 1].createdDate : undefined}
-            />
-          ))}
+          {allComments.length > 0 ? (
+            allComments.map((comment, index) => (
+              <CommentComp
+                key={comment._id}
+                creator={comment.creator}
+                createdDate={comment.createdDate}
+                content={comment.content}
+                previousDate={index > 0 ? allComments[index - 1].createdDate : undefined}
+              />
+            ))
+          ) : (
+            <div className="text-center text-gray-500 mt-8">
+              היה הראשון להוסיף תגובה:)
+            </div>
+          )}
         </div>
         <NewCommentInput postId={_id} />
       </div>

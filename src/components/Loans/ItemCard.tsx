@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { IconType } from 'react-icons';
+import { MdLocationOn } from 'react-icons/md';
 
 export interface ItemCardProps {
   title: string;
   daysAgo: string;
-  userName: string;
+  userName: string | undefined;
   address: string;
   isBorrowed: boolean;
   buttonContent?: string;
-  ButtonIcon?: IconType; // React Icon component
+  ButtonIcon?: IconType;
   onButtonClick?: () => void;
 }
 
@@ -23,7 +24,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
   onButtonClick,
 }) => {
   return (
-    <div className="flex flex-col  flex-1 shrink items-start py-5 pr-5 w-full bg-white rounded-2xl basis-0">
+    <div className="flex flex-col  flex-1 shrink items-start py-5 pr-5 w-full bg-white rounded-2xl basis-0" style={{ height: "220px" }}>
       <div className="gap-4 self-stretch w-full text-lg font-bold leading-10 text-neutral-950">
         {title}
       </div>
@@ -46,15 +47,16 @@ export const ItemCard: React.FC<ItemCardProps> = ({
               <div className="text-base font-semibold text-neutral-950">
                 {userName ? userName : "עוד לא נמצא:("}
               </div>
-              <div className="text-xs font-medium leading-none text-neutral-500">
-                {address}
-              </div>
+              {userName && <div className="flex items-center gap-1 text-xs font-medium leading-none text-neutral-500">
+                <MdLocationOn className="w-4 h-4 text-neutral-500" />
+                <span>{address}</span>
+              </div>}
             </div>
           </div>
         </div>
       </div>
       {buttonContent && ButtonIcon && onButtonClick && (
-        <div className="flex gap-3 mt-8 items-center self-stretch w-full text-base font-medium leading-none text-neutral-100">
+        <div className="flex items-center justify-center w-full mt-auto text-base font-medium leading-none text-neutral-100" style={{ paddingBottom: "5px" }}>
           <button
             onClick={onButtonClick}
             className="flex gap-3 items-center p-3 bg-indigo-600 rounded-[50px] hover:bg-indigo-500"
@@ -64,6 +66,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
           </button>
         </div>
       )}
+
     </div>
   );
 };

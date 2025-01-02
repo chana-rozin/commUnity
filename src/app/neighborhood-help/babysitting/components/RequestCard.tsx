@@ -8,7 +8,7 @@ import { FaChildren } from "react-icons/fa6"; import { PiLadderSimpleLight } fro
 import { MdOutlineHouse } from "react-icons/md";
 import { BiPencil } from "react-icons/bi";
 import useUserStore from '@/stores/userStore';
-import { useBabysit, useDeleteBabysittingRequest } from '@/services/mutations/babysitting';
+import { useBabysit, useDeleteBabysittingRequest, useOfferBabysit } from '@/services/mutations/babysitting';
 import { AiTwotoneDelete } from "react-icons/ai";
 
 interface RequestCardProps {
@@ -18,11 +18,14 @@ interface RequestCardProps {
 export function RequestCard({ request }: RequestCardProps) {
 
     const { user } = useUserStore();
-    const { mutate: babysit } = useBabysit(); // Get the mutate function from useBabysit hook
     const { mutate: deleteBabysitting } = useDeleteBabysittingRequest();
+    const { mutate: offerBabysit } = useOfferBabysit();
 
     const offerToBabysit = () => {
-        babysit({ requestId: request._id, user: user });
+        const time = `${request.time.start}-${request.time.end}`;
+        if(!user?._id)
+            return;
+        offerBabysit({ requestId: request._id, babysitterId: user._id ,babysitterName: `${user?.first_name} ${user?.last_name}`, requestData: `${formattedDate} ${time}`,requesterId: request.requester._id });
     };
 
     const deleteRequest = () => {
@@ -71,7 +74,6 @@ export function RequestCard({ request }: RequestCardProps) {
                     </div>
 
                 </div>
-                <div className="flex gap-4 mt-1 w-80 max-w-full min-h-[42px]" />
                 <div className="flex gap-3 justify-end mt-1 w-full text-base font-medium leading-none text-neutral-100">
                     <div className="flex gap-5 ">
                         {request.requester._id == user?._id

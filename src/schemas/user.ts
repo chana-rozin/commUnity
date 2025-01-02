@@ -32,29 +32,29 @@ const userSchema = new mongoose.Schema({
         },
     },
     notifications: [{
-            _id: { type: String, required: true },
-            message: { type: String, required: true },
-            sender: { type: Schema.Types.ObjectId, required: true },
-            urgencyLevel: {
-                type: Number,
-                enum: [1,2,3],  // Use enum values dynamically
-                required: true,
-                default: 1
-            },
+        _id: { type: String, required: true },
+        message: { type: String, required: true },
+        sender: { type: Schema.Types.ObjectId, ref: "user", required: true },
+        urgencyLevel: {
+            type: Number,
+            enum: [1, 2, 3],  // Use enum values dynamically
+            required: true,
+            default: 1
+        },
+        type: {
+            type: Number,
+            enum: [1, 2, 3, 4],
+            required: true,
+            default: 4
+        },
+        subject: {
+            _id: { type: Schema.Types.ObjectId, required: true },
             type: {
                 type: Number,
-                enum: [1,2,3, 4],
-                required: true,
-                default: 4
+                enum: [1, 2, 3, 4],  // Use enum values dynamically
+                required: true
             },
-            subject: {
-                    _id: { type: Schema.Types.ObjectId , required: true  },
-                    type: {
-                        type: Number,
-                        enum: [1,2,3],  // Use enum values dynamically
-                        required: true
-                    },
-            }
+        }
 
     }]
 });

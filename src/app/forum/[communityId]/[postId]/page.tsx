@@ -7,6 +7,7 @@ import { Post } from '@/types/post.type';
 import { useParams } from 'next/navigation';
 import { useLikePost, useSavePost } from '@/services/mutations/forum';
 import useUserStore from "@/stores/userStore";
+import Loading from '@/components/animations/Loading';
 
 const PostPage: React.FC = () => {
   const { postId } = useParams();
@@ -50,13 +51,13 @@ const PostPage: React.FC = () => {
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading height="low"/>;;
   if (isError) return <div>Error: {error instanceof Error ? error.message : 'An error occurred'}</div>;
   if (!user) return <div>Loading user...</div>;
   if (!post) return <div>No post found</div>;
 
   return (
-    <div className="flex flex-col mt-4 min-w-[240px] w-[775px] max-md:max-w-full">
+    <div className="flex flex-wrap gap-4 items-start w-full flex-grow">
       <OpenPostSection
         _id={post._id}
         creator={post.creator}
