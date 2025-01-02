@@ -13,7 +13,7 @@ const SavedPostsPage: React.FC = () => {
       <div className="flex flex-wrap gap-4 items-start w-full flex-grow">
         {/* Middle Column */}
         <div className="flex flex-col flex-grow">
-          <div className="relative flex items-center justify-between overflow-hidden mb-2 flex-wrap p-6 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl min-h-[164px] shadow-lg">
+          <div className="relative flex items-center justify-between overflow-hidden mb-4 flex-wrap p-6 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl min-h-[164px] shadow-lg">
             {/* Background Pattern */}
             <div className="absolute inset-0 bg-pattern opacity-10 pointer-events-none z-0"></div>
 
