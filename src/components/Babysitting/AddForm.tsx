@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import babysittingSchema from "./babysittingSchema";
+import babysittingSchema from "../../schemas/zod/babysittingSchema";
 import Select from "react-select";
 import { CommunityInUser } from "@/types/general.type";
 import { Babysitting } from "@/types/babysitting.type";

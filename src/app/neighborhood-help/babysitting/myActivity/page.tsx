@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { RequestCard } from "../components/RequestCard";
+import { RequestCard } from "../../../../components/Babysitting/RequestCard";
 import { useBabysittingRequests, useCreateBabysittingRequest, useRequestsByUser } from "@/services/mutations/babysitting";
 import useUserStore from "@/stores/userStore";
 import { FaPlus } from "react-icons/fa";
-import AddBabysittingRequest from "../requests/AddForm";
+import AddBabysittingRequest from "../../../../components/Babysitting/AddForm";
 import { NoLoansSection } from "@/components/Loans/NoLoansSection";
 import pusherClient from "@/services/pusher";
 import { Babysitting } from "@/types/babysitting.type";

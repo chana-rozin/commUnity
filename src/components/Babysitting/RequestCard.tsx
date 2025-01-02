@@ -1,15 +1,14 @@
 import * as React from 'react';
-import { BabysittingRequest } from '../types';
 import { Babysitting } from '@/types/babysitting.type'
-import { type } from 'os';
 import { HiOutlineCalendarDays } from "react-icons/hi2";
 import { CiClock1 } from "react-icons/ci";
 import { FaChildren } from "react-icons/fa6"; import { PiLadderSimpleLight } from "react-icons/pi";
 import { MdOutlineHouse } from "react-icons/md";
 import { BiPencil } from "react-icons/bi";
 import useUserStore from '@/stores/userStore';
-import { useBabysit, useDeleteBabysittingRequest, useOfferBabysit } from '@/services/mutations/babysitting';
+import { useDeleteBabysittingRequest, useOfferBabysit } from '@/services/mutations/babysitting';
 import { AiTwotoneDelete } from "react-icons/ai";
+import { formatDate } from '@/utils/dates';
 
 interface RequestCardProps {
     request: Babysitting;
@@ -25,21 +24,12 @@ export function RequestCard({ request }: RequestCardProps) {
         const time = `${request.time.start}-${request.time.end}`;
         if (!user?._id)
             return;
-        offerBabysit({ requestId: request._id, babysitterId: user._id, babysitterName: `${user?.first_name} ${user?.last_name}`, requestData: `${formattedDate} ${time}`, requesterId: request.requester._id });
+        offerBabysit({ requestId: request._id, babysitterId: user._id, babysitterName: `${user?.first_name} ${user?.last_name}`, requestData: `${formatDate(request.date)} ${time}`, requesterId: request.requester._id });
     };
 
     const deleteRequest = () => {
         deleteBabysitting({ requestId: request._id, authorizedIds: request.AuthorizedIds });
     }
-
-    const date = new Date(request.date);
-
-    // Format to a human-readable date
-    const formattedDate = date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "numeric",
-        day: "numeric",
-    });
 
     return (
         <div className="flex flex-col  flex-1 shrink items-start p-5 w-full bg-white rounded-2xl basis-0">
@@ -50,7 +40,7 @@ export function RequestCard({ request }: RequestCardProps) {
                 <div className="flex flex-col gap-2 mt-1 text-xs leading-4 text-right text-stone-500">
                     <div title='תאריך' className="flex items-center text-sm font-semibold leading-5 text-stone-500 gap-2">
                         <HiOutlineCalendarDays className='text-indigo-500' />
-                        {formattedDate}
+                        {formatDate(request.date)}
                     </div>
                     <div title='שעה' className="flex items-center text-sm font-semibold leading-5 text-stone-500 gap-2">
                         <CiClock1 className='text-indigo-500' />
@@ -80,7 +70,7 @@ export function RequestCard({ request }: RequestCardProps) {
                             <div className='text-slate-600 p-3'>
                                 <span>שמרטף.ית: {`${request.babysitter.first_name} ${request.babysitter.last_name}`}</span>
                             </div>
-                            : <button
+                            :request.requester._id !== user?._id && <button
                                 className="flex gap-3 items-center p-2 ml-6 bg-indigo-600 rounded-[50px]"
                                 aria-label="הצע לשמרטף"
                                 onClick={offerToBabysit}
