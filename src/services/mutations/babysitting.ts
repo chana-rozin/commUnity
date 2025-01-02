@@ -10,7 +10,7 @@ export const useBabysittingRequests = (authorizedIds: string[]) => {
     return useQuery<Babysitting[]>({
         queryKey: ["babysittingRequests", authorizedIds],
         queryFn: async () => {
-            return getOpenRequestsByCommunities(authorizedIds, true);
+            return getOpenRequestsByCommunities(authorizedIds);
         },
         retry: 1,
     });
@@ -21,7 +21,8 @@ export const useRequestsByUser = (authorizedIds: string[], userId: string) => {
     return useQuery<Babysitting[]>({
         queryKey: ["babysittingRequestsByUser", authorizedIds, userId], // Include userId in the query key
         queryFn: async () => {
-            return getRequestsByUser(userId, authorizedIds, true); // Add userId to the API call
+            console.log("Getting requests for user: ", userId);
+            return getRequestsByUser(userId, authorizedIds); // Add userId to the API call
         },
         retry: 1,
     });
@@ -40,7 +41,7 @@ export const useCreateBabysittingRequest = () => {
             return createBabysitting(requestData as Babysitting);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["babysittingRequests"] });
+            queryClient.invalidateQueries({ queryKey: ["babysittingRequests", "babysittingRequestsByUser"] });
             toast.success("הבקשה נוספה בהצלחה");
         },
         onError: (error) => {
@@ -58,7 +59,7 @@ export const useBabysit = () => {
             return babysit(requestId, userId);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["babysittingRequests"] });
+            queryClient.invalidateQueries({ queryKey: ["babysittingRequests", "babysittingRequestsByUser"] });
             toast.success("הבקשה עודכנה בהצלחה");
             console.log("request updated");
         },
@@ -83,7 +84,7 @@ export const useDeleteBabysittingRequest = () => {
                 return deleteBabysitting(requestId)
             },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["babysittingRequests"] });
+            queryClient.invalidateQueries({ queryKey: ["babysittingRequests", "babysittingRequestsByUser"] });
             toast.success("הבקשה נמחקה בהצלחה");
         },
         onError: (error) => {
