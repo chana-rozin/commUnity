@@ -14,7 +14,6 @@ function BabysittingPage() {
     const { user } = useUserStore();
     const [myRequests, setMyRequests] = useState<Babysitting[]>([]);
     const [myBabysits, setMyBabysits] = useState<Babysitting[]>([]);
-    const communitiesIds = [...(user?.communities.map((com) => com._id) || []), user?.neighborhood._id];
 
     const { data: babysittingRequests, isLoading, error, refetch } = useRequestsByUser(
         user
@@ -59,7 +58,7 @@ function BabysittingPage() {
 
     return (
         <section className="relative w-auto">
-            <section className="flex flex-wrap gap-5 justify-center content-center items-center px-4 py-6 w-full bg-indigo-100 rounded-2xl min-h-[669px] max-md:max-w-full">
+            <section className="flex flex-wrap gap-5 justify-start content-center items-center px-4 py-6 w-full bg-indigo-100 rounded-2xl min-h-[669px] max-md:max-w-full">
                 {/* Borrowed Items Section */}
                 <div className="flex grow shrink items-center self-stretch px-4 py-px my-auto text-lg font-bold leading-10 bg-white rounded-2xl min-h-[43px] min-w-[240px] text-neutral-950 w-[686px] max-md:max-w-full">
                     <h2 className="self-stretch my-auto min-h-[42px] w-[131px]">

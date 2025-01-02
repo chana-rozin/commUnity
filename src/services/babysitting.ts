@@ -9,14 +9,15 @@ export const getBabysitting = async (): Promise<Babysitting[]> => {
     return response.data;
 }
 
-export const getOpenRequestsByCommunities = async (communityIds: string[], onlyOpen=false): Promise<Babysitting[]> => {
-    const url = `/babysitting?communities=${communityIds.join(',')}&&open=${onlyOpen}`;
+export const getOpenRequestsByCommunities = async (communityIds: string[]): Promise<Babysitting[]> => {
+    const url = `/babysitting?communities=${communityIds.join(',')}&open=true`;
     const response = await http.get(url);
     return response.data;
 }
 
-export const getRequestsByUser = async (userId: string, communityIds: string[], onlyOpen=false): Promise<Babysitting[]> => {
-    const url = `/babysitting?user_id=${userId}&communities=${communityIds.join(',')}&open=${onlyOpen}`;
+export const getRequestsByUser = async (userId: string, communityIds: string[]): Promise<Babysitting[]> => {
+    console.log("get babysitting request by user");
+    const url = `/babysitting?user_id=${userId}&communities=${communityIds.join(',')}&open=false`;
     const response = await http.get(url);
     return response.data;
 }

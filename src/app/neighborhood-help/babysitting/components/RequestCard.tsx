@@ -23,9 +23,9 @@ export function RequestCard({ request }: RequestCardProps) {
 
     const offerToBabysit = () => {
         const time = `${request.time.start}-${request.time.end}`;
-        if(!user?._id)
+        if (!user?._id)
             return;
-        offerBabysit({ requestId: request._id, babysitterId: user._id ,babysitterName: `${user?.first_name} ${user?.last_name}`, requestData: `${formattedDate} ${time}`,requesterId: request.requester._id });
+        offerBabysit({ requestId: request._id, babysitterId: user._id, babysitterName: `${user?.first_name} ${user?.last_name}`, requestData: `${formattedDate} ${time}`, requesterId: request.requester._id });
     };
 
     const deleteRequest = () => {
@@ -75,9 +75,11 @@ export function RequestCard({ request }: RequestCardProps) {
 
                 </div>
                 <div className="flex gap-3 justify-end mt-1 w-full text-base font-medium leading-none text-neutral-100">
-                    <div className="flex gap-5 ">
-                        {request.requester._id == user?._id
-                            ? <AiTwotoneDelete onClick={deleteRequest} className='cursor-pointer text-indigo-500 text-2xl' />
+                    <div className="flex gap-5 items-center">
+                        {request.babysitter ?
+                            <div className='text-slate-600 p-3'>
+                                <span>שמרטף.ית: {`${request.babysitter.first_name} ${request.babysitter.last_name}`}</span>
+                            </div>
                             : <button
                                 className="flex gap-3 items-center p-2 ml-6 bg-indigo-600 rounded-[50px]"
                                 aria-label="הצע לשמרטף"
@@ -91,6 +93,8 @@ export function RequestCard({ request }: RequestCardProps) {
                                     className="object-contain shrink-0 self-stretch my-auto aspect-[1.05] w-[21px]"
                                 />
                             </button>}
+                        {request.requester._id == user?._id
+                            && <AiTwotoneDelete onClick={deleteRequest} className='cursor-pointer text-indigo-500 text-2xl' />}
                     </div>
                 </div>
             </div>
