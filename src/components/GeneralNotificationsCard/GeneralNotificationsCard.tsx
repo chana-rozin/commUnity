@@ -1,6 +1,7 @@
 "use client"
-import React, { useEffect, useMemo, useState} from "react";
-import { ReminderNotification, RequestNotification } from "./Notification";
+import React, { useEffect, useMemo } from "react";
+import  ReminderNotification  from "./ReminderNotification";
+import  RequestNotification  from "./RequestNotification";
 import { Notifications, NotificationType } from "@/types/general.type";
 import useUserStore from "@/stores/userStore";
 import pusherClient from "@/services/pusher";
@@ -9,7 +10,7 @@ import { NoLoansSection } from "../Loans/NoLoansSection";
 const GeneralNotificationsCard: React.FC = () => {
     const user = useUserStore((state) => state.user);
     const addNotification = useUserStore((state) => state.addNotification);
-    const notifications = user?.notifications ?? [];  // Use nullish coalescing
+    const notifications = user?.notifications ?? [];  
 
     useEffect(() => {
         if (!user?._id) return;
@@ -23,7 +24,6 @@ const GeneralNotificationsCard: React.FC = () => {
             }
         };
 
-        // Define event types to make maintenance easier
         const eventTypes = [
             'loan-request',
             'loan-reminder',
@@ -32,7 +32,6 @@ const GeneralNotificationsCard: React.FC = () => {
             'community-invite',
         ];
 
-        // Bind all events
         eventTypes.forEach(eventType => {
             channel.bind(eventType, handleNotification);
         });
@@ -58,19 +57,9 @@ const GeneralNotificationsCard: React.FC = () => {
         
         switch (notification.type) {
             case NotificationType.Request:
-                return (
-                    <RequestNotification
-                        key={key}
-                        notification={notification}
-                    />
-                );
+                return (<RequestNotification key={key} notification={notification}/>);
             case NotificationType.Reminder:
-                return (
-                    <ReminderNotification
-                        key={key}
-                        notification={notification}
-                    />
-                );
+                return (<ReminderNotification key={key} notification={notification}/>);
             default:
                 return null;
         }
@@ -87,10 +76,7 @@ const GeneralNotificationsCard: React.FC = () => {
             </div>
 
             {!sortedNotifications.length && (
-                <NoLoansSection
-                    title="אין תזכורות"
-                    description="הכל נקי כרגע!"
-                />
+                <NoLoansSection title="אין תזכורות" description="הכל נקי כרגע!"/>
             )}
         </div>
     );
