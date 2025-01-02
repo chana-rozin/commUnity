@@ -14,6 +14,7 @@ export async function GET(request: Request) {
     const search = searchParams.get("search");
     const active = searchParams.get("active");
     let query: any = {};
+    const conditions: any[] = [];
 
     const today = new Date();
     const endOfDay = new Date(today); // Clone `today`
@@ -25,48 +26,54 @@ export async function GET(request: Request) {
     const currentTime = `${today.getHours()}:${today.getMinutes()}`;
 
     if (communities) {
-        query.AuthorizedIds = { $in: communities };
+        conditions.push({
+            AuthorizedIds: { $in: communities },
+        });
     }
 
     if (active !== "false") {
-        if (!query.$or) {
-            query.$or = [];
-        }
-        query.$or.push(
-            { date: { $gt: endOfDay } }, // Future date condition
-            {
-                date: { $eq: startOfDay }, // Today date condition
-                "time.end": { $gte: currentTime }, // Check if time is later than current time
-            }
-        );
+        conditions.push({
+            $or: [
+                { date: { $gt: endOfDay } }, // Future date condition
+                {
+                    date: { $eq: startOfDay }, // Today date condition
+                    "time.end": { $gte: currentTime }, // Time greater than current time
+                },
+            ],
+        });
     }
 
     if (open === "true") {
-        if (!query.$or) {
-            query.$or = [];
-        }
-        query.$or.push(
-            { babysitter: { $exists: false } }, // Babysitter field does not exist
-            { babysitter: null }              // Babysitter field is explicitly null
-        );
+        conditions.push({
+            $or: [
+                { babysitter: { $exists: false } }, // Babysitter does not exist
+                { babysitter: null }, // Babysitter is null
+            ],
+        });
     }
 
     if (user) {
-        if (!query.$or) {
-            query.$or = [];
-        }
-        query.$or.push(
-            { "requester": foreignKey(user) },
-            { "babysitter": foreignKey(user) }  // Match the babysitter field with the user
-        );
+        conditions.push({
+            $or: [
+                { requester: foreignKey(user) },
+                { babysitter: foreignKey(user) },
+            ],
+        });
     }
+
+    // Combine all conditions into an `$and` query
+    if (conditions.length > 0) {
+        query.$and = conditions;
+    }
+    
 
     const populate = [
         { path: 'requester', select: '_id first_name last_name profile_picture_url' },
         { path: 'babysitter', select: '_id first_name last_name profile_picture_url' }
     ];
+    console.log("Query sent to getAllDocuments:", JSON.stringify(query, null, 2));
     const result = await getAllDocuments("babysitting", query, populate);
-    console.log(result);
+    console.log("babysitting api", result);
     return NextResponse.json(result);
 }
 

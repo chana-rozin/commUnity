@@ -9,8 +9,7 @@ export default function BabysittingLayout({ children }: { children: React.ReactN
     const router = useRouter();
 
     const tabs = [{ text: "בקשות פעילות", href: "/neighborhood-help/babysitting/requests" },
-        { text: "הפעילות שלי", href: "/neighborhood-help/babysitting/myActivity" },
-        { text: "מצטיינות", href: "/neighborhood-help/babysitting/top-rated" }];
+        { text: "הפעילות שלי", href: "/neighborhood-help/babysitting/myActivity" }];
 
     const currentPath = pathname.split("/").filter(Boolean).pop()
     let currentTab: string;
@@ -21,10 +20,6 @@ export default function BabysittingLayout({ children }: { children: React.ReactN
         }
         case "myActivity":{
             currentTab = "הפעילות שלי";
-            break;
-        }
-        case "top-rated":{
-            currentTab = "מצטיינות";
             break;
         }
         default: {

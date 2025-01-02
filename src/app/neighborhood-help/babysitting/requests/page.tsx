@@ -16,7 +16,7 @@ function BabysittingPage() {
 
     const { data: babysittingRequests, isLoading, error, refetch } = useBabysittingRequests(
         user
-            ? [user!.neighborhood._id, ...user!.communities.map((community) => community._id)]
+            ? [...user!.communities.map((community) => community._id)]
             : []
     );
 

@@ -12,7 +12,7 @@ class PusherSingleton {
         cluster: 'ap2',
       });
 
-      Pusher.logToConsole = true;
+      // Pusher.logToConsole = true;
     }
 
     return PusherSingleton.instance;
