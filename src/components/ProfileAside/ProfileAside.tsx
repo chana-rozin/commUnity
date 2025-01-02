@@ -47,7 +47,7 @@ export const ProfileAside: React.FC<{ categories: { name: string, href: string, 
 
             <section className="flex flex-col self-stretch mt-8 gap-4 w-full text-base text-neutral-950">
                 {links.map((item, index) => (
-                    <Link key={index} href={item.href} className={`flex justify-end gap-2 items-center px-2 w-full ${item.isActive ? "text-indigo-500" : ""} hover:text-indigo-500 border-l-4 border-l-${item.isActive ?"indigo-500" : "white"} hover:border-l-indigo-500`}>
+                    <Link key={index} href={item.href} className={`flex justify-end gap-2 items-center px-2 w-full ${item.isActive ? "text-indigo-500" : ""} hover:text-indigo-500 border-l-4 border-l-${item.isActive ?"indigo-500" : "transparent"}`}>
                         <div className={`self-stretch my-auto`}>
                             {item.text}
                         </div>
