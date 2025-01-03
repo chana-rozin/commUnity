@@ -1,28 +1,10 @@
 
 "use client"
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getCommunities, addUserToCommunity, deleteUserFromCommunity, updateCommunity, sendInvitation } from '@/services/communities';
+import { getCommunities, addUserToCommunity, deleteUserFromCommunity, updateCommunity, sendInvitation} from '@/services/communities';
 import { Community } from '@/types/community.type';
 import { Notifications } from '@/types/general.type';
 import http from '../http';
-
-//Function to get user communities
-const getUserCommunities = async (userId: string): Promise<Community[]> => {
-  const response = await http.get(`/users/${userId}/communities`);
-  return response.data;
-};
-
-// Hook to fetch user communities
-export const useUserCommunities = (userId: string | undefined) => {
-  return useQuery<Community[]>({
-    queryKey: ['userCommunities', userId],
-    queryFn: () => getUserCommunities(userId as string),
-    enabled: !!userId, // Only run query if userId exists
-    retry: 1, // Only retry once if the query fails
-  });
-};
-
-
 
 export const useCommunities = (userId: string) => {
     return useQuery<Community[]>({

@@ -88,3 +88,7 @@ export const acceptInvitation = async (receiverId: string, communityId: string, 
     return community;
 }
 
+export const getUserCommunities = async (userId: string): Promise<any> => {
+    const response = await http.get(`/users/${userId}/communities`);
+    return response.data;
+  };

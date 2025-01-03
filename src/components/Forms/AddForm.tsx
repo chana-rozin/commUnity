@@ -27,6 +27,7 @@ interface AddFormProps<T extends ZodType> {
     title: string;
     isOpen: boolean;
     onClose: () => void;
+    children?: React.ReactNode; // Add this line
 }
 
 const CommunitySelect = ({ 
@@ -65,7 +66,7 @@ const CommunitySelect = ({
     );
   };
 
-export function AddForm<T extends ZodType>({ schema, onSubmit, initialValues = {}, hiddenFields = {}, title, isOpen, onClose,}: AddFormProps<T>) {
+export function AddForm<T extends ZodType>({ schema, onSubmit, initialValues = {}, hiddenFields = {}, title, isOpen, onClose, children,}: AddFormProps<T>) {
     if (!isOpen) return null;
 
     const { control, handleSubmit, formState: { errors } } = useForm<TypeOf<T>>({
@@ -173,6 +174,7 @@ export function AddForm<T extends ZodType>({ schema, onSubmit, initialValues = {
                     {Object.entries(schemaFields).map(([field, fieldType]) =>
                         renderInput(field, fieldType)
                     )}
+                    {children}
                     <div>
                         <button
                             type="submit"
