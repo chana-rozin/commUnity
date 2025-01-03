@@ -1,39 +1,31 @@
 import { NextResponse } from "next/server";
 import {
     updateDocumentById,
-    getDocumentById
+    getDocumentById,
+    getAllDocuments
 } from "@/services/mongoDB/mongodb";
 
 //Get a post by ID
 
-export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
-    debugger
-    let { id } = await params;
-
-    if (!id) {
-        return NextResponse.json(
-            { message: "Community ID is required" },
-            { status: 400 } // Bad Request
-        );
+export async function GET(
+    request: Request,
+    { params }: { params: { userId: string } }
+  ) {
+    try {
+      // Get communities where the user is a member
+      const query = {
+        membersId: { $in: [params.userId] }
+      };
+      const communities = await getAllDocuments("community", query);
+      return NextResponse.json(communities);
+    } catch (error) {
+      console.error("Error fetching user communities:", error);
+      return NextResponse.json(
+        { message: "Failed to fetch communities" },
+        { status: 500 }
+      );
     }
-    const populate = [
-        { path: 'members', select: 'first_name last_name profile_picture_url' }
-    ];
-    // Retrieve the post from the database
-    const community = await getDocumentById('community', id, populate);
-
-    if (!community) {
-        return NextResponse.json(
-            { message: "Community not found" },
-            { status: 404 } // Not Found
-        );
-    }
-    const communityToSend = community._doc;
-
-    communityToSend._id = communityToSend._id.toString();
-
-    return NextResponse.json(communityToSend);
-}
+  }
 
 //Patch a post by ID
 
