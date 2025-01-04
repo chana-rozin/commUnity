@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Community } from '@/types/community.type'
 import AddUserToCommunity from './AddUserToCommunity'
-import { FaArrowRightLong } from "react-icons/fa6";
+import { MdKeyboardArrowRight } from "react-icons/md";
 import SearchBar from './SearchBar'
 import UpdateCommunity from './UpdateCommunity';
 import useUserStore from "@/stores/userStore";
 import { toast } from "react-toastify";
 import { useDeleteUserFromCommunity, useUpdateCommunity, useSendInvitation } from '@/services/mutations/communities'
 import SweetAlert from "react-bootstrap-sweetalert";
+import { FiEdit2 } from "react-icons/fi";
+import { IoExitOutline } from "react-icons/io5";
 
 
 
@@ -24,8 +26,8 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
   const [addUserFormOpen, setAddUserFormOpen] = useState(false);
   const [updateCommunityFormOpen, setUpdateCommunityFormOpen] = useState(false);
   const [membersToPresent, setMembersToPresent] = useState(community?.members);
+  const popupRef = useRef<HTMLDivElement>(null);
   const [memberToAdd, setMemberToAdd] = useState<UserInCommunity[]>(() => {
-    debugger;
     const users: UserInCommunity[] = [];
     usersInNeighborhood.forEach((us) => {
       if (community.members.findIndex((u) => u._id === us._id) === -1) {
@@ -39,11 +41,7 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
   const updateCommunity = useUpdateCommunity();
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState('');
-  useEffect(() => {
 
-  }, [])
-  if (!community)
-    return null;
   function handleBack() {
     setCommunityToPresent(null);
   }
@@ -112,6 +110,8 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
       }
     );
   };
+  if (!community)
+    return null;
   return (
     <div>
       {updateCommunityFormOpen && <UpdateCommunity community={community} isOpen={updateCommunityFormOpen} setIsOpen={setUpdateCommunityFormOpen} updateCommunity={hanleUpdateCommunity} />}
@@ -128,28 +128,42 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
       />}
       {confirmMessage}
 
-      <FaArrowRightLong onClick={handleBack} className='cursor-pointer' />
-      <h1 className='flex items-center justify-center '>{community.name}</h1>
-      <div className='flex'>
+      <div className="flex items-center gap-3 mt-2">
+        <MdKeyboardArrowRight
+          onClick={handleBack}
+          className="mr-2 mt-1 text-3xl text-gray-600 hover:text-indigo-600 cursor-pointer transition-colors"
+        />
+        <h1 className="text-3xl font-bold text-gray-800">{community.name}</h1>
+      </div>
+      <div className="flex items-center justify-center gap-4 mb-8">
         <SearchBar
           main={community.main}
           searchIcon="/path/to/search-icon.svg"
           onSearch={handleSearchChange}
           onAddEvent={() => setAddUserFormOpen(true)}
+          placeholder="חפש חבר קהילה.."
         />
-        <button
-          type="submit"
-          className="g-neutral-100 text-indigo-900 p-3 rounded-full shadow-lg justify-end cursor-pointer bg-neutral-100 text-indigo-900"
-          onClick={() => setUpdateCommunityFormOpen(true)}
+        <div className="flex items-center justify-center gap-2 px-4 py-4 text-violet-700 rounded-full "
         >
-          עדכון פרטי קבוצה
-        </button>
-        {!community.main && <button
-          onClick={() => setDeleteAlert(true)}
-          className="hover:bg-[#901B22] bg-[#cf222e] text-white p-3 rounded-full shadow-lg justify-end cursor-pointer"
-        >
-          יציאה מהקבוצה
-        </button>}
+          <p
+            className="flex gap-2 g-neutral-100 text-indigo-900 p-3 rounded-full justify-end cursor-pointer  text-indigo-900"
+            onClick={() => setUpdateCommunityFormOpen(true)}
+          >
+                                <FiEdit2 />
+
+            עדכון פרטי קהילה
+          </p>
+        </div>
+        {!community.main &&
+          <div className="flex items-center justify-center gap-2 px-4 py-4 text-violet-700 rounded-full "
+          ><p
+            onClick={() => setDeleteAlert(true)}
+            className="flex gap-2 hover:text-[#901B22] text-[#cf222e] p-3  cursor-pointer"
+          >
+              <IoExitOutline />
+
+              יציאה מהקהילה
+            </p></div>}
       </div>
       {membersToPresent?.map((member) => {
         return (

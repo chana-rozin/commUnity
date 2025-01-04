@@ -1,7 +1,10 @@
 import http from "./http";
+import { community } from "./mongoDB/models";
 import { Notifications } from "@/types/general.type";
 import { User } from '@/types/user.type'
 import { invalidData } from "@/services/mutations/communities";
+
+
 export const getCommunities = async (userId: string): Promise<any> => {
     if (userId === "") return [];
     const url = `/communities?user_id=${userId}`;
@@ -35,6 +38,7 @@ export const addUserToCommunity = async (userId: string, communityId: string): P
     const response = await http.post(url, userId);
     return response.data;
 }
+
 export const deleteUserFromCommunity = async (userId: string, communityId: string): Promise<any> => {
     const url = `communities/${communityId}/users/${userId}`;
     const response = await http.delete(url);
@@ -90,3 +94,4 @@ export const acceptInvitation = async (receiverId: string, communityId: string, 
         }
     }
 }
+

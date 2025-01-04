@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { RequestCard } from "../components/RequestCard";
+import { RequestCard } from "../../../../components/Babysitting/RequestCard";
 import { useBabysittingRequests, useCreateBabysittingRequest } from "@/services/mutations/babysitting";
 import useUserStore from "@/stores/userStore";
 import { FaPlus } from "react-icons/fa";
-import AddBabysittingRequest from "./AddForm";
+import AddBabysittingRequest from "../../../../components/Babysitting/AddForm";
 import { NoLoansSection } from "@/components/Loans/NoLoansSection";
-import { pusherClient } from "@/services/pusher";
+import pusherClient from "@/services/pusher";
 import Loading from "@/components/animations/Loading";
 
 function BabysittingPage() {
@@ -16,7 +16,7 @@ function BabysittingPage() {
 
     const { data: babysittingRequests, isLoading, error, refetch } = useBabysittingRequests(
         user
-            ? [user!.neighborhood._id, ...user!.communities.map((community) => community._id)]
+            ? [...user!.communities.map((community) => community._id)]
             : []
     );
 
@@ -70,7 +70,7 @@ function BabysittingPage() {
                         ))}
                     </main>
                 ) : (
-                    <section>
+                    <section className="w-full">
                         <NoLoansSection
                             title="אין בקשות פעילות"
                             description="כרגע אין בקשות לבייביסטר באזורך"

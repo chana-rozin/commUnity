@@ -1,5 +1,7 @@
 import { Babysitting } from "@/types/babysitting.type";
 import http from "./http";
+import { Notifications } from '@/types/general.type';
+
 
 export const getBabysitting = async (): Promise<Babysitting[]> => {
     const url = `/babysitting`;
@@ -7,8 +9,15 @@ export const getBabysitting = async (): Promise<Babysitting[]> => {
     return response.data;
 }
 
-export const getBabysittingByCommunitiesId = async (communityIds: string[]): Promise<Babysitting[]> => {
-    const url = `/babysitting?communities=${communityIds.join(',')}`;
+export const getOpenRequestsByCommunities = async (communityIds: string[]): Promise<Babysitting[]> => {
+    const url = `/babysitting?communities=${communityIds.join(',')}&open=true`;
+    const response = await http.get(url);
+    return response.data;
+}
+
+export const getRequestsByUser = async (userId: string, communityIds: string[]): Promise<Babysitting[]> => {
+    console.log("get babysitting request by user");
+    const url = `/babysitting?user_id=${userId}&communities=${communityIds.join(',')}&open=false`;
     const response = await http.get(url);
     return response.data;
 }
@@ -30,6 +39,32 @@ export const deleteBabysitting = async (requestId: string): Promise<any> => {
     const response = await http.delete(url);
     return response.data;
 }
+
+export const offerBabysit = async (requestId: string, babysitterId: string, babysitterName: string, requestData: string, requesterId: string): Promise<Notifications> => {
+    const url = `/notifications`;
+
+    const notificationData = {
+        receiverId: requesterId,
+        message: `הצעה: ${babysitterName} מעוניין/ת לשמרטף לך ב-${requestData}`,
+        sender: {_id: babysitterId},
+        urgencyLevel: 1,
+        type: 3,
+        subject: { _id: requestId, type: 1 },
+    };
+
+    const response = await http.post(url, notificationData);
+    const createdNotification = response.data.notification;
+
+    // Send Pusher message with the created notification
+    await http.post('/pusher/send', {
+        channel: `user-${requesterId}`,
+        event: "babysit-request",
+        message: createdNotification
+    });
+    console.log("notification response id:",createdNotification._id);
+
+    return createdNotification;
+};
 
 // export const getOpenLoansByCommunityId = async (communityId: string): Promise<any> => {
 //     const url = `/loans?communities=${communityId}&is_open=true`;

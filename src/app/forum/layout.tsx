@@ -1,15 +1,12 @@
 "use client"
-import React, { useState } from 'react'
-import { usePathname } from "next/navigation";
+import React from 'react'
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
-import GeneralNotificationsCard from '@/components/GeneralNotificationsCard/GeneralNotificationsCard';
-import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
-import { LoansNotificationsCard } from '@/components/LoansNotificationsCard/LoansNotificationsCard';
-
+import { usePathname } from "next/navigation";
 
 export default function ForumLayout({ children }: { children: React.ReactNode }) {
-
-    const categories = [{ name: "ראשי", href: "/home", isActive: true }, { name: "שמורים", href: "/saved", isActive: false }]
+    const pathname = usePathname();
+    const currentCategory = pathname.includes("/forum/saved") ? "saved" : "home";
+    const categories = [{ name: "ראשי", href: "/home", isActive: currentCategory === "home" }, { name: "שמורים", href: "/forum/saved", isActive: currentCategory === "saved" }]
 
     return (
         <div className="flex gap-4 items-start mt-5 w-full">

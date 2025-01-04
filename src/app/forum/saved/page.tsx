@@ -4,7 +4,7 @@ import ForumPage from '@/components/Forum/ForumPage';
 import { useParams } from 'next/navigation';
 import useUserStore from '@/stores/userStore';
 
-const CommunityForumPage: React.FC = () => {
+const SavedPostsPage: React.FC = () => {
   const { communityId } = useParams();
   const { user } = useUserStore();
 
@@ -13,7 +13,7 @@ const CommunityForumPage: React.FC = () => {
       <div className="flex flex-wrap gap-4 items-start w-full flex-grow">
         {/* Middle Column */}
         <div className="flex flex-col flex-grow">
-          <div className="relative flex items-center justify-between overflow-hidden mb-2 flex-wrap p-6 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl min-h-[164px] shadow-lg">
+          <div className="relative flex items-center justify-between overflow-hidden mb-4 flex-wrap p-6 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl min-h-[164px] shadow-lg">
             {/* Background Pattern */}
             <div className="absolute inset-0 bg-pattern opacity-10 pointer-events-none z-0"></div>
 
@@ -21,7 +21,7 @@ const CommunityForumPage: React.FC = () => {
             <div className="flex flex-col z-10">
               <h2 className="text-2xl font-bold">היי {user?.first_name}!</h2>
               <p className="mt-2 text-base font-medium">
-                יש לנו כמה הפתעות בשבילך 🎉
+                 כאן תמצא את הפוסטים השמורים שלך 🎉
               </p>
             </div>
 
@@ -40,11 +40,11 @@ const CommunityForumPage: React.FC = () => {
             </div>
           </div>
           {/* Posts Section */}
-          <ForumPage selectedCommunityId={communityId as string}/>
+          <ForumPage saved={true}/>
         </div>
       </div>
     </main>
   );
 };
 
-export default CommunityForumPage;
+export default SavedPostsPage;

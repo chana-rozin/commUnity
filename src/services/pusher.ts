@@ -1,10 +1,27 @@
 import Pusher from 'pusher-js';
 
-Pusher.logToConsole = true;
+class PusherSingleton {
+  private static instance: Pusher;
 
-export const pusherClient =new Pusher('f2a4c88c3f3a6582f035', {
-    cluster: 'ap2'
-}); 
-  /*new Pusher(process.env.PUSHER_KEY || '', {
-  cluster: process.env.PUSHER_CLUSTER || '',
-});*/
+  private constructor() {}
+
+  public static getInstance(): Pusher {
+    if (!PusherSingleton.instance) {
+      // Initialize the Pusher client
+      PusherSingleton.instance = new Pusher('f2a4c88c3f3a6582f035', {
+        cluster: 'ap2',
+      });
+
+      // Pusher.logToConsole = true;
+    }
+
+    return PusherSingleton.instance;
+  }
+
+}
+
+export default PusherSingleton.getInstance();
+
+
+
+

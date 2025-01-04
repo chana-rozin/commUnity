@@ -57,7 +57,7 @@ const PostPage: React.FC = () => {
   if (!post) return <div>No post found</div>;
 
   return (
-    <div className="flex flex-col mt-4 min-w-[240px] w-[775px] max-md:max-w-full">
+    <div className="flex flex-wrap gap-4 items-start w-full flex-grow">
       <OpenPostSection
         _id={post._id}
         creator={post.creator}
