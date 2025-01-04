@@ -9,22 +9,19 @@ import Step2 from '../../components/register/step2/step2'
 import Step3 from '../../components/register/step3/step3'
 import Step4 from '../../components/register/step4/step4'
 import OpeningImage from '../../components/OpeningImage/OpeningImage'
+import LoadingPopUp from '@/components/animations/LoadingPopUp';
 import FormPopUp from '@/components/PopUp/AuthPopUp';
 import { z } from "zod";
 import { User } from '../../types/user.type'
 import { Preference } from '@/types/general.type';
-import { logout as logoutService } from "@/services/logout";
 
-
-
-
-import VerificationCodePopUp from '../../components/register/verificationCodePopUp'
 const googleProvider = new GoogleAuthProvider();
 import useUserStore from '@/stores/userStore';
 import { useRouter } from 'next/navigation';
 
 
 const signUp: React.FC = () => {
+    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [verificationPopUp, setVerificationPopUp] = useState(false);
     const [step, setStep] = useState(1);
@@ -35,20 +32,10 @@ const signUp: React.FC = () => {
     const [rememberMe, setRememberMe] = useState(false);
     const [googleImage, setGoogleImage] = useState<string | null>(null);
     const router = useRouter();
-    // const { clearUser } = useUserStore();
-
-    // useEffect(() => {
-    //     async function logout(){
-    //         const success = await logoutService();
-    //     if (success)
-    //         clearUser();
-    //     }
-    //     logout();
-    // }, [])
 
     async function loginWithGoogle() {
         try {
-            debugger
+            setLoading(true);
             setSignUpBy('google');
             const result = await signInWithPopup(auth, googleProvider);
             let user: any = result.user;
@@ -57,6 +44,7 @@ const signUp: React.FC = () => {
             setGoogleImage(user.photoURL)
             setUser(user);
             console.log("User signed in:", user);
+            setLoading(false);
             setStep(2);
         } catch (error: any) {
             if (error.status === 409) {
@@ -68,14 +56,15 @@ const signUp: React.FC = () => {
     }
 
     async function loginWithEmailAndPassword(email: string, password: string) {
-        debugger
         try {
             setSignUpBy('email')
+            setLoading(true);
             const userExist = await http.post(`/register/${email}`)
             setUserExists(false);
             setVerificationPopUp(true);
             setEmail(email);
             setUser({ email: email, password: password });
+            setLoading(false);
             sendVerificationCode(email);
         } catch (error: any) {
             if (error.status === 409) {
@@ -87,9 +76,10 @@ const signUp: React.FC = () => {
     }
 
     async function sendVerificationCode(email: string) {
-        debugger
         try {
+            setLoading(true);
             const result = http.post('/verify-email/send', { email: email })
+            setLoading(false);
         }
         catch (error) {
             console.error('Error sending verification code:', error);
@@ -97,9 +87,10 @@ const signUp: React.FC = () => {
     }
 
     async function checkVerificationCode(userEmail: string, userCode: string) {
-        debugger
         try {
+            setLoading(true);
             const result = await http.post('/verify-email/check', { email: userEmail, code: userCode })
+            setLoading(false);
             if (result.status === 200) {
                 setStep(2);
                 setVerificationPopUp(false);
@@ -138,10 +129,8 @@ const signUp: React.FC = () => {
     }
 
     async function signUp() {
-        debugger
         try {
-            console.log(user);
-
+            setLoading(true);
             const preferences: Preference =
             {
                 email_notifications: true,
@@ -175,11 +164,11 @@ const signUp: React.FC = () => {
                 const userWithPass = { ...newUser, password: user.password }
                 result = await http.post('/register/email', userWithPass);
             }
+            setLoading(false);
             if (result.status !== 201) {
                 throw new Error('Failed to add user to the database');
             }
             else {
-                debugger
                 useUserStore.getState().setUser(result.data, rememberMe);
                 router.push('/home');
             }
@@ -190,6 +179,7 @@ const signUp: React.FC = () => {
 
     return (
         <div className="overflow-hidden py-10 px-9 bg-white max-md:px-5">
+            {loading && <LoadingPopUp isOpen={loading} />}
             <div className="flex gap-5 max-md:flex-col">
                 <OpeningImage />
                 {step === 1 ? <Step1 loginWithGoogle={loginWithGoogle} loginWithEmailAndPassword={loginWithEmailAndPassword} userExists={userExists} setRememberMe={setRememberMe} rememberMe={rememberMe} setEmail={setEmail} /> : step === 2 ?

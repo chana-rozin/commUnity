@@ -1,5 +1,5 @@
 "use client"
-import React, {useEffect} from 'react';
+import React from 'react';
 import { AuthButton } from '../../components/register/step1/AuthButton'
 import { AuthTab } from '../../components/register/step1/AuthTab'
 import OpeningImage from '../../components/OpeningImage/OpeningImage'
@@ -13,15 +13,12 @@ import { MdOutlineVisibility } from "react-icons/md";
 import { MdOutlineVisibilityOff } from "react-icons/md";
 import http from '../../services/http'
 import useUserStore from '@/stores/userStore';
-import FormPopUp from '@/components/PopUp/AuthPopUp'
-import { logout as logoutService } from "@/services/logout";
-
-
-
+import FormPopUp from '@/components/PopUp/AuthPopUp';
+import LoadingPopUp from '@/components/animations/LoadingPopUp'
 
 const loginFormSchema = z.object({
-        email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
-        password: z.string().min(8, { message: 'Be at least 8 characters long' }).regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' }).regex(/[0-9]/, { message: 'Contain at least one number.' }).regex(/[^a-zA-Z0-9]/, { message: 'Contain at least one special character.', }).trim()
+    email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
+    password: z.string().min(8, { message: 'Be at least 8 characters long' }).regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' }).regex(/[0-9]/, { message: 'Contain at least one number.' }).regex(/[^a-zA-Z0-9]/, { message: 'Contain at least one special character.', }).trim()
 })
 
 type LoginTypesSchema = z.infer<typeof loginFormSchema>;
@@ -41,6 +38,7 @@ const formObj = {
 
 const Login: React.FC = () => {
     const [userExists, setUserExists] = React.useState(true);
+    const [loading, setLoading] = React.useState(false);
     const [remember, setRemember] = React.useState(false);
     const [verificationPopUp, setVerificationPopUp] = React.useState<boolean>(false);
     const [newPasswordPopUp, setNewPasswordPopUp] = React.useState<boolean>(false);
@@ -48,7 +46,7 @@ const Login: React.FC = () => {
     const [newPassError, setNewPassError] = React.useState<string | null>(null);
     const [forgetPasswordError, setForgetPasswordError] = React.useState<string | null>(null);
     const router = useRouter();
-    const { register, handleSubmit, watch, formState: { errors }} = useForm<LoginTypesSchema>({ resolver: zodResolver(loginFormSchema) });
+    const { register, handleSubmit, watch, formState: { errors } } = useForm<LoginTypesSchema>({ resolver: zodResolver(loginFormSchema) });
     const [showPassword, setShowPassword] = React.useState(false);
     const emailValue = watch("email");
     const baseStyles = "gap-1 px-4 py-2 text-base font-medium text-center rounded-md w-full";
@@ -56,18 +54,9 @@ const Login: React.FC = () => {
         primary: "bg-indigo-600 text-white",
         secondary: "bg-neutral-100 text-indigo-900"
     };
-    // const { clearUser } = useUserStore();
-
-    // useEffect(() => {
-    //         async function logout(){
-    //             const success = await logoutService();
-    //         if (success)
-    //             clearUser();
-    //         }
-    //         logout();
-    //     }, [])
 
     async function loginWithGoogle() {
+        setLoading(true);
         try {
             const result = await signInWithPopup(auth, googleProvider);
             const googleUser: any = result.user;
@@ -84,6 +73,7 @@ const Login: React.FC = () => {
                 return;
             }
             useUserStore.getState().setUser(userExist.data.user, remember);
+            setLoading(false)
             router.push('/home');
         } catch (error: any) {
             if (error.status === 409) {
@@ -98,10 +88,12 @@ const Login: React.FC = () => {
 
     async function loginWithEmail(email: string, password: string) {
         try {
+            setLoading(true);
             const userExist = await http.post(`/login/email`, {
                 email: email,
                 password: password
             })
+            setLoading(false);
             if (!userExist.data.user) {
                 setUserExists(false);
                 return;
@@ -133,7 +125,6 @@ const Login: React.FC = () => {
     };
 
     const onSubmit: SubmitHandler<any> = async (data) => {
-        debugger
         loginWithEmail(data.email, data.password);
     }
 
@@ -168,8 +159,10 @@ const Login: React.FC = () => {
 
     async function sendVerificationCode(email: string) {
         try {
+            setLoading(true);
             setVerificationPopUp(true);
-            const result = http.post('/verify-email/send', { email: email })
+            const result = http.post('/verify-email/send', { email: email });
+            setLoading(false);
         }
         catch (error) {
             console.error('Error sending verification code:', error);
@@ -179,7 +172,9 @@ const Login: React.FC = () => {
 
     async function checkVerificationCode(email: string, code: string) {
         try {
-            const result = await http.post('/verify-email/check', { email: email, code: code })
+            setLoading(true);
+            const result = await http.post('/verify-email/check', { email: email, code: code });
+            setLoading(false);
             if (result.status === 200) {
                 setVerifyError(null)
                 setVerificationPopUp(false);
@@ -198,7 +193,9 @@ const Login: React.FC = () => {
 
     async function handlePasswordChange(email: string, password: string) {
         try {
+            setLoading(true);
             const result = await http.post('/passwords', { email: email, password: password });
+            setLoading(false);
             if (result.status === 200) {
                 setNewPassError(null)
                 setNewPasswordPopUp(false);
@@ -213,6 +210,7 @@ const Login: React.FC = () => {
 
     return (
         <div className=" py-10 px-9 bg-white max-h-[100%] max-md:px-5">
+            {loading && <LoadingPopUp isOpen={loading} />}
             <div className="flex gap-5 max-md:flex-col">
                 <OpeningImage />
                 <div className="align-center my-0 mx-auto">
