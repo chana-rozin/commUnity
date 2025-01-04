@@ -6,11 +6,7 @@ import { useSaveEvent } from "@/services/mutations/events";
 import useUserStore from "@/stores/userStore";
 
 
-export const EventCard: React.FC<Event> = ({
-    _id,
-    name,
-    date,
-    location,
+export const EventCard: React.FC<Event> = ({_id, name, date, location,
 }) => {
     const {user,setUser} = useUserStore();
     const saveMutation  = useSaveEvent(user, setUser);
