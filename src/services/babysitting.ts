@@ -9,14 +9,15 @@ export const getBabysitting = async (): Promise<Babysitting[]> => {
     return response.data;
 }
 
-export const getOpenRequestsByCommunities = async (communityIds: string[], onlyOpen=false): Promise<Babysitting[]> => {
-    const url = `/babysitting?communities=${communityIds.join(',')}&&open=${onlyOpen}`;
+export const getOpenRequestsByCommunities = async (communityIds: string[]): Promise<Babysitting[]> => {
+    const url = `/babysitting?communities=${communityIds.join(',')}&open=true`;
     const response = await http.get(url);
     return response.data;
 }
 
-export const getRequestsByUser = async (userId: string, communityIds: string[], onlyOpen=false): Promise<Babysitting[]> => {
-    const url = `/babysitting?user_id=${userId}&communities=${communityIds.join(',')}&open=${onlyOpen}`;
+export const getRequestsByUser = async (userId: string, communityIds: string[]): Promise<Babysitting[]> => {
+    console.log("get babysitting request by user");
+    const url = `/babysitting?user_id=${userId}&communities=${communityIds.join(',')}&open=false`;
     const response = await http.get(url);
     return response.data;
 }
@@ -39,16 +40,16 @@ export const deleteBabysitting = async (requestId: string): Promise<any> => {
     return response.data;
 }
 
-export const offerBabysit = async (requestId: string, babysitterId: string, babysitterName: string, request: string, requesterId: string): Promise<Notifications> => {
+export const offerBabysit = async (requestId: string, babysitterId: string, babysitterName: string, requestData: string, requesterId: string): Promise<Notifications> => {
     const url = `/notifications`;
 
     const notificationData = {
         receiverId: requesterId,
-        message: `הצעה: ${babysitterName} מעוניין/ת לשמרטף לך ב-${request}`,
+        message: `הצעה: ${babysitterName} מעוניין/ת לשמרטף לך ב-${requestData}`,
         sender: {_id: babysitterId},
         urgencyLevel: 1,
         type: 3,
-        subject: { _id: requestId, type: 2 },
+        subject: { _id: requestId, type: 1 },
     };
 
     const response = await http.post(url, notificationData);

@@ -10,7 +10,7 @@ export const useBabysittingRequests = (authorizedIds: string[]) => {
     return useQuery<Babysitting[]>({
         queryKey: ["babysittingRequests", authorizedIds],
         queryFn: async () => {
-            return getOpenRequestsByCommunities(authorizedIds, true);
+            return getOpenRequestsByCommunities(authorizedIds);
         },
         retry: 1,
     });
@@ -21,7 +21,8 @@ export const useRequestsByUser = (authorizedIds: string[], userId: string) => {
     return useQuery<Babysitting[]>({
         queryKey: ["babysittingRequestsByUser", authorizedIds, userId], // Include userId in the query key
         queryFn: async () => {
-            return getRequestsByUser(userId, authorizedIds, true); // Add userId to the API call
+            console.log("Getting requests for user: ", userId);
+            return getRequestsByUser(userId, authorizedIds); // Add userId to the API call
         },
         retry: 1,
     });
@@ -40,7 +41,7 @@ export const useCreateBabysittingRequest = () => {
             return createBabysitting(requestData as Babysitting);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["babysittingRequests"] });
+            queryClient.invalidateQueries({ queryKey: ["babysittingRequests", "babysittingRequestsByUser"] });
             toast.success("הבקשה נוספה בהצלחה");
         },
         onError: (error) => {
@@ -53,16 +54,14 @@ export const useCreateBabysittingRequest = () => {
 export const useBabysit = () => {
     const queryClient = useQueryClient();
 
-    return useMutation<Babysitting, Error, { requestId: string; user: User | null }>({
-        mutationFn: async ({ requestId, user }) => {
-            if (!user || !user._id) {
-                throw new Error("User is required to babysit");
-            }
-            return babysit(requestId, user._id);
+    return useMutation<Babysitting, Error, { requestId: string; userId: string }>({
+        mutationFn: async ({ requestId, userId }) => {
+            return babysit(requestId, userId);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["babysittingRequests"] });
+            queryClient.invalidateQueries({ queryKey: ["babysittingRequests", "babysittingRequestsByUser"] });
             toast.success("הבקשה עודכנה בהצלחה");
+            console.log("request updated");
         },
         onError: (error) => {
             console.error("Failed to update babysitting request:", error);
@@ -85,7 +84,7 @@ export const useDeleteBabysittingRequest = () => {
                 return deleteBabysitting(requestId)
             },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["babysittingRequests"] });
+            queryClient.invalidateQueries({ queryKey: ["babysittingRequests", "babysittingRequestsByUser"] });
             toast.success("הבקשה נמחקה בהצלחה");
         },
         onError: (error) => {
@@ -96,14 +95,13 @@ export const useDeleteBabysittingRequest = () => {
 };
 
 export const useOfferBabysit = () => {
-    const queryClient = useQueryClient();
 
     return useMutation<Notifications, Error, { requestId: string, babysitterId: string, babysitterName: string, requestData: string, requesterId: string }>({
         mutationFn: async ({ requestId, babysitterId, babysitterName, requestData, requesterId }) => {
             return offerBabysit(requestId, babysitterId, babysitterName, requestData, requesterId);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["babysittingRequests"] });
+            toast.success('ההצעה נשלחה בהצלחה');
         },
         onError: (error) => {
             console.error('Failed to send offer babysitting notification', error);

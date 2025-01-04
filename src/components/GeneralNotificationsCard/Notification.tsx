@@ -13,6 +13,7 @@ import {
 import useUserStore from '@/stores/userStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { loanQueryKeys } from '@/services/mutations/loans';
+import { useBabysit } from "@/services/mutations/babysitting";
 
 interface NotificationWrapperProps {
     urgencyLevel: UrgencyLevel;
@@ -131,6 +132,7 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
     const { user, setUser } = useUserStore();
 
     const queryClient = useQueryClient();
+    const babysitMutation = useBabysit();
 
     const refreshData = useCallback(() => {
         // Refresh active loans
@@ -151,15 +153,23 @@ const RequestNotification = memo(({ notification }: RequestNotificationProps) =>
     const handleAccept = useCallback(async () => {
         try {
             switch (notification.subject.type) {
-                case SubjectInNotificationType.loan:
+                case SubjectInNotificationType.loan: {
                     await lendItem(notification.subject._id, notification.sender._id);
                     break;
+                }
                 case SubjectInNotificationType.babysitting:
-                    // TODO: Implement accept logic
-                    return;
-                case SubjectInNotificationType.community:
+                    {
+                        console.log("babysitting notification id: ", notification._id);
+                        await babysitMutation.mutateAsync({
+                            requestId: notification.subject._id,
+                            userId: notification.sender._id,
+                        })
+                        break;
+                    }
+                case SubjectInNotificationType.community:{
                     const response = await acceptInvitation(user?._id ? user._id : "", notification.subject._id, user, setUser);
                     break;
+                }
                 default:
                     return;
             }

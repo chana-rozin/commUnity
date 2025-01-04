@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Community } from '@/types/community.type'
 import AddUserToCommunity from './AddUserToCommunity'
-import { FaArrowRightLong } from "react-icons/fa6";
+import { MdKeyboardArrowRight } from "react-icons/md";
 import SearchBar from './SearchBar'
 import UpdateCommunity from './UpdateCommunity';
 import useUserStore from "@/stores/userStore";
@@ -137,14 +137,20 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
       />}
       {confirmMessage}
 
-      <FaArrowRightLong onClick={handleBack} className='cursor-pointer' />
-      <h1 className='flex items-center justify-center p-3 align-start'>{community.name}</h1>
-      <div className='flex'>
+      <div className="flex items-center gap-3 mt-2">
+        <MdKeyboardArrowRight
+          onClick={handleBack}
+          className="mr-2 mt-1 text-3xl text-gray-600 hover:text-indigo-600 cursor-pointer transition-colors"
+        />
+        <h1 className="text-3xl font-bold text-gray-800">{community.name}</h1>
+      </div>
+      <div className="flex items-center justify-center gap-4 mb-8">
         <SearchBar
           main={community.main}
           searchIcon="/path/to/search-icon.svg"
           onSearch={handleSearchChange}
           onAddEvent={() => setAddUserFormOpen(true)}
+          placeholder="חפש חבר קהילה.."
         />
         <div className="flex items-center justify-center gap-2 px-4 py-4 text-violet-700 rounded-full "
         >

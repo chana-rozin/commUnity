@@ -1,17 +1,16 @@
 "use client"
 import ForumPage from '../../components/Forum/ForumPage';
 import { ProfileAside } from '@/components/ProfileAside/ProfileAside';
-import { EventsNotificationsCard } from '@/components/EventsNotificationsCard/EventsNotificationsCard';
-import GeneralNotificationsCard from '@/components/GeneralNotificationsCard/GeneralNotificationsCard';
 import useUserStore from '@/stores/userStore';
-import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-
+import { usePathname } from "next/navigation";
 
 const HomePage = () => {
   const router = useRouter();
   const { user, setUser } = useUserStore();
-  const categories = [{ name: "ראשי", href: "/home", isActive: true }, { name: "שמורים", href: "/saved", isActive: false }]
+    const pathname = usePathname();
+    const currentCategory = pathname.includes("/forum/saved") ? "saved" : "home";
+    const categories = [{ name: "ראשי", href: "/home", isActive: currentCategory === "home" }, { name: "שמורים", href: "/forum/saved", isActive: currentCategory === "saved" }]
 
 
   return (
