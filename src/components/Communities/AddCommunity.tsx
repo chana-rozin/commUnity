@@ -34,7 +34,7 @@ const AddCommunity: React.FC<AddCommunityProps> = ({ isOpen, setIsOpen }) => {
     if (!user || !user._id) {
       return;
     }
-    const newCommunity: Community = {
+    const newCommunity = {
       main: false,
       neighborhood: { _id: user.neighborhood._id },
       name: data.name,

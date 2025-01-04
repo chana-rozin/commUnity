@@ -2,11 +2,12 @@ export interface Event {
     _id: string;
     name: string;
     description: string;
-    date: string;
+    date: Date;  
     location: string;
-    createdDate: string;
+    createdDate: Date;  
     active: boolean;
-    AuthorizedIds: string[]; 
+    AuthorizedIds: string[];
+    authorizedType: 'community' | 'neighborhood';
 }
 
 /*

@@ -1,38 +1,30 @@
 import { NextResponse } from "next/server";
 import {
     updateDocumentById,
-    getDocumentById
+    getDocumentById,
+    getAllDocuments
 } from "@/services/mongoDB/mongodb";
 
 //Get a post by ID
 
-export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
-    debugger
-    let { id } = await params;
-
-    if (!id) {
+export async function GET(
+    request: Request, { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const { id } = await params;
+        // Get communities where the user is a member
+        const query = {
+            membersId: { $in: [id] }
+        };
+        const communities = await getAllDocuments("community", query);
+        return NextResponse.json(communities);
+    } catch (error) {
+        console.error("Error fetching user communities:", error);
         return NextResponse.json(
-            { message: "Community ID is required" },
-            { status: 400 } // Bad Request
+            { message: "Failed to fetch communities" },
+            { status: 500 }
         );
     }
-    const populate = [
-        { path: 'members', select: 'first_name last_name profile_picture_url' }
-    ];
-    // Retrieve the post from the database
-    const community = await getDocumentById('community', id, populate);
-
-    if (!community) {
-        return NextResponse.json(
-            { message: "Community not found" },
-            { status: 404 } // Not Found
-        );
-    }
-    const communityToSend = community._doc;
-
-    communityToSend._id = communityToSend._id.toString();
-
-    return NextResponse.json(communityToSend);
 }
 
 //Patch a post by ID
@@ -53,25 +45,25 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         );
     }
     delete body._id;
-    const getCommunity = await getDocumentById("community",id);
-    if(!getCommunity) {
+    const getCommunity = await getDocumentById("community", id);
+    if (!getCommunity) {
         return NextResponse.json(
             { message: "Failed to found community" },
             { status: 404 } // Internal Server Error
         );
     }
-    if(getCommunity.main){
+    if (getCommunity.main) {
         delete body.name;
     }
-    const query:any = {
+    const query: any = {
     }
-    if(body.name){
+    if (body.name) {
         query.name = body.name;
     }
-    if(body.description){
+    if (body.description) {
         query.description = body.description;
     }
-    if(body.imageUrl){
+    if (body.imageUrl) {
         query.imageUrl = body.imageUrl;
     }
     // Update the community in the database
