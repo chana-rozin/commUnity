@@ -9,12 +9,12 @@ import {
 
 export async function GET(
     request: Request,
-    { params }: { params: { userId: string } }
+    { params }: { params: { id: string } }
   ) {
     try {
       // Get communities where the user is a member
       const query = {
-        membersId: { $in: [params.userId] }
+        membersId: { $in: [params.id] }
       };
       const communities = await getAllDocuments("community", query);
       return NextResponse.json(communities);
