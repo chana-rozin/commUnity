@@ -19,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchIcon, onSearch, onAddEvent 
   };
 
   return (
-    <div className="flex items-center justify-between bg-white rounded-2xl min-h-[65px] w-full max-w-[791px] px-6 py-3 gap-4">
+    <div className="flex items-center overflow-hidden bg-white rounded-2xl min-h-[65px] w-full max-w-[400px] px-4 py-2.5 gap-4">
       {/* Search Input */}
       <form
         className="flex flex-grow items-center bg-violet-50 rounded-full px-4 py-2 gap-3 mt-4"

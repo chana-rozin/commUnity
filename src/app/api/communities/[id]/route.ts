@@ -8,24 +8,24 @@ import {
 //Get a post by ID
 
 export async function GET(
-    request: Request,
-    { params }: { params: { userId: string } }
-  ) {
+    request: Request, { params }: { params: Promise<{ id: string }> }
+) {
     try {
-      // Get communities where the user is a member
-      const query = {
-        membersId: { $in: [params.userId] }
-      };
-      const communities = await getAllDocuments("community", query);
-      return NextResponse.json(communities);
+        const { id } = await params;
+        // Get communities where the user is a member
+        const query = {
+            membersId: { $in: [id] }
+        };
+        const communities = await getAllDocuments("community", query);
+        return NextResponse.json(communities);
     } catch (error) {
-      console.error("Error fetching user communities:", error);
-      return NextResponse.json(
-        { message: "Failed to fetch communities" },
-        { status: 500 }
-      );
+        console.error("Error fetching user communities:", error);
+        return NextResponse.json(
+            { message: "Failed to fetch communities" },
+            { status: 500 }
+        );
     }
-  }
+}
 
 //Patch a post by ID
 
@@ -45,25 +45,25 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         );
     }
     delete body._id;
-    const getCommunity = await getDocumentById("community",id);
-    if(!getCommunity) {
+    const getCommunity = await getDocumentById("community", id);
+    if (!getCommunity) {
         return NextResponse.json(
             { message: "Failed to found community" },
             { status: 404 } // Internal Server Error
         );
     }
-    if(getCommunity.main){
+    if (getCommunity.main) {
         delete body.name;
     }
-    const query:any = {
+    const query: any = {
     }
-    if(body.name){
+    if (body.name) {
         query.name = body.name;
     }
-    if(body.description){
+    if (body.description) {
         query.description = body.description;
     }
-    if(body.imageUrl){
+    if (body.imageUrl) {
         query.imageUrl = body.imageUrl;
     }
     // Update the community in the database

@@ -76,16 +76,23 @@ export const sendInvitation = async (communityId: string, communityName: string,
 
 
 export const acceptInvitation = async (receiverId: string, communityId: string, user: User | null, setUser: (user: User, shouldPersist?: boolean) => void) => {
-    const response = await addUserToCommunity(receiverId, communityId);
-    const community = await getCommunity(communityId);
-    const updatedUser: any = { ...user };
-    updatedUser?.communities?.push({
-        _id: community._id,
-        name: community.name,
-    });
-    setUser(updatedUser);
-    invalidData();
-    return community;
+    try{
+        const response = await addUserToCommunity(receiverId, communityId);
+        const community = await getCommunity(communityId);
+        const updatedUser: any = { ...user };
+        updatedUser?.communities?.push({
+            _id: community._id,
+            name: community.name,
+        });
+        setUser(updatedUser);
+        invalidData();
+        return community;
+    }
+    catch(err:any){
+        if(err.status === 400){
+            return;
+        }
+    }
 }
 
 export const getUserCommunities = async (userId: string): Promise<any> => {
