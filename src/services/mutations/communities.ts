@@ -6,6 +6,24 @@ import { Community } from '@/types/community.type';
 import { Notifications } from '@/types/general.type';
 import http from '../http';
 
+//Function to get user communities
+const getUserCommunities = async (userId: string): Promise<Community[]> => {
+    const response = await http.get(`/users/${userId}/communities`);
+    return response.data;
+};
+
+// Hook to fetch user communities
+export const useUserCommunities = (userId: string | undefined) => {
+    return useQuery<Community[]>({
+        queryKey: ['userCommunities', userId],
+        queryFn: () => getUserCommunities(userId as string),
+        enabled: !!userId, // Only run query if userId exists
+        retry: 1, // Only retry once if the query fails
+    });
+};
+
+
+
 export const useCommunities = (userId: string) => {
     return useQuery<Community[]>({
         queryKey: ['communities', userId],
@@ -62,7 +80,7 @@ export const useDeleteUserFromCommunity = () => {
     );
 };
 
-export const useUpdateCommunity= ()=>{
+export const useUpdateCommunity = () => {
     const queryClient = useQueryClient();
 
     return useMutation<void, Error, { data: any; communityId: string }>({
@@ -78,9 +96,9 @@ export const useUpdateCommunity= ()=>{
 }
 
 export const useSendInvitation = () => {
-    return useMutation<Notifications, Error, { communityId: string, communityName: string, senderId: string,receiverId: string }>({
+    return useMutation<Notifications, Error, { communityId: string, communityName: string, senderId: string, receiverId: string }>({
         mutationFn: async ({ communityId, communityName, senderId, receiverId }) => {
-            return sendInvitation(communityId,communityName,senderId, receiverId);
+            return sendInvitation(communityId, communityName, senderId, receiverId);
         },
         onError: (error) => {
             console.error('Failed to send reminder notification', error);
@@ -88,7 +106,7 @@ export const useSendInvitation = () => {
     });
 };
 
-export const invalidData=()=>{
+export const invalidData = () => {
     const queryClient = useQueryClient();
     queryClient.invalidateQueries({ queryKey: ['communities'] });
 }

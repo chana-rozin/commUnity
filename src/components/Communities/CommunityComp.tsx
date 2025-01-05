@@ -16,6 +16,7 @@ import { IoExitOutline } from "react-icons/io5";
 
 import React from 'react'
 import { CommunityInUser, UserInCommunity } from '@/types/general.type';
+import GenericPopup from '../PopUp/GenericPopUp';
 interface CommunityCompProps {
   community: Community
   setCommunityToPresent: React.Dispatch<React.SetStateAction<Community | null>>;
@@ -23,6 +24,7 @@ interface CommunityCompProps {
 }
 const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityToPresent, usersInNeighborhood }) => {
   const { user, setUser } = useUserStore();
+  const [loading, setLoading] = useState(false);
   const [addUserFormOpen, setAddUserFormOpen] = useState(false);
   const [updateCommunityFormOpen, setUpdateCommunityFormOpen] = useState(false);
   const [membersToPresent, setMembersToPresent] = useState(community?.members);
@@ -82,15 +84,16 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
     const communityId = community._id;
     deleteUserFromCommunityF.mutate({ userId: user?._id, communityId: communityId }, {
       onSuccess: (data: any) => {
-        debugger
         const updatedUser = { ...user };
         setDeleteAlert(false);
         updatedUser.communities = updatedUser.communities.filter((com: CommunityInUser) => com._id !== communityId);
         setUser(updatedUser);
         setCommunityToPresent(null)
+        setLoading(false);
       },
       onError: (error) => {
-        toast.error(`שגיאה קרתה בהוספת ${user.first_name} ${user.last_name} לקבוצת ${community.name} , נסה שוב מאוחר יותר`);
+        toast.error(`שגיאה קרתה בהסרתך מהקבוצה  , נסה שוב מאוחר יותר`);
+        setLoading(false);
       }
     })
   }
@@ -116,16 +119,30 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
     <div>
       {updateCommunityFormOpen && <UpdateCommunity community={community} isOpen={updateCommunityFormOpen} setIsOpen={setUpdateCommunityFormOpen} updateCommunity={hanleUpdateCommunity} />}
       {addUserFormOpen && <AddUserToCommunity isOpen={addUserFormOpen} onClose={onAddUserFormClose} handleAddUserSubmit={handleAddUserSubmit} options={memberToAdd} />}
-      {deleteAlert && <SweetAlert
-        warning
-        showCancel
-        confirmBtnText="כן!"
-        cancelBtnText="!לא"
-        title={`לצאת מהקבוצה ${community.name} ?`}
-        onConfirm={() => handleExitCommunity()}
-        onCancel={() => setDeleteAlert(false)}
-        focusCancelBtn
-      />}
+      <GenericPopup
+        title="לצאת מהקהילה?"
+        content={<div className='flex'>
+          <p
+            className="flex gap-2 g-neutral-100 text-indigo-900 p-3 rounded-full justify-end cursor-pointer  text-indigo-900"
+            onClick={() => setDeleteAlert(false)}
+          >
+            ביטול
+          </p>
+          <p
+            onClick={() => {
+              setLoading(true);
+              setDeleteAlert(false);
+              handleExitCommunity()
+            }}
+            className=" hover:text-[#901B22] text-[#cf222e] p-3  cursor-pointer"
+          >
+            אישור
+          </p>
+        </div>}
+        isOpen={deleteAlert}
+        onClose={()=> setDeleteAlert(false)}
+
+      />
       {confirmMessage}
 
       <div className="flex items-center gap-3 mt-2">
@@ -149,7 +166,7 @@ const CommunityComp: React.FC<CommunityCompProps> = ({ community, setCommunityTo
             className="flex gap-2 g-neutral-100 text-indigo-900 p-3 rounded-full justify-end cursor-pointer  text-indigo-900"
             onClick={() => setUpdateCommunityFormOpen(true)}
           >
-                                <FiEdit2 />
+            <FiEdit2 />
 
             עדכון פרטי קהילה
           </p>

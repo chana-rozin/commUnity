@@ -5,6 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Community } from '@/types/community.type';
 import { ImageUpload } from '../uploadImage/uploadImage';
+import LoadingLine from '../animations/LoadingLine';
 interface UpdateCommunityProps {
     community: Community;
     isOpen: boolean;
@@ -13,6 +14,7 @@ interface UpdateCommunityProps {
 }
 const UpdateCommunity: React.FC<UpdateCommunityProps> = ({ community, isOpen, setIsOpen, updateCommunity }) => {
     const [imageUrl, setImageUrl] = useState(community.imageUrl);
+    const [loading, setLoading] = useState(false);
     function onClose() {
         setIsOpen(false);
     }
@@ -43,7 +45,9 @@ const UpdateCommunity: React.FC<UpdateCommunityProps> = ({ community, isOpen, se
         if(Object.keys(updatedData).length === 0){
             return;
         }
+        setLoading(true);
         await updateCommunity(updatedData);
+        setLoading(false);
     }
     return (
         <GenericPopup title={'עדכון הפרטים'} content={
@@ -86,7 +90,7 @@ const UpdateCommunity: React.FC<UpdateCommunityProps> = ({ community, isOpen, se
                 <button
                     type="submit"
                     className={"gap-1 px-4 py-2 text-base font-medium text-center rounded-md w-full bg-indigo-600 text-white"}
-                >עדכון
+            >{loading?<LoadingLine color="#fff"/>:<p>שמור שינויים</p>}
                 </button>
 
             </form>} isOpen={isOpen} onClose={onClose} />
