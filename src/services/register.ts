@@ -1,6 +1,4 @@
-import { getAllDocuments, insertDocument, getDocumentById, updateDocumentById } from '@/services/mongoDB/mongodb'
-import { generateToken } from '@/services/tokens'
-import { NextResponse } from 'next/server';
+import { getAllDocuments, insertDocument, updateDocumentById } from '@/services/mongoDB/mongodb'
 import { CommunityImageUrl } from '@/services/defaultData'
 export async function communityRegister(body: any) {
     debugger

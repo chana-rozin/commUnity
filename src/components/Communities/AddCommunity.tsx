@@ -98,6 +98,7 @@ const AddCommunity: React.FC<AddCommunityProps> = ({ isOpen, setIsOpen }) => {
         </div>
         <br />
         <p className="text-base text-right text-neutral-700">העלאת תמונת פרופיל קבוצתית</p>
+        <img loading="lazy" src={imageUrl} alt={`Profile picture of community`} className="object-contain aspect-square w-[67px] rounded-full object-cover" />
         <ImageUpload setImageUrl={setImageUrl} />
         <br />
         <button
