@@ -8,6 +8,7 @@ import { useAds, useCreateAd } from '@/services/mutations/ads';
 
 import { Ad } from "@/types/ad.type";
 import Popup from "../PopUp/PopUp";
+import { EmptyState } from '@/components/Events-Ads/emptyPage';
 
 const AdsPage: React.FC = () => {
   // Get user from global store
@@ -16,6 +17,9 @@ const AdsPage: React.FC = () => {
   // Fetch ads using React Query
   const { data: ads = [], isLoading, error } = useAds();
   
+  if (ads.length === 0) {
+    return <EmptyState type="ads" />;
+  }
   // Create ad mutation
   const createAdMutation = useCreateAd();
 

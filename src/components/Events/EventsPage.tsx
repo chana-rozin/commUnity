@@ -1,19 +1,17 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import EventCard from "./EventCard";
 import SearchBar from "./SearchBar";
 import useUserStore from "@/stores/userStore";
 import { useEvents, useCreateEvent } from '@/services/mutations/events';
 import { Event } from "@/types/event.type";
-import { Community } from "@/types/community.type";
 import { z } from "zod";
 import { AddForm } from "../Forms/AddForm";
-import Loading from '@/components/animations/Loading'
+import Loading from '@/components/animations/Loading';
 import { useCommunities } from '@/services/mutations/communities';
 import { CommunitySelect } from '../Forms/CommunitySelect';
+import { EmptyState } from '@/components/Events-Ads/emptyPage';
 
-type EventFormData = z.infer<typeof eventSchema>;
- 
 const eventSchema = z.object({
   name: z.string().min(1, "יש להזין שם אירוע"),
   description: z.string().min(1, "יש להזין תיאור"),
@@ -27,12 +25,7 @@ const eventSchema = z.object({
 const EventsPage: React.FC = () => {
   const { user } = useUserStore();
   const { data: events = [], isLoading: eventsLoading, error: eventsError } = useEvents();
-  const { 
-    data: communities = [], 
-    isLoading: communitiesLoading,
-    error: communitiesError 
-  } = useCommunities(user?._id || '');
-
+  const { data: communities = [], isLoading: communitiesLoading, error: communitiesError } = useCommunities(user?._id || '');
   const createEventMutation = useCreateEvent();
 
   const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
@@ -40,17 +33,38 @@ const EventsPage: React.FC = () => {
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [selectedCommunities, setSelectedCommunities] = useState<string[]>([]);
 
+  useEffect(() => {
+    if (searchQuery && events) {
+      setFilteredEvents(
+        events.filter((event) => 
+          event.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    }
+  }, [searchQuery, events]);
+
+  if (eventsLoading || communitiesLoading) {
+    return <Loading height={'low'}/>;
+  }
+
+  if (eventsError || communitiesError) {
+    return (
+      <p className="text-red-500">
+        Error loading content: {eventsError?.message || communitiesError?.message}
+      </p>
+    );
+  }
+
+  if (!events || events.length === 0) {
+    return <EmptyState type="events" />;
+  }
+
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
-    setFilteredEvents(
-      events.filter((event) => 
-        event.name.toLowerCase().includes(query.toLowerCase())
-      )
-    );
   };
 
-  const handleCreateEvent = (data: Partial<EventFormData>) => {
-    const eventData: Partial<Event> = {
+  const handleCreateEvent = async (data: Partial<z.infer<typeof eventSchema>>) => {
+    const eventData = {
       ...data,
       AuthorizedIds: selectedCommunities.length > 0 
         ? selectedCommunities 
@@ -58,26 +72,17 @@ const EventsPage: React.FC = () => {
       authorizedType: 'community' as const
     };
 
-    createEventMutation.mutate(eventData, {
-      onSuccess: () => {
-        setIsAddFormOpen(false);
-        setSelectedCommunities([]);
-      },
-      onError: (error) => {
-        console.error('Failed to create event:', error);
-      }
-    });
+    try {
+      await createEventMutation.mutateAsync(eventData);
+      setIsAddFormOpen(false);
+      setSelectedCommunities([]);
+    } catch (error) {
+      console.error('Failed to create event:', error);
+    }
   };
 
-  if (eventsLoading || communitiesLoading) return <Loading height={'low'}/>;
-  if (eventsError || communitiesError) return (
-    <p className="text-red-500">
-      Error loading content: {eventsError?.message || communitiesError?.message}
-    </p>
-  );
-
   return (
-    <main className="flex flex-col items-center px-4 w-full">
+    <div className="flex flex-col items-center px-4 w-full">
       <div className="w-full max-w-[791px] px-2.5 mt-5">
         <SearchBar
           searchIcon="/path/to/search-icon.svg"
@@ -127,7 +132,7 @@ const EventsPage: React.FC = () => {
           <EventCard key={event._id} {...event} />
         ))}
       </div>
-    </main>
+    </div>
   );
 };
 
