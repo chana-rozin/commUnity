@@ -18,6 +18,7 @@ import { Preference } from '@/types/general.type';
 const googleProvider = new GoogleAuthProvider();
 import useUserStore from '@/stores/userStore';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 
 const signUp: React.FC = () => {
@@ -166,6 +167,7 @@ const signUp: React.FC = () => {
             }
             setLoading(false);
             if (result.status !== 201) {
+                toast.success('קרתה שגיאה במהלך ההרשמה, נסה שוב מאוחר יותר!')
                 throw new Error('Failed to add user to the database');
             }
             else {
