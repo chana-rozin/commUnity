@@ -5,7 +5,6 @@ import {
     foreignKey
 } from "@/services/mongoDB/mongodb";
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string, userId: string }> }) {
-    debugger
     let { id } = await params;
     if (!id) {
         return NextResponse.json(

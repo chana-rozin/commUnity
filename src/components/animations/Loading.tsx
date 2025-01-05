@@ -10,14 +10,14 @@ interface props{
     visible?: boolean,
     children?: React.ReactNode,
 }
-const Loading: React.FC<props> = ({height}) => {
+const Loading: React.FC<props> = ({height,color}) => {
     return (
         <div className={`${style.container} ${height==='low'?style.low:style.high}`}>
             <Puff
                 visible={true}
                 height="60"
                 width="60"
-                color="#3f51b5"
+                color={color?color:"#3f51b5"}
                 ariaLabel="puff-loading"
             />
         </div>

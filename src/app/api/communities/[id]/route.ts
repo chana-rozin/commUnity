@@ -7,24 +7,32 @@ import {
 
 //Get a post by ID
 
-export async function GET(
-    request: Request, { params }: { params: Promise<{ id: string }> }
-) {
-    try {
-        const { id } = await params;
-        // Get communities where the user is a member
-        const query = {
-            membersId: { $in: [id] }
-        };
-        const communities = await getAllDocuments("community", query);
-        return NextResponse.json(communities);
-    } catch (error) {
-        console.error("Error fetching user communities:", error);
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    let { id } = await params;
+
+    if (!id) {
         return NextResponse.json(
-            { message: "Failed to fetch communities" },
-            { status: 500 }
+            { message: "Community ID is required" },
+            { status: 400 } // Bad Request
         );
     }
+    const populate = [
+        { path: 'members', select: 'first_name last_name profile_picture_url' }
+    ];
+    // Retrieve the post from the database
+    const community = await getDocumentById('community', id, populate);
+
+    if (!community) {
+        return NextResponse.json(
+            { message: "Community not found" },
+            { status: 404 } // Not Found
+        );
+    }
+    const communityToSend = community._doc;
+
+    communityToSend._id = communityToSend._id.toString();
+
+    return NextResponse.json(communityToSend);
 }
 
 //Patch a post by ID

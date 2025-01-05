@@ -39,6 +39,7 @@ const formObj = {
 const Login: React.FC = () => {
     const [userExists, setUserExists] = React.useState(true);
     const [loading, setLoading] = React.useState(false);
+    const [forgetPasswordLoading, setForgetPasswordLoading] = React.useState(false);
     const [remember, setRemember] = React.useState(false);
     const [verificationPopUp, setVerificationPopUp] = React.useState<boolean>(false);
     const [newPasswordPopUp, setNewPasswordPopUp] = React.useState<boolean>(false);
@@ -76,6 +77,7 @@ const Login: React.FC = () => {
             setLoading(false)
             router.push('/home');
         } catch (error: any) {
+            setLoading(false);
             if (error.status === 409) {
                 setUserExists(false);
                 return;
@@ -102,6 +104,7 @@ const Login: React.FC = () => {
             useUserStore.getState().setUser(userExist.data.user, remember);
             router.push('/home');
         } catch (error: any) {
+            setLoading(false);
             if (error.status === 409) {
                 setUserExists(false);
                 return;
@@ -138,8 +141,10 @@ const Login: React.FC = () => {
                 setForgetPasswordError('נא להכניס כתובת מייל תקנית')
             } else {
                 try {
+                    setLoading(true)
                     setForgetPasswordError(null)
                     const userExist = await http.post(`/login/${emailValue}`)
+                    setLoading(false)
                     if (userExist) {
                         sendVerificationCode(emailValue);
                     }
@@ -172,9 +177,7 @@ const Login: React.FC = () => {
 
     async function checkVerificationCode(email: string, code: string) {
         try {
-            setLoading(true);
             const result = await http.post('/verify-email/check', { email: email, code: code });
-            setLoading(false);
             if (result.status === 200) {
                 setVerifyError(null)
                 setVerificationPopUp(false);

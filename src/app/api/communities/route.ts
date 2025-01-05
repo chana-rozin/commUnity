@@ -6,6 +6,7 @@ import {
     getDocumentById,
     updateDocumentById
 } from "@/services/mongoDB/mongodb";
+import { CommunityImageUrl } from '@/services/defaultData'
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -36,7 +37,6 @@ export async function GET(request: Request) {
 
 // Create a new post
 export async function POST(request: Request) {
-    debugger
     try {
         const body = await request.json(); // Parse request body
         if (!body) {
@@ -48,7 +48,9 @@ export async function POST(request: Request) {
         delete body._id;
         body.members[0] = foreignKey(body.members[0]._id);
         body.main = false;
-
+        if(!body.imageUrl||body.imageUrl===""){
+            body.imageUrl = CommunityImageUrl;
+        }
 
         // Insert into the database
         const result = await insertDocument("community", body);
